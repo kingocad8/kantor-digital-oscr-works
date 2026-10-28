@@ -66,7 +66,7 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 </style>
 </head>
 <body>
-<header><h1>OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v23</p></header>
+<header><h1>OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v24</p></header>
 <div class="wrap">
 <div id="scene"><div id="sceneHud">OSCR Works - Jam kantor: - - Fokus: Keseluruhan</div><div id="fallback">⚠️ Three.js gagal dimuat. File ini butuh internet sekali untuk load library 3D-nya, coba refresh.</div></div>
 <div class="btns">
@@ -159,7 +159,7 @@ Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="al
 <div id="kpiDetail" style="margin-top:10px"></div>
 </div>
 </div>
-<footer>OSCR Works - Digital Office • v23 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
+<footer>OSCR Works - Digital Office • v24 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
 </div>
 <script>
 const SOUNDCLOUD_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav";
@@ -353,20 +353,23 @@ function carpet(cx,cz,w,d,c){ const f = new THREE.Mesh(new THREE.PlaneGeometry(w
 carpet(-9,-5.5,7.6,6.6,0xd9b38c); carpet(-1,-5.5,7.6,6.6,0x9ecfff); carpet(5,-5.5,4,6.6,0x7fb3d5); carpet(10,-5.5,6,6.6,0xf7e8c3); carpet(0,3.5,25.6,10.6,0x9fe6a8);
 box(26,3.6,0.3,matW(),0,1.8,-9); box(0.3,2.5,18,matW(),-13,1.25,0); box(0.3,2.5,18,matW(),13,1.25,0);
 const frontWallL = box(12,0.6,0.3,matW(),-7,0.3,9); const frontWallR = box(12,0.6,0.3,matW(),7,0.3,9);
-// LANTAI 2 KOSONG v23 — plat, dinding, partisi, karpet, label; TANPA meja kerja, TANPA karakter permanen.
-// Plat lantai 2: atas y=3.6, tebal 0.4 (pusat 3.4). LUBANG TANGGA x -1.5..1.5, z 4..9 dibiarkan terbuka:
-// barat x -13..-1.5 penuh, timur x 1.5..13 penuh, tengah-utara x -1.5..1.5 z -9..4.
+// LANTAI 2 KOSONG v24 — plat, dinding, partisi, karpet, label; TANPA meja kerja, TANPA karakter permanen.
+// Plat lantai 2 v24: atas y=3.6, tebal 0.4 (pusat 3.4). LUBANG TANGGA BARU x -11.5..-8.5, z 2..6 dibiarkan terbuka:
+// timur lubang x -8.5..13 penuh, barat lubang x -13..-11.5 penuh,
+// utara lubang x -11.5..-8.5 z -9..2, selatan lubang x -11.5..-8.5 z 6..9.
 const floor2Group = new THREE.Group(); scene.add(floor2Group); floor2Group.visible = false;
 const stairsGroup = new THREE.Group(); scene.add(stairsGroup);
 function box2(w,h,d,material,x,y,z){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; floor2Group.add(m); return m; }
-box2(11.5,0.4,18,matW(),-7.25,3.4,0);
-box2(11.5,0.4,18,matW(),7.25,3.4,0);
-box2(3,0.4,13,matW(),0,3.4,-2.5);
+box2(1.5,0.4,18,matW(),-12.25,3.4,0);
+box2(21.5,0.4,18,matW(),2.25,3.4,0);
+box2(3,0.4,11,matW(),-10,3.4,-3.5);
+box2(3,0.4,3,matW(),-10,3.4,7.5);
 box2(26,3.6,0.3,matW(),0,5.4,-9);
 box2(0.3,2.5,18,matW(),-13,4.85,0);
 box2(0.3,2.5,18,matW(),13,4.85,0);
 box2(12,0.6,0.3,matW(),-7,3.9,9);
 box2(12,0.6,0.3,matW(),7,3.9,9);
+box2(2,0.6,0.3,matW(),0,3.9,9); // v24: tutup celah depan lantai 2 (tanpa pintu di lantai 2)
 // Partisi rendah 2.2 di atas slab (pusat y=4.7), x=-4 dan x=4, z -9..0 — strip selatan z 0..4 tetap sirkulasi bebas.
 box2(0.3,2.2,9,matW(),-4,4.7,-4.5);
 box2(0.3,2.2,9,matW(),4,4.7,-4.5);
@@ -376,20 +379,21 @@ function expLabel(txt,x,z){ const cv = document.createElement('canvas'); cv.widt
 expLabel('Ruang Ekspansi 1 — Kosong', -8.5, -4.5);
 expLabel('Ruang Ekspansi 2 — Kosong', 0, -4.5);
 expLabel('Ruang Ekspansi 3 — Kosong', 8.5, -4.5);
-// TANGGA DALAM v23 — sirkulasi tengah selatan (x -1..1, z 4..8), 12 anak tangga naik 0.3/anak (total 3.6),
-// dari dasar (0,0,8) ke atas (0,3.6,4). Tangga selalu terlihat (dasarnya di lantai 1); plat lantai 2 yang disembunyikan di mode lantai 1.
+// TANGGA DALAM v24 — sayap kiri dekat Arsip (barat), x=-10, 12 anak tangga naik 0.3/anak (total 3.6),
+// dari dasar (-10,0,6) ke atas (-10,3.6,2). Tidak lagi di tengah pintu masuk; lantai 1 tidak digeser.
 function stairMesh(w,h,d,material,x,y,z){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; stairsGroup.add(m); return m; }
-for (let i = 0; i < 12; i++){ const sz = 8 - (i + 0.5) * (4 / 12); const sy = i * 0.3 + 0.15; stairMesh(2, 0.3, 0.36, matW(), 0, sy, sz); }
-stairMesh(3, 0.2, 1.5, matW(), 0, 3.52, 3.25); // bordes atas: atas y=3.62, di atas slab tengah-utara, z 2.5..4
-[-1.05, 1.05].forEach(function(rx){
-  [0,3,6,9,11].forEach(function(i){ const sz = 8 - (i + 0.5) * (4 / 12); const top = (i + 1) * 0.3; stairMesh(0.08, 0.9, 0.08, matC(0x222222), rx, top + 0.45, sz); });
-  const rail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 5.5), matC(0x222222)); rail.position.set(rx, 2.7, 6); rail.rotation.x = Math.atan2(3.6, 4); rail.castShadow = true; stairsGroup.add(rail);
+for (let i = 0; i < 12; i++){ const sz = 6 - (i + 0.5) * (4 / 12); const sy = i * 0.3 + 0.15; stairMesh(2, 0.3, 0.36, matW(), -10, sy, sz); }
+stairMesh(3, 0.2, 1.5, matW(), -10, 3.52, 1.25); // bordes atas: atas y=3.62, di atas plat utara lubang, z 0.5..2.0
+[-11.05, -8.95].forEach(function(rx){
+  for (let i = 0; i < 12; i++){ const sz = 6 - (i + 0.5) * (4 / 12); const top = (i + 1) * 0.3; stairMesh(0.08, 0.9, 0.08, matC(0x222222), rx, top + 0.45, sz); }
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 5.5), matC(0x222222)); rail.position.set(rx, 2.7, 4); rail.rotation.x = Math.atan2(3.6, 4); rail.castShadow = true; stairsGroup.add(rail);
 });
 // GEDUNG UTUH v16 — dinding depan penuh + atap, disembunyikan sampai tombol Gedung Utuh ditekan
 const exteriorGroup = new THREE.Group(); scene.add(exteriorGroup); exteriorGroup.visible = false;
 (function(){
   const fwL = new THREE.Mesh(new THREE.BoxGeometry(12,7.2,0.3), matW()); fwL.position.set(-7,3.6,9); fwL.castShadow = true; exteriorGroup.add(fwL);
   const fwR = new THREE.Mesh(new THREE.BoxGeometry(12,7.2,0.3), matW()); fwR.position.set(7,3.6,9); fwR.castShadow = true; exteriorGroup.add(fwR);
+   const fwC = new THREE.Mesh(new THREE.BoxGeometry(2,3.6,0.3), matW()); fwC.position.set(0,5.4,9); fwC.castShadow = true; exteriorGroup.add(fwC); // v24: tutup celah lantai 2 di atas pintu (pintu lantai 1 tetap terbuka di bawahnya)
   exteriorGroup.add(pyramidRoof(0,7.2,0,26,18,5,0xb85450));
   [-13,13].forEach(function(sx){ const sw = new THREE.Mesh(new THREE.BoxGeometry(0.3,4.7,18), matW()); sw.position.set(sx,4.85,0); sw.castShadow = true; exteriorGroup.add(sw); });
   // JENDELA BESAR sekeliling gedung (eksterior saja, biar interior tetap transparan) — besar, berjarak, tidak sumpek
@@ -397,9 +401,9 @@ const exteriorGroup = new THREE.Group(); scene.add(exteriorGroup); exteriorGroup
   [-11,-7,-3,3,7,11].forEach(function(wx){ extWin(2.7,2.0,0.05,matC(0xffffff),wx,1.8,9.12); extWin(2.5,1.8,0.1,matC(0x9ecfff),wx,1.8,9.20); });
   [-11,-4,3,10].forEach(function(wx){ extWin(2.7,2.0,0.05,matC(0xffffff),wx,1.8,-9.12); extWin(2.5,1.8,0.1,matC(0x9ecfff),wx,1.8,-9.20); });
   [-6,0,6].forEach(function(wz){ extWin(0.05,2.0,2.7,matC(0xffffff),-13.12,1.8,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),-13.20,1.8,wz); extWin(0.05,2.0,2.7,matC(0xffffff),13.12,1.8,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),13.20,1.8,wz); });
-   // LANTAI 2 EKSTERIOR v23 — dinding belakang atas (menumpuk di atas dinding belakang lantai 1, 0..3.6) + jendela lantai 2 di y=5.4
+   // LANTAI 2 EKSTERIOR v24 — dinding belakang atas (menumpuk di atas dinding belakang lantai 1, 0..3.6) + jendela lantai 2 di y=5.4
    (function(){ const bw = new THREE.Mesh(new THREE.BoxGeometry(26,3.6,0.3), matW()); bw.position.set(0,5.4,-9); bw.castShadow = true; exteriorGroup.add(bw); })();
-   [-11,-7,-3,3,7,11].forEach(function(wx){ extWin(2.7,2.0,0.05,matC(0xffffff),wx,5.4,9.12); extWin(2.5,1.8,0.1,matC(0x9ecfff),wx,5.4,9.20); });
+   [-11,-7,-3,0,3,7,11].forEach(function(wx){ extWin(2.7,2.0,0.05,matC(0xffffff),wx,5.4,9.12); extWin(2.5,1.8,0.1,matC(0x9ecfff),wx,5.4,9.20); }); // v24: tambah jendela pusat lantai 2, fasad depan jadi 7 jendela
    [-11,-4,3,10].forEach(function(wx){ extWin(2.7,2.0,0.05,matC(0xffffff),wx,5.4,-9.12); extWin(2.5,1.8,0.1,matC(0x9ecfff),wx,5.4,-9.20); });
    [-6,0,6].forEach(function(wz){ extWin(0.05,2.0,2.7,matC(0xffffff),-13.12,5.4,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),-13.20,5.4,wz); extWin(0.05,2.0,2.7,matC(0xffffff),13.12,5.4,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),13.20,5.4,wz); });
   // PINTU UTAMA yang bagus: kusen putih, pintu ganda kayu + kaca, gagang emas, anak tangga, kanopi, papan nama
@@ -706,7 +710,7 @@ function applyTimeWeather(){
   syncHud();
 }
 applyTimeWeather(); setInterval(applyTimeWeather, 30000);
-function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v23"; }
+function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v24"; }
 updateHeaderClock(); setInterval(updateHeaderClock, 1000);
 window.cycleWeather = function(){ const order = ['cerah','mendung','hujan']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
 
@@ -772,16 +776,16 @@ chibi(P('Yohan','Product Curation','BaruTauAda','yohan',0x8a5a2b,0x111111,'kerit
 chibi(P('Lina','Distribution & Admin','BaruTauAda','lina',0x00bcd4,0x222222,'bun',0xe8b88a,'Cewe'), 8,8.5,Math.PI,true,false);
 
 const stateLabel = { kerja:'Kerja di meja', ngobrol:'Ngobrol di Meeting 2', pantry:'Istirahat di pantry', halaman:'Jalan di halaman (lagi kosong)', kucing:'Main sama kucing', meeting1:'Rapat di Meeting 1', meeting2:'Ngobrol di Meeting 2', toilet:'Ke toilet (timur pantry)', tamu:'Duduk di sofa Ruang Tamu', lantai2:'Di Lantai 2 (ekspansi)', briefing:'Briefing pagi — kumpul di Meeting 2, dengar Oemar', closing:'Briefing penutup — kumpul di Meeting 2, dengar Lux' };
-// Rute tangga v23 — waypoint [x,z,y]; y naik/turun bertahap, bukan teleport. Pendekatan dari selatan via x=-2.5 (bebas tangga, lebar x -1..1).
-const STAIR_UP = [[-2.5,8.5,0],[0,8.5,0],[0,7.833,0.3],[0,7.5,0.6],[0,7.167,0.9],[0,6.833,1.2],[0,6.5,1.5],[0,6.167,1.8],[0,5.833,2.1],[0,5.5,2.4],[0,5.167,2.7],[0,4.833,3.0],[0,4.5,3.3],[0,4.167,3.6],[0,2,3.6]];
-const STAIR_DOWN = [[0,2,3.6],[0,4.167,3.6],[0,4.5,3.3],[0,4.833,3.0],[0,5.167,2.7],[0,5.5,2.4],[0,5.833,2.1],[0,6.167,1.8],[0,6.5,1.5],[0,6.833,1.2],[0,7.167,0.9],[0,7.5,0.6],[0,7.833,0.3],[0,8.5,0],[-2.5,8.5,0]];
+// Rute tangga v24 — waypoint [x,z,y]; y naik/turun bertahap, bukan teleport. Pendekatan lantai 1 dari koridor timur z=6.5 (x -7..-10), bukan dari selatan lewat meja Made.
+const STAIR_UP = [[-7,6.5,0],[-10,6.5,0],[-10,5.833,0.3],[-10,5.5,0.6],[-10,5.167,0.9],[-10,4.833,1.2],[-10,4.5,1.5],[-10,4.167,1.8],[-10,3.833,2.1],[-10,3.5,2.4],[-10,3.167,2.7],[-10,2.833,3.0],[-10,2.5,3.3],[-10,2.167,3.6],[-10,1,3.6]];
+const STAIR_DOWN = [[-10,1,3.6],[-10,2.167,3.6],[-10,2.5,3.3],[-10,2.833,3.0],[-10,3.167,2.7],[-10,3.5,2.4],[-10,3.833,2.1],[-10,4.167,1.8],[-10,4.5,1.5],[-10,4.833,1.2],[-10,5.167,0.9],[-10,5.5,0.6],[-10,5.833,0.3],[-10,6.5,0],[-7,6.5,0]];
 const EXP_PTS = [[-8,-4],[0,-4],[8,-4]];
 function stairUpQueue(){ return STAIR_UP.map(function(p){ return [p[0],p[1],p[2]]; }); }
 function stairDownQueue(){ return STAIR_DOWN.map(function(p){ return [p[0],p[1],p[2]]; }); }
 function buildOemarQueue(entry, target, targetKey){
   const cur = entry.g.position;
    if (cur.y > 1) {
-     if (targetKey === 'lantai2') return [[0,2,3.6],[target[0],target[1],3.6]];
+     if (targetKey === 'lantai2') return [[-10,1,3.6],[target[0],target[1],3.6]];
      const q2 = stairDownQueue();
      if (targetKey === 'kerja') q2.push([-9,0],[-9,-2],[-9,-3],target);
      else if (targetKey === 'meeting1') q2.push([-1,0],[-1,-2],[-1,-3],target);
@@ -807,7 +811,7 @@ function buildOemarQueue(entry, target, targetKey){
   else if (targetKey === 'halaman') q.push([-2.5,7.5],[-2.5,9.5],target);
   else if (targetKey === 'toilet') q.push([10,-2.8],target);
   else if (targetKey === 'tamu') q.push([5,-1.5],target);
-  else if (targetKey === 'lantai2') { q.push.apply(q, stairUpQueue()); q.push([0,2,3.6],[target[0],target[1],3.6]); }
+  else if (targetKey === 'lantai2') { q.push.apply(q, stairUpQueue()); q.push([-10,1,3.6],[target[0],target[1],3.6]); }
   else q.push(target);
   return q;
 }
@@ -849,7 +853,7 @@ function pickState(entry){
   else target = catPts[entry.idx % catPts.length];
    const cur = entry.g.position;
    if (cur.y > 1) {
-     if (s === 'lantai2') { entry.queue = [[0,2,3.6],[target[0],target[1],3.6]]; return; }
+     if (s === 'lantai2') { entry.queue = [[-10,1,3.6],[target[0],target[1],3.6]]; return; }
      const qd = stairDownQueue();
      if (s === 'toilet') qd.push([10,-2.8]);
      else if (s === 'tamu') qd.push([5,-1.5]);
@@ -861,7 +865,7 @@ function pickState(entry){
      const inToiletQ0 = cur.x >= 10.5 && cur.x <= 13 && cur.z >= -4.5 && cur.z <= -1.5;
      const inTamuQ0 = cur.x >= 3 && cur.x <= 8 && cur.z >= -9 && cur.z <= -2;
      if (inToiletQ0) qu.push([10,-2.8]); else if (inTamuQ0) qu.push([5,-1.5]);
-     qu.push.apply(qu, stairUpQueue()); qu.push([0,2,3.6],[target[0],target[1],3.6]); entry.queue = qu; return;
+     qu.push.apply(qu, stairUpQueue()); qu.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu; return;
    }
    if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
    const q = [];
@@ -976,7 +980,7 @@ function checkBriefing(){
   }
 }
 window.testBriefing = function(mode){ manualBriefingMode = mode; manualBriefingUntil = Date.now() + 60000; checkBriefing(); };
-const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,5,9],[8,0.8,1]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], tangga:[[3,8,10],[0,3.6,6]] };
+const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,5,9],[8,0.8,1]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], tangga:[[-5,7,11],[-10,1.8,4]] };
 let camPos = new THREE.Vector3(0,24,28), camLook = new THREE.Vector3(0,0,2);
 let targetPos = camPos.clone(), targetLook = camLook.clone();
 camera.position.copy(camPos); camera.lookAt(camLook);
@@ -1382,7 +1386,7 @@ function botReply(q){
   if (has('cara pakai', 'tour', 'kamera', 'ganti orang', 'klik', 'putar', 'zoom')) return 'Cara pakai: pencet tombol Tour Ruangan buat pindah ruangan, Ganti Orang buat pindah fokus ke semua karyawan satu-satu, kolom Kamera buat kiri/kanan/naik/turun/360/zoom. Klik karakter di 3D buat lihat profil + aktivitasnya. Di HP, drag di area 3D buat putar kamera.';
   if (has('dashboard', 'report', 'personel', 'kpi', 'tab')) return 'Di bawah tombol ada 4 tab: Dashboard (pilih segmen + filter socmed, plus Ongoing Task), Report (Harian/Mingguan/Bulanan), Personel & Aktivitas (filter per segmen + Management), KPI Personel (per role). Jujur ya: angka Dashboard dan KPI di sini masih contoh, target resmi belum ditetapkan.';
   if (has('jam', 'waktu', 'cuaca')) { const now = new Date(); const hh = String(now.getHours()).padStart(2, '0'); const mm = String(now.getMinutes()).padStart(2, '0'); return 'Jam di kantor ini ngikut jam perangkat yang buka halaman, sekarang sekitar ' + hh + ':' + mm + '. Cuaca di kantor berubah-ubah kira-kira tiap 45 detik, cek di HUD atas scene.'; }
-  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini masih kosong, buat ekspansi nanti. Ada tangga di tengah selatan, naik dari lantai 1 ke atas, dan 3 ruang kosong: Ekspansi 1 (barat), Ekspansi 2 (tengah), Ekspansi 3 (timur). Belum ada tim atau segmen permanen di lantai 2, dan belum ada meja kerja di atas. Pencet tombol Lantai 2 atau Ekspansi 1/2/3 buat lihat.';
+  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini masih kosong, buat ekspansi nanti. Ada tangga di sayap kiri dekat Arsip (barat), di antara lemari Arsip dan meja selatan, tidak lagi di tengah pintu masuk, naik dari lantai 1 ke atas, dan 3 ruang kosong: Ekspansi 1 (barat), Ekspansi 2 (tengah), Ekspansi 3 (timur). Belum ada tim atau segmen permanen di lantai 2, dan belum ada meja kerja di atas. Pencet tombol Lantai 2 atau Ekspansi 1/2/3 buat lihat.';
   return 'Maaf, bot ini tanpa AI, jadi gue cuma bisa jawab topik kantor yang sudah disiapin: OSCR Works, 4 segmen, tim, briefing, toilet, pantry, parkir, musik, cara pakai kantor, dan tab Dashboard/Report/Personel/KPI. Coba pencet tombol cepat di bawah, atau tanya salah satu topik itu.';
 }
 </script>

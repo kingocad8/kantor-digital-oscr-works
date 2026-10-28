@@ -30,6 +30,29 @@ BaruTauAda). Silakan fork dan ganti jadi kantor kamu sendiri.
 3. Butuh internet sekali saat dibuka: library 3D Three.js di-load dari CDN,
    dan musik di-stream dari SoundCloud. Setelah itu tidak ada instalasi apa-apa.
 
+## Tangga pindah sayap kiri + dinding lt 2 ditutup (v24, masih versi HP embedded)
+
+- Tangga pindah dari tengah selatan (yang menghalangi pintu masuk dan
+  view Keseluruhan) ke sayap kiri dekat Arsip: berjalan utara–selatan
+  di x=-10 (lebar 2), dasar z=6, atas z=2, 12 anak tangga, bordes
+  (-10,3.52,1.25), railing x=-11.05/-8.95. Plat lantai 2 dibagi ulang,
+  lubang baru x -11.5..-8.5, z 2..6 (lubang lama tengah dihapus).
+  Rute karakter lewat koridor z=6.5 di timur tangga (bukan lewat meja
+  Made di (-10,7.5)), masuk lantai 2 lewat (-10,1,3.6). View Tangga
+  baru kamera (-5,7,11) target (-10,1.8,4). Lantai 1 lain tidak digeser.
+- Dinding depan lantai 2 yang jebol ditutup: akar masalahnya celah
+  pintu x -1..1 di dinding depan eksterior kebawa sampai atap
+  (0..7.2), padahal pintu cuma 0..2.6. Perbaikan: segmen dinding
+  eksterior (0,5.4,9) 2×3.6 menutup celah lantai 2 saja (pintu tetap
+  terbuka di bawahnya) + jendela pusat lantai 2 di (0,5.4) sehingga
+  fasad depan lantai 2 jadi 7 jendela; segmen dinding depan rendah
+  interior lantai 2 (0,3.9,9) 2×0.6 juga ditutup. Pintu, kanopi,
+  papan nama tetap di bawah segmen baru.
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep + review diff), garis lurus waypoint masih bisa
+  menyenggol sudut furnitur, pengecualian briefing dari lantai 2
+  masih turun bertahap bukan lewat tangga.
+
 ## Lantai 2 kosong + tangga (v23, masih versi HP embedded)
 
 - Lantai 1 tidak digeser sama sekali. Lantai 2: plat atas y=3.6

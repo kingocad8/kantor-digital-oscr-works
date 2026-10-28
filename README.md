@@ -30,6 +30,45 @@ BaruTauAda). Silakan fork dan ganti jadi kantor kamu sendiri.
 3. Butuh internet sekali saat dibuka: library 3D Three.js di-load dari CDN,
    dan musik di-stream dari SoundCloud. Setelah itu tidak ada instalasi apa-apa.
 
+## Lantai 2 kosong + tangga (v23, masih versi HP embedded)
+
+- Lantai 1 tidak digeser sama sekali. Lantai 2: plat atas y=3.6
+  dengan lubang tangga x −1.5..1.5, z 4..9, dinding meniru lantai 1,
+  partisi rendah membagi 3 ruang kosong — Ekspansi 1 (barat), Ekspansi
+  2 (tengah), Ekspansi 3 (timur), hanya karpet + label "Kosong, siap
+  diisi segmen baru", tanpa meja kerja dan tanpa tim permanen.
+- Tangga dalam di sirkulasi tengah selatan (x −1..1, z 4..8), 12 anak
+  tangga naik 0.3/anak, railing + bordes, rute karakter lewat waypoint
+  tangga dengan y bertahap (bukan teleport), masuk lantai 2 lewat sisi
+  utara lubang. Waypoint lantai 1 yang dulu lewat x=0 digeser ke x=−2.5
+  supaya tidak menembus tangga.
+- Toggle: grup "Lantai:" (Lantai 1/2) + grup "Lantai 2:" (Ekspansi
+  1/2/3, Tangga); ruangan lantai 1 / Ganti Orang / Keseluruhan otomatis
+  lantai 1, tombol lantai 2 otomatis lantai 2. Eksterior Gedung Utuh
+  jadi 2 lantai: dinding depan sampai 7.2, atap pyramidRoof baseY 7.2,
+  jendela lantai 2 di y=5.4. Aktivitas lantai 2 probabilitas kecil
+  (Oemar 3%, umum 4%), label "Di Lantai 2 (ekspansi)".
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node --check
+  + grep), garis lurus antar waypoint masih bisa menyenggol sudut
+  tangga, dan saat briefing karakter dari lantai 2 turun bertahap ke
+  lantai 1 bukan lewat tangga.
+
+## Kotak Segmen sendiri + label tombol maks 2 kata (v22, masih versi HP embedded)
+
+- Tombol segmen (Bedah Keuangan, Jejak Kuasa, Rancang Undangan,
+  BaruTauAda) dipindah keluar dari Tour Ruangan ke kotak sendiri
+  "📂 Segmen:" di antara Tour dan Setting — jadi kalau segmen nambah
+  (mis. lantai 2 / ekspansi), tinggal tambah tombol di kotak Segmen,
+  tidak mencampur tombol ruangan lagi. Fungsi goView tiap segmen tidak
+  berubah.
+- Label tombol kontrol dipangkas maks 2 kata biar hemat space:
+  Gedung Utuh (Luar) → Gedung Utuh, Refresh Status Sekarang →
+  Refresh Status, Ganti Cuaca Manual → Ganti Cuaca, Coba Briefing
+  Pagi/Penutup → Briefing Pagi/Penutup (fungsi tetap tombol tes
+  briefing 60 detik), Test Suara Cowo/Cewe → Suara Cowo/Cewe.
+  Teks chatbot ikut disesuaikan ke label baru. Label tab dan pertanyaan
+  cepat chatbot tidak diubah (itu judul/pertanyaan, bukan tombol kontrol).
+
 ## Chatbot kantor tanpa AI, tanpa Muse (v20, masih versi HP embedded)
 
 - Tombol 💬 Chat Kantor melayang di kanan bawah (dinaikkan, v21:

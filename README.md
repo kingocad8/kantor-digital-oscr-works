@@ -64,6 +64,63 @@ BaruTauAda). Silakan fork dan ganti jadi kantor kamu sendiri.
 3. Butuh internet sekali saat dibuka: library 3D Three.js di-load dari CDN,
    dan musik di-stream dari SoundCloud. Setelah itu tidak ada instalasi apa-apa.
 
+## Cuaca auto mati + suara tap-pertama + klik zoom + hover karyawan v38 (masih versi HP embedded — mencakup v28–v37)
+
+- Laporan live v37 Oemar 30 Okt 13:20–13:23 WIB: karakter
+  TETAP gerak dan kamera BISA digerakin (scene TIDAK freeze);
+  yang bermasalah hanya kotak HUD di atas kanvas yang
+  tulisannya ganti-ganti sendiri tanpa klik (13:23 Cuaca Salju
+  lalu Hujan). Akar: weatherTimer di animate() mengganti cuaca
+  acak tiap 45–65 detik (auto-random v31). Perbaikan: blok
+  weatherTimer di animate() DIHAPUS TOTAL — cuaca sekarang
+  hanya berubah lewat tombol Cuaca manual (urutan 7 jenis);
+  applyTimeWeather via setInterval 30 detik tetap untuk periode
+  waktu + jam; cuaca awal tetap cerah; label Fokus tetap hanya
+  berubah lewat tombol (bukan lewat drag — drag yang tidak
+  mengubah label itu normal, bukan freeze).
+- Suara kantor auto-nyala di tap/klik pertama (listener once
+  pointerdown + keydown, memanggil toggleAmbience bila ambOn
+  mati, kecuali tap pertama di tombol Suara Kantor sendiri
+  supaya tidak nyala-lalu-mati; tidak preventDefault, tidak
+  blokir klik/drag). Bukan auto pas load (diblokir browser);
+  musik SoundCloud tetap manual (tap ▶ Musik).
+- Matahari/bulan/bintang masuk frame Keseluruhan desktop
+  (perhitungan geometri, FOV 42°): matahari (8,6,-12) scale
+  1,7 (Senja (10,5,-12) oranye scale 1,9, Panas Terik scale
+  2,0), bulan Malam (-8,6,-12) scale 1,7, bintang Malam 150
+  titik di strip langit utara x -18..18 / y 5,5..7,5 /
+  z -15..-12 ukuran 0,35. Visibilitas tetap: matahari bila
+  period ≠ Malam, bulan/bintang hanya Malam. Trade-off: di
+  view Gedung Utuh (eksterior dari selatan) posisi utara
+  rendah ini bisa tertutup gedung.
+- Klik objek → auto zoom-in: karakter seperti nextPerson
+  (focusPerson, orbitRadius 5,5); non-karakter ber-detail:
+  orbitCenter = titik klik + 1,0 y, orbitRadius 7, focusLabel
+  = title objek tanpa HTML; klik tanah kosong / tanpa detail:
+  kamera diam; guard suppressClick drag > 5 px dipertahankan;
+  Keseluruhan tetap reset view lebar.
+- Judul baris Tour: gaya caption-top seperti Segmen/Setting,
+  label "🗺️ Tour Kantor:" di atas tombol Tour (isi/urutan
+  tombol tidak berubah).
+- Hover lama karyawan: elemen #hoverTip (fixed,
+  pointer-events none), tahan kursor ~700 ms di karyawan yang
+  sama → popup nama + role + segmen + "Aktivitas saat ini:
+  <stateLabel>" + "Jobdesk hari ini: <role> di <segment>"
+  (dari role + segmen, TIDAK mengarang daftar tugas harian)
+  + 2 metrik KPI; hilang saat kursor geser menjauh / pindah
+  karyawan / mulai drag / pointerleave / pointerdown;
+  raycast hover throttle 100 ms di pointermove, hanya mouse
+  desktop (layar sentuh tetap dapat aktivitas dari panel
+  detail setelah tap).
+- TIDAK diubah: kecepatan jalan karakter (1,8 * dt), durasi
+  aktivitas, drag/putar/zoom manual, orbitAuto, cuaca manual,
+  periode waktu, layout HP + freeze, visibilitas lt, tombol
+  v36, loader + fallback config.json v37.
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan
+  (hanya node --check + grep + perhitungan geometri);
+  suara tetap butuh satu tap pertama; matahari/bulan/bintang
+  baru terbukti geometri untuk view Keseluruhan desktop.
+
 ## Hapus tombol dobel v36 (masih versi HP embedded — mencakup v28–v35)
 
 - Tombol contoh Suara Cowo/Cewe DIHAPUS dari baris audio

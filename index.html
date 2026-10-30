@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OSCR Works — Kantor Digital 3D v37</title>
+<title>OSCR Works — Kantor Digital 3D v38</title>
 <script>
 console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
@@ -104,13 +104,14 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 </style>
 </head>
 <body>
-<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v37</p></header>
+<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v38</p></header>
 <div class="wrap">
 <div id="scene"><div id="sceneHud">OSCR Works - Jam kantor: - - Fokus: Keseluruhan</div><div id="fallback">⚠️ Three.js gagal dimuat. File ini butuh internet sekali untuk load library 3D-nya, coba refresh.</div></div>
 <div id="sceneSpacer"></div>
+<div id="hoverTip" style="display:none;position:fixed;z-index:1000;pointer-events:none;max-width:260px;background:rgba(255,255,255,0.97);border:1px solid #ccc;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 2px 10px rgba(0,0,0,0.25);"></div>
 <div class="btns">
 <div class="btns-main">
-<div class="btn-group icon-row"><span class="btn-label">🗺️</span>
+<div class="btn-group icon-row caption-top"><span class="btn-label">🗺️ Tour Kantor:</span><div class="btn-row">
 <button class="icon-btn" title="Keseluruhan" aria-label="Keseluruhan" onclick="goView('all')">🏠</button>
 <button class="icon-btn" title="Gedung Utuh" aria-label="Gedung Utuh" onclick="viewExterior()">🏢</button>
 <button class="icon-btn" title="Direktur" aria-label="Direktur" onclick="goView('direktur')">👑</button>
@@ -128,7 +129,7 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 <span class="btn-sep" aria-hidden="true"></span><span class="btn-label">⬆️</span>
 <button class="icon-btn" title="Ekspansi 3" aria-label="Ekspansi 3" onclick="goView('exp3')">🟧<sub>3</sub></button>
 <button class="icon-btn" title="Tangga" aria-label="Tangga" onclick="goView('tangga')">🪜</button>
-</div>
+</div></div>
 <div class="btn-group caption-top"><span class="btn-label">📂 Segmen:</span><div class="btn-row">
 <button class="short-btn" title="Bedah Keuangan" aria-label="Bedah Keuangan" onclick="goView('bk')">💰 BK</button>
 <button class="short-btn" title="Jejak Kuasa" aria-label="Jejak Kuasa" onclick="goView('jk')">🌍 JK</button>
@@ -204,7 +205,7 @@ Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="al
 <div id="kpiDetail" style="margin-top:10px"></div>
 </div>
 </div>
-<footer id="siteFooter">OSCR Works - Digital Office • v37 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
+<footer id="siteFooter">OSCR Works - Digital Office • v38 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
 </div>
 <script>
 const SOUNDCLOUD_DEFAULT_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav"; let SOUNDCLOUD_URL = SOUNDCLOUD_DEFAULT_URL;
@@ -417,6 +418,21 @@ window.toggleAmbience = function(){
     try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
   }
 };
+/* v38: suara kantor auto-nyala di tap/klik pertama (sekali pakai). BUKAN autoplay pas load — itu diblokir browser.
+   Listener ini tidak preventDefault dan tidak memblokir klik/drag. Bila tap pertama justru tombol Suara Kantor
+   sendiri, dibiarkan (tombol itu yang menangani toggle-nya), listener tetap menunggu interaksi berikutnya.
+   Musik SoundCloud tetap manual (tap ▶ Musik sendiri). */
+(function(){ var v38SoundStarted = false;
+  function v38FirstInteract(e){
+    if (v38SoundStarted) return;
+    if (e && e.target && e.target.id === 'ambBtn') return;
+    v38SoundStarted = true;
+    try { document.removeEventListener('pointerdown', v38FirstInteract); document.removeEventListener('keydown', v38FirstInteract); } catch(err) {}
+    try { if (typeof ambOn !== 'undefined' && !ambOn && typeof window.toggleAmbience === 'function') window.toggleAmbience(); } catch(err) {}
+  }
+  document.addEventListener('pointerdown', v38FirstInteract);
+  document.addEventListener('keydown', v38FirstInteract);
+})();
 
 if (typeof THREE === 'undefined') { document.getElementById('fallback').style.display = 'block'; }
 else {
@@ -909,12 +925,12 @@ function snowReset(i, top){ snowPos[i*3] = -30 + Math.random()*60; snowPos[i*3+1
 for (let i=0;i<snowCount;i++) snowReset(i, false);
 const snowGeo = new THREE.BufferGeometry(); snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
 const snowPoints = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.22, transparent: true, opacity: 0.9 })); snowPoints.visible = false; scene.add(snowPoints);
-const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2,16,12), new THREE.MeshBasicMaterial({ color: 0xffd93d })); sunMesh.position.set(20,18,0); scene.add(sunMesh);
-const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.9,16,12), new THREE.MeshBasicMaterial({ color: 0xe8eaf0 })); moonMesh.position.set(-20,17,0); moonMesh.visible = false; scene.add(moonMesh);
+const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2,16,12), new THREE.MeshBasicMaterial({ color: 0xffd93d })); sunMesh.position.set(8,6,-12); scene.add(sunMesh); /* v38: posisi masuk frame Keseluruhan (azimuth ~10.9 deg, elevasi ~18.5 deg) */
+const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.9,16,12), new THREE.MeshBasicMaterial({ color: 0xe8eaf0 })); moonMesh.position.set(-8,6,-12); moonMesh.scale.set(1.7,1.7,1.7); moonMesh.visible = false; scene.add(moonMesh); /* v38: masuk frame Keseluruhan Malam */
 const starCount = 150; const starPos = new Float32Array(starCount * 3);
-for (let i=0;i<starCount;i++){ starPos[i*3] = -35 + Math.random()*70; starPos[i*3+1] = 12 + Math.random()*9; starPos[i*3+2] = -25 + Math.random()*50; }
+for (let i=0;i<starCount;i++){ starPos[i*3] = -18 + Math.random()*36; starPos[i*3+1] = 5.5 + Math.random()*2; starPos[i*3+2] = -15 + Math.random()*3; } /* v38: bintang di strip langit utara di atas dinding belakang, masuk frame Keseluruhan Malam */
 const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-const starPoints = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.25, transparent: true, opacity: 0.9 })); starPoints.visible = false; scene.add(starPoints);
+const starPoints = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.35, transparent: true, opacity: 0.9 })); starPoints.visible = false; scene.add(starPoints);
 const lightningBolt = new THREE.Mesh(new THREE.BoxGeometry(0.15,6,0.15), new THREE.MeshBasicMaterial({ color: 0xffffcc })); lightningBolt.visible = false; scene.add(lightningBolt);
 let lightningNext = 4, lightningFlash = 0, baseSunInt = 1;
 
@@ -937,16 +953,16 @@ function applyTimeWeather(){
   rainPoints.visible = (weather === 'hujan' || weather === 'petir' || weather === 'badai');
   snowPoints.visible = (weather === 'salju');
   sunMesh.visible = (period !== 'Malam'); moonMesh.visible = (period === 'Malam'); starPoints.visible = (period === 'Malam');
-  if (period === 'Senja') { sunMesh.position.set(22,9,0); sunMesh.material.color.set(0xff7a3d); sunMesh.scale.set(1.3,1.3,1.3); }
-  else if (weather === 'panasterik') { sunMesh.position.set(20,18,0); sunMesh.material.color.set(0xfff176); sunMesh.scale.set(1.4,1.4,1.4); }
-  else { sunMesh.position.set(20,18,0); sunMesh.material.color.set(0xffd93d); sunMesh.scale.set(1,1,1); }
+  if (period === 'Senja') { sunMesh.position.set(10,5.5,-12); sunMesh.material.color.set(0xff7a3d); sunMesh.scale.set(1.9,1.9,1.9); }
+  else if (weather === 'panasterik') { sunMesh.position.set(8,6,-12); sunMesh.material.color.set(0xfff176); sunMesh.scale.set(2.0,2.0,2.0); }
+  else { sunMesh.position.set(8,6,-12); sunMesh.material.color.set(0xffd93d); sunMesh.scale.set(1.7,1.7,1.7); }
   currentPeriod = period;
   document.getElementById('clockWeather').textContent = "Jam kantor: " + hh + ":" + mm + " — " + period + " • Cuaca: " + weatherLabel[weather];
   syncHud();
   updateWeatherOutdoorAudio();
 }
 applyTimeWeather(); setInterval(applyTimeWeather, 30000);
-function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v37"; }
+function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v38"; }
 updateHeaderClock(); setInterval(updateHeaderClock, 1000);
 window.cycleWeather = function(){ const order = ['cerah','mendung','hujan','salju','petir','badai','panasterik']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
 
@@ -1093,9 +1109,9 @@ function applyConfigToSite(cfg){
   if (cfg.officeName && cfg.officeName !== 'OSCR Works - Digital Office') {
     var h1 = document.getElementById('officeTitle');
     if (h1) h1.textContent = cfg.officeName;
-    document.title = cfg.officeName + ' — Kantor Digital 3D v37';
+    document.title = cfg.officeName + ' — Kantor Digital 3D v38';
     var ft = document.getElementById('siteFooter');
-    if (ft) ft.textContent = cfg.officeName + ' • v37 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
+    if (ft) ft.textContent = cfg.officeName + ' • v38 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
   }
   if (cfg.soundcloudUrl && typeof cfg.soundcloudUrl === 'string' && cfg.soundcloudUrl.indexOf('https://soundcloud.com/') === 0 && cfg.soundcloudUrl !== SOUNDCLOUD_URL) {
     SOUNDCLOUD_URL = cfg.soundcloudUrl;
@@ -1635,21 +1651,64 @@ renderer.domElement.addEventListener('click', function(e){
   const r = renderer.domElement.getBoundingClientRect();
   ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
   ray.setFromCamera(ptr, camera); const hits = ray.intersectObjects(scene.children, true);
-  for (let i=0;i<hits.length;i++){ let o = hits[i].object; while(o){ if(o.userData && o.userData.detail){ const ce = o.userData.charEntry; const act = ce ? stateLabel[ce.state] : null; showDetail(o.userData.detail, act); return; } o = o.parent; } }
+  for (let i=0;i<hits.length;i++){ let o = hits[i].object; while(o){ if(o.userData && o.userData.detail){ const ce = o.userData.charEntry; const act = ce ? stateLabel[ce.state] : null; const detailKey = o.userData.detail; showDetail(detailKey, act);
+    /* v38 click-zoom: selain tampil detail, kamera auto zoom-in ke objek yang diklik. Klik tanah kosong / tanpa detail tidak nge-zoom. */
+    try {
+      if (ce) { focusPerson = ce; orbitAuto = false; orbitCenter.set(ce.g.position.x, ce.g.position.y + 1.2, ce.g.position.z); orbitRadius = 5.5; orbitTheta = 0.6; orbitPhi = 1.0; updateOrbitTarget(); const pe = persons.find(function(p){ return p.key === detailKey; }); const fl = document.getElementById('focusLabel'); if (fl) fl.textContent = 'Fokus: ' + (pe ? (pe.nick + ' — ' + pe.role) : detailKey); syncHud(); }
+      else { focusPerson = null; orbitAuto = false; const hp = hits[i].point; orbitCenter.set(hp.x, hp.y + 1.0, hp.z); orbitRadius = 7; orbitPhi = 1.0; updateOrbitTarget(); const d = data[detailKey]; const fl2 = document.getElementById('focusLabel'); if (fl2) fl2.textContent = 'Fokus: ' + (d && d.title ? String(d.title).replace(/<[^>]*>/g,'') : detailKey); syncHud(); }
+    } catch(e2) {}
+    return; } o = o.parent; } }
 });
 let dragging = false, lastDragX = 0, lastDragY = 0, dragDist = 0;
 renderer.domElement.addEventListener('pointerdown', function(e){ dragging = true; lastDragX = e.clientX; lastDragY = e.clientY; dragDist = 0; });
 renderer.domElement.addEventListener('pointermove', function(e){ if (!dragging) return; const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY; dragDist += Math.abs(dx) + Math.abs(dy); lastDragX = e.clientX; lastDragY = e.clientY; if (dragDist < 3) return; ensureOrbit(); orbitTheta -= dx * 0.005; orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi - dy * 0.005)); updateOrbitTarget(); });
 renderer.domElement.addEventListener('pointerup', function(){ if (dragging && dragDist > 5) suppressClick = true; dragging = false; });
+/* v38 hover karyawan: tahan kursor ~700ms di atas seorang karyawan (mouse desktop saja) -> popup kecil di dekat kursor.
+   Isi: panggilan + role + segmen, aktivitas saat ini, jobdesk = role di segmen, + 2 metrik KPI dari kpiData (tanpa invent tugas).
+   Popup pointer-events:none (tidak memblokir klik/drag), hilang saat kursor geser menjauh / drag dimulai / pointer keluar kanvas.
+   Layar sentuh tidak dipaksa long-press: pengguna sentuh tetap dapat aktivitas dari panel detail setelah tap. */
+(function(){
+  var tip = document.getElementById('hoverTip'); if (!tip) return;
+  var hoverKey = null, hoverTimer = null, hoverEntry = null, hoverX = 0, hoverY = 0, lastCheck = 0;
+  function esc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function hideTip(){ if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; } hoverKey = null; hoverEntry = null; tip.style.display = 'none'; }
+  function showTip(){
+    if (!hoverEntry || !hoverKey) return;
+    var ce = hoverEntry; if (!ce.g || !ce.g.visible) { hideTip(); return; }
+    var pe = null; try { pe = persons.find(function(p){ return p.key === hoverKey; }); } catch(e) {}
+    var nick = pe ? pe.nick : hoverKey, role = pe ? pe.role : '', seg = pe ? pe.segment : '';
+    var act = (typeof stateLabel !== 'undefined' && ce.state && stateLabel[ce.state]) ? stateLabel[ce.state] : (ce.state || '');
+    var kpiHtml = '';
+    try { var kd = (typeof kpiData !== 'undefined') ? kpiData[hoverKey] : null; var ms = kd && kd.metrics ? kd.metrics : []; if (ms.length) { kpiHtml = '<br><span style="color:#555">KPI: ' + esc(ms[0].name) + ': ' + esc(ms[0].actual) + '/' + esc(ms[0].target) + (ms[1] ? ' • ' + esc(ms[1].name) + ': ' + esc(ms[1].actual) + '/' + esc(ms[1].target) : '') + '</span>'; } } catch(e) {}
+    tip.innerHTML = '<b>' + esc(nick) + '</b> | ' + esc(role) + ' | ' + esc(seg) + '<br>Aktivitas saat ini: ' + esc(act) + '<br>Jobdesk hari ini: ' + esc(role) + ' di ' + esc(seg) + kpiHtml;
+    var w = 270, h = 110; var lx = Math.min(hoverX + 14, window.innerWidth - w); if (lx < 4) lx = 4; var ly = Math.min(hoverY + 14, window.innerHeight - h); if (ly < 4) ly = 4;
+    tip.style.left = lx + 'px'; tip.style.top = ly + 'px'; tip.style.display = 'block';
+  }
+  renderer.domElement.addEventListener('pointermove', function(e){
+    if (e.pointerType && e.pointerType !== 'mouse') return;
+    if (dragging) { hideTip(); return; }
+    var now = Date.now(); if (now - lastCheck < 100 && hoverKey) { hoverX = e.clientX; hoverY = e.clientY; if (tip.style.display === 'block') showTip(); return; }
+    lastCheck = now; hoverX = e.clientX; hoverY = e.clientY;
+    var r = renderer.domElement.getBoundingClientRect();
+    ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ptr, camera); var hits = ray.intersectObjects(scene.children, true);
+    var found = null;
+    for (var i = 0; i < hits.length; i++) { var o = hits[i].object; while (o) { if (o.userData && o.userData.charEntry && o.userData.detail) { var ce2 = o.userData.charEntry; if (ce2.g && ce2.g.visible) { found = ce2; } break; } o = o.parent; } if (found) break; }
+    if (!found) { hideTip(); return; }
+    var key = found.key;
+    if (key !== hoverKey) { if (hoverTimer) clearTimeout(hoverTimer); hoverKey = key; hoverEntry = found; tip.style.display = 'none'; hoverTimer = setTimeout(showTip, 700); }
+    else if (tip.style.display === 'block') { hoverEntry = found; showTip(); }
+  });
+  renderer.domElement.addEventListener('pointerleave', hideTip);
+  renderer.domElement.addEventListener('pointerdown', hideTip);
+})();
 const clock = new THREE.Clock(); let prevT = 0;
 function animate(){
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime(); clockTime = t; const dt = Math.min(t - prevT, 0.1); prevT = t;
   updateCharacterFloorVisibility();
-  if (t > weatherTimer && weatherTimer < 900000) {
-    const opts = ['cerah','mendung','hujan','salju','petir','badai','panasterik'].filter(function(w){ return w !== weather; });
-    weather = opts[Math.floor(Math.random() * opts.length)]; applyTimeWeather(); weatherTimer = t + 45 + Math.random()*20;
-  }
+  /* v38: cuaca auto-ganti DIMATIKAN — weather hanya berubah lewat tombol Cuaca manual (cycleWeather).
+     applyTimeWeather() via setInterval 30 detik tetap mengupdate periode waktu dan jam perangkat. */
   if (t - lastBriefingCheck > 1) { lastBriefingCheck = t; checkBriefing(); }
   characters.forEach(function(c){
     if (!c.active) { c.g.position.y = Math.sin(t*2 + c.phase) * 0.03; return; }

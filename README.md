@@ -64,6 +64,12 @@ BaruTauAda). Silakan fork dan ganti jadi kantor kamu sendiri.
 3. Butuh internet sekali saat dibuka: library 3D Three.js di-load dari CDN,
    dan musik di-stream dari SoundCloud. Setelah itu tidak ada instalasi apa-apa.
 
+## v40 — BaruTauAda pindah lantai 2, lantai 1 dilonggarkan, klik TV di POV muter musik (mencakup v39)
+
+- v39: matahari sisi timur lebih tinggi, pathfinding (tidak tembus tembok/perabot/TV), jalan melangkah, zoom-out + scroll mouse setelah klik-zoom, rapat grup lintas segmen + aktivitas pakai semua fitur, pintu toilet, TV lantai 2 dijauhkan dari sofa (2,8 m), kucing lantai 2 sebelahan + bisa jalan pindah lantai, rak buku lantai 2, mode POV (WASD/panah, plafon + lampu + kipas + AC, dinding/atap tidak tembus pandang).
+- v40: segmen BaruTauAda (Intan, Yohan, Lina) pindah ke lantai 2 ruang timur (bekas Ekspansi 3); lantai 2 kini penuh: Ludo barat, Oki tengah, BaruTauAda timur. Meja lantai 1 diatur ulang per segmen jadi senggang (jarak antar meja minimal 1,4 m, koridor utama bersih, meja Lux geser ke tengah-timur) supaya mode POV bisa lewat dan Oemar tidak terjebak di depan ruang direktur. Klik TV di mode POV memutar/menjeda musik SoundCloud (album yang sama); klik TV di mode normal tetap seperti v39.
+- Penting saat deploy v40: config.json HARUS ikut diperbarui bersama index.html, karena live site memuat config.json — bila hanya index.html yang naik, BaruTauAda akan balik ke lantai 1.
+
 ## Cuaca auto mati + suara tap-pertama + klik zoom + hover karyawan v38 (masih versi HP embedded — mencakup v28–v37)
 
 - Laporan live v37 Oemar 30 Okt 13:20–13:23 WIB: karakter

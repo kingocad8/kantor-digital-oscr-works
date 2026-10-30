@@ -402,10 +402,7 @@
       "hairStyle": "pendek",
       "skin": "#ffd9a8",
       "floor": 1,
-      "pos": [
-        0.0,
-        3.5
-      ],
+      "pos": [3.0, 3.5],
       "ry": "PI",
       "isOemar": false,
       "profileBody": "<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space dekat Meeting 2, aktivitas bergantian seperti tim lain.</li></ul>",
@@ -445,10 +442,7 @@
       "hairStyle": "panjang",
       "skin": "#ffd9a8",
       "floor": 1,
-      "pos": [
-        -11.0,
-        1.6
-      ],
+      "pos": [-11.5, 1.6],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -487,10 +481,7 @@
       "hairStyle": "pendek",
       "skin": "#e8b88a",
       "floor": 1,
-      "pos": [
-        -8.0,
-        1.6
-      ],
+      "pos": [8.0, 8.5],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -571,10 +562,7 @@
       "hairStyle": "cepak",
       "skin": "#c68642",
       "floor": 1,
-      "pos": [
-        -4.0,
-        1.6
-      ],
+      "pos": [-4.5, 1.6],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -613,10 +601,7 @@
       "hairStyle": "ponytail",
       "skin": "#e8b88a",
       "floor": 1,
-      "pos": [
-        -1.5,
-        1.6
-      ],
+      "pos": [1.0, 1.6],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -655,10 +640,7 @@
       "hairStyle": "pendek",
       "skin": "#c68642",
       "floor": 1,
-      "pos": [
-        -10.0,
-        8.5
-      ],
+      "pos": [-11.5, 8.5],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -697,10 +679,7 @@
       "hairStyle": "panjang",
       "skin": "#ffd9a8",
       "floor": 1,
-      "pos": [
-        1.5,
-        1.6
-      ],
+      "pos": [5.0, 1.6],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -739,10 +718,7 @@
       "hairStyle": "pendek",
       "skin": "#e8b88a",
       "floor": 1,
-      "pos": [
-        4.0,
-        1.6
-      ],
+      "pos": [9.0, 1.6],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -781,10 +757,7 @@
       "hairStyle": "cepak",
       "skin": "#ffd9a8",
       "floor": 1,
-      "pos": [
-        3.0,
-        8.5
-      ],
+      "pos": [4.0, 8.5],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -822,11 +795,8 @@
       "hair": "#222222",
       "hairStyle": "ponytail",
       "skin": "#e8b88a",
-      "floor": 1,
-      "pos": [
-        7.0,
-        1.6
-      ],
+      "floor": 2,
+      "pos": [6.0, -4.1],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -864,11 +834,8 @@
       "hair": "#111111",
       "hairStyle": "keriting",
       "skin": "#8d5524",
-      "floor": 1,
-      "pos": [
-        9.0,
-        1.6
-      ],
+      "floor": 2,
+      "pos": [8.5, -4.1],
       "ry": "PI",
       "isOemar": false,
       "kpi": {
@@ -906,11 +873,8 @@
       "hair": "#222222",
       "hairStyle": "bun",
       "skin": "#e8b88a",
-      "floor": 1,
-      "pos": [
-        8.0,
-        8.5
-      ],
+      "floor": 2,
+      "pos": [11.0, -4.1],
       "ry": "PI",
       "isOemar": false,
       "kpi": {

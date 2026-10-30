@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OSCR Works — Kantor Digital 3D v38</title>
+<title>OSCR Works — Kantor Digital 3D v40</title>
 <script>
 console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
@@ -104,10 +104,12 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 </style>
 </head>
 <body>
-<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v38</p></header>
+<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v40</p></header>
 <div class="wrap">
 <div id="scene"><div id="sceneHud">OSCR Works - Jam kantor: - - Fokus: Keseluruhan</div><div id="fallback">⚠️ Three.js gagal dimuat. File ini butuh internet sekali untuk load library 3D-nya, coba refresh.</div></div>
 <div id="sceneSpacer"></div>
+<div id="povHelp" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1001;background:rgba(0,0,0,0.85);color:#fff;padding:8px 12px;border-radius:8px;font-size:13px;text-align:center">Mode POV — kamu Oemar • WASD / panah = jalan, drag = lihat, Shift = lari, Esc = keluar</div>
+<div id="povPad" style="display:none;position:fixed;left:16px;bottom:16px;z-index:1001;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:4px"><span></span><button data-pov="fwd" style="font-size:20px">▲</button><span></span><button data-pov="left" style="font-size:20px">◀</button><button data-pov="back" style="font-size:20px">▼</button><button data-pov="right" style="font-size:20px">▶</button><span></span><span></span><span></span></div>
 <div id="hoverTip" style="display:none;position:fixed;z-index:1000;pointer-events:none;max-width:260px;background:rgba(255,255,255,0.97);border:1px solid #ccc;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 2px 10px rgba(0,0,0,0.25);"></div>
 <div class="btns">
 <div class="btns-main">
@@ -127,7 +129,7 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 <button class="icon-btn" title="Lantai 1" aria-label="Lantai 1" onclick="setFloor(1)">⬇️</button>
 <button class="icon-btn" title="Lantai 2" aria-label="Lantai 2" onclick="setFloor(2)">⬆️</button>
 <span class="btn-sep" aria-hidden="true"></span><span class="btn-label">⬆️</span>
-<button class="icon-btn" title="Ekspansi 3" aria-label="Ekspansi 3" onclick="goView('exp3')">🟧<sub>3</sub></button>
+
 <button class="icon-btn" title="Tangga" aria-label="Tangga" onclick="goView('tangga')">🪜</button>
 </div></div>
 <div class="btn-group caption-top"><span class="btn-label">📂 Segmen:</span><div class="btn-row">
@@ -140,7 +142,7 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 </div></div>
 <div class="btn-group caption-top"><span class="btn-label">⚙️ Setting:</span><div class="btn-row">
 <button class="icon-btn" title="Refresh Status" aria-label="Refresh Status" onclick="loadStatus(true)">🔄</button>
-<button class="icon-btn" title="Ganti Cuaca" aria-label="Ganti Cuaca" onclick="cycleWeather()">🌤️</button>
+<button class="icon-btn" title="Ganti Cuaca" aria-label="Ganti Cuaca" onclick="cycleWeather()">🌤️</button> <button class="icon-btn" id="povBtn" title="Mode POV — main sebagai Oemar" aria-label="Mode POV" onclick="togglePOV()">👁️</button>
 <button class="icon-btn icon-btn-2" title="Briefing Pagi" aria-label="Briefing Pagi" onclick="testBriefing('morning')">▶☀️</button>
 <button class="icon-btn icon-btn-2" title="Briefing Penutup" aria-label="Briefing Penutup" onclick="testBriefing('closing')">▶🌙</button>
 </div></div>
@@ -205,7 +207,7 @@ Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="al
 <div id="kpiDetail" style="margin-top:10px"></div>
 </div>
 </div>
-<footer id="siteFooter">OSCR Works - Digital Office • v38 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
+<footer id="siteFooter">OSCR Works - Digital Office • v40 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
 </div>
 <script>
 const SOUNDCLOUD_DEFAULT_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav"; let SOUNDCLOUD_URL = SOUNDCLOUD_DEFAULT_URL;
@@ -228,7 +230,7 @@ function ensureWidget(cb){
     scWidget = SC.Widget(f);
     try {
       scWidget.bind(SC.Widget.Events.PLAY, function(){
-        try { scWidget.getCurrentSound(function(snd){ if (snd && snd.title) document.getElementById('musicNote').textContent = "Memutar: " + snd.title; }); } catch(e) {}
+        try { scWidget.getCurrentSound(function(snd){ if (snd && snd.title) document.getElementById('musicNote').textContent = "Memutar: " + snd.title; }); } catch(e) {} window.__scPlaying = true;
       });
     } catch(e) {}
     setTimeout(function(){ cb(scWidget); }, 800);
@@ -239,11 +241,11 @@ function ensureWidget(cb){
 window.playMusic = function(){
   document.getElementById('scPlayer').style.display = 'block';
   document.getElementById('musicNote').textContent = "Memutar";
-  ensureWidget(function(w){ try { w.play(); } catch(e) {} });
+  window.__scPlaying = true; ensureWidget(function(w){ try { w.play(); } catch(e) {} });
 };
 window.pauseMusic = function(){
-  if (scWidget) { try { scWidget.pause(); } catch(e) {} document.getElementById('musicNote').textContent = "Dijeda"; return; }
-  const f = document.getElementById('scFrame'); f.src = ""; document.getElementById('scPlayer').style.display = 'none'; document.getElementById('musicNote').textContent = "Dijeda";
+  if (scWidget) { try { scWidget.pause(); } catch(e) {} window.__scPlaying = false; document.getElementById('musicNote').textContent = "Dijeda"; return; }
+  const f = document.getElementById('scFrame'); f.src = ""; document.getElementById('scPlayer').style.display = 'none'; window.__scPlaying = false; document.getElementById('musicNote').textContent = "Dijeda";
 };
 window.nextMusic = function(){ ensureWidget(function(w){ try { w.next(); document.getElementById('musicNote').textContent = "Memutar: lagu berikutnya"; } catch(e) {} }); };
 window.prevMusic = function(){ ensureWidget(function(w){ try { w.prev(); document.getElementById('musicNote').textContent = "Memutar: lagu sebelumnya"; } catch(e) {} }); };
@@ -499,12 +501,12 @@ box2(1.5,0.4,18,matW(),-12.25,3.4,0);
 box2(21.5,0.4,18,matW(),2.25,3.4,0);
 box2(3,0.4,11,matW(),-10,3.4,-3.5);
 box2(3,0.4,3,matW(),-10,3.4,7.5);
-box2(26,3.6,0.3,matW(),0,5.4,-9);
-box2(0.3,2.5,18,matW(),-13,4.85,0);
-box2(0.3,2.5,18,matW(),13,4.85,0);
-box2(12,0.6,0.3,matW(),-7,3.9,9);
-box2(12,0.6,0.3,matW(),7,3.9,9);
-box2(2,0.6,0.3,matW(),0,3.9,9); // v24: tutup celah depan lantai 2 (tanpa pintu di lantai 2)
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(26,3.6,0.3,matW(),0,5.4,-9)); /* v39 POV: dinding ini identik dengan dinding belakang exterior -> disembunyikan saat POV */
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(0.3,2.5,18,matW(),-13,4.85,0));
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(0.3,2.5,18,matW(),13,4.85,0));
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(12,0.6,0.3,matW(),-7,3.9,9));
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(12,0.6,0.3,matW(),7,3.9,9));
+(globalThis.__f2DupWalls = globalThis.__f2DupWalls || []).push(box2(2,0.6,0.3,matW(),0,3.9,9)); // v24: tutup celah depan lantai 2 (tanpa pintu di lantai 2)
 // Partisi rendah 2.2 di atas slab (pusat y=4.7), x=-4 dan x=4, z -9..0 — strip selatan z 0..4 tetap sirkulasi bebas.
 box2(0.3,2.2,9,matW(),-4,4.7,-4.5);
 box2(0.3,2.2,9,matW(),4,4.7,-4.5);
@@ -513,7 +515,7 @@ carpet2(-8.5,-4.5,7,7,0xd9b38c); carpet2(0,-4.5,7,7,0x9ecfff); carpet2(8.5,-4.5,
 function expLabel(txt,x,z){ const cv = document.createElement('canvas'); cv.width = 512; cv.height = 128; const ctx = cv.getContext('2d'); ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillRect(0,0,512,128); ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(0,0,512,128); ctx.fillStyle = '#222'; ctx.textAlign = 'center'; ctx.font = 'bold 36px Verdana'; ctx.fillText(txt, 256, 82); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); sp.scale.set(4,1,1); sp.position.set(x,6.4,z); floor2Group.add(sp); }
 expLabel('Ludo Berdua', -8.5, -4.5);
 expLabel('Oki | AI Sehari-hari', 0, -4.5);
-expLabel('Ruang Ekspansi 3 — Kosong', 8.5, -4.5);
+expLabel('🛒 BaruTauAda', 8.5, -4.5);
 // ===== PERABOT LANTAI 2 v30 — semua di floor2Group, dasar y=3.6 =====
 function cyl2(rt,rb,h,material,x,y,z,seg){ const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||18), material); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; floor2Group.add(m); return m; }
 function f2table(x,z){ box2(2.2,0.12,1.2,matW(),x,3.6+0.75,z); [[-1,-0.5],[1,-0.5],[-1,0.5],[1,0.5]].forEach(function(o){ box2(0.14,0.75,0.14,matC(0x5d3a1a),x+o[0],3.6+0.37,z+o[1]); }); }
@@ -528,6 +530,9 @@ f2chair(-11,-3.35,Math.PI); f2chair(-8.5,-3.35,Math.PI); f2chair(-6,-3.35,Math.P
 // Workstation Oki (ruang tengah, pola sama)
 f2monitorDesk(-1.5,-5.2); f2monitorDesk(1.5,-5.2);
 f2chair(-1.5,-3.35,Math.PI); f2chair(1.5,-3.35,Math.PI);
+// Workstation BaruTauAda v40 (ruang timur, bekas Ekspansi 3; meja z=-5.2, karakter z=-4.1 — tidak menabrak rak buku x>=12.45 / aquarium z>=0.8)
+f2monitorDesk(6,-5.2); f2monitorDesk(8.5,-5.2); f2monitorDesk(11,-5.2);
+f2chair(6,-3.35,Math.PI); f2chair(8.5,-3.35,Math.PI); f2chair(11,-3.35,Math.PI);
 // Meja meeting v32: PINDAH ke samping lounge (satu baris z=7.0 dengan TV/sofa), pusat (4.0,7.0) + 4 stool — TIDAK lagi di tengah (0,3.0) menghadap ruang Oki
 f2roundTable(4.0,7.0); f2stool(5.3,7.0); f2stool(2.7,7.0); f2stool(4.0,8.3); f2stool(4.0,5.7);
 // Arsip lantai 2 menempel dinding barat ruang Ludo (x=-12.4, z=-8.2 dan -6.8, bukan di tengah jalur)
@@ -542,11 +547,14 @@ carpet2(0,7.0,3.5,3,0xc9a86a);
   add(new THREE.Mesh(new THREE.BoxGeometry(0.7,0.15,0.9), matC(0x7fb3d5)), 0.1,0.55,0.5);
   add(new THREE.Mesh(new THREE.BoxGeometry(0.7,0.15,0.9), matC(0x7fb3d5)), 0.1,0.55,-0.5);
   g.rotation.y = Math.PI/2; g.position.set(0,3.6,7.8); floor2Group.add(g); })();
-box2(1.4,0.6,0.6,matC(0x5d3a1a),0,3.6+0.3,6.2);
-box2(0.3,0.2,0.1,matC(0x222222),0,3.6+0.7,6.2);
-box2(1.8,1.0,0.1,matC(0x222222),0,3.6+1.2,6.2);
-box2(1.6,0.85,0.05,matC(0xd6eaf8),0,3.6+1.2,6.26);
-box2(0.8,0.15,0.4,matC(0x111111),0,3.6+0.68,6.2);
+/* v39: set TV lantai 2 dipindah dari z=6.2 ke z=5.0 (jarak ke sofa 7.8 menjadi 2.8 m) */
+box2(1.4,0.6,0.6,matC(0x5d3a1a),0,3.6+0.3,5.0);
+box2(0.3,0.2,0.1,matC(0x222222),0,3.6+0.7,5.0);
+box2(1.8,1.0,0.1,matC(0x222222),0,3.6+1.2,5.0);
+box2(1.6,0.85,0.05,matC(0xd6eaf8),0,3.6+1.2,5.06);
+box2(0.8,0.15,0.4,matC(0x111111),0,3.6+0.68,5.0);
+/* v40: tandai TV lantai 2 (stand/konsol/layar/kaca, x~0, z~5.0, y 3.6..4.9) sebagai target klik POV */
+(function(){ if (typeof floor2Group !== 'undefined') floor2Group.children.forEach(function(m){ if (m.position && Math.abs(m.position.x) < 1.1 && m.position.z >= 4.9 && m.position.z <= 5.2 && m.position.y >= 3.6 && m.position.y <= 4.9) m.userData.povTv = true; }); })();
 box2(0.3,0.05,0.2,matC(0x222222),0.5,3.6+0.06,7.0);
 // Aquarium lantai 2 v31: NEMPEL dinding timur (x=12.4), sisi panjang SEJAJAR dinding (ke arah z), ikan berenang sepanjang z
 const fishes2 = [];
@@ -560,6 +568,25 @@ const fishes2 = [];
   fish2(0xff7f00,0,1.2); fish2(0xffd700,2,0.9); fish2(0x2e86c1,4,1.5);
   globalThis.__fishes2 = fishes2;
 })();
+// ===== v39: RAK BUKU PANJANG lantai 2 — menempel dinding timur (x=12.7, tebal 0.5 -> 12.45..12.95, dinding x=13), di UTARA aquarium (z -5..-1, aquarium z 0.8..3.2), tinggi 1.8, 3 baris buku warna-warni. Di floor2Group, detail 'rakbuku', dan jadi rintangan pathfinding. =====
+(function(){
+  const bx = 12.7, z0 = -5.0, z1 = -1.0, len = z1 - z0;
+  function bk2(w,h,d,mat,x,y,z){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; m.userData.detail = 'rakbuku'; floor2Group.add(m); return m; }
+  bk2(0.5,1.8,0.08,matW(),bx,3.6+0.9,z0);
+  bk2(0.5,1.8,0.08,matW(),bx,3.6+0.9,z1);
+  bk2(0.08,1.8,len,matW(),12.92,3.6+0.9,(z0+z1)/2);
+  bk2(0.45,0.06,len,matW(),bx,3.6+0.12,(z0+z1)/2);
+  [0.55,1.0,1.45].forEach(function(by){
+    bk2(0.45,0.06,len,matW(),bx,3.6+by,(z0+z1)/2);
+    const cols = [0xb85450,0x4a7fa5,0x5a8a4a,0xc07a2e,0x7a5a8a,0xa89a3a];
+    let bi = 0;
+    for (let zz = z0 + 0.3; zz < z1 - 0.2; zz += 0.28) {
+      const bh = 0.24 + ((bi * 7) % 3) * 0.05;
+      bk2(0.3,bh,0.2,matC(cols[bi % cols.length]),bx,3.6+by+0.03+bh/2,zz);
+      bi++;
+    }
+  });
+})();
 // 2 kucing lantai 2 (abu-abu selatan-barat, putih selatan-tengah) — kucing oranye lantai 1 (5,7.8) tetap ada
 const catTails2 = []; globalThis.__catTails2 = catTails2;
 function makeCat2(x,z,color){ const g = new THREE.Group(); function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); return mesh; }
@@ -570,8 +597,8 @@ function makeCat2(x,z,color){ const g = new THREE.Group(); function add(mesh,px,
   add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), -0.1,0.8,0.36);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), 0.1,0.8,0.36);
   const tail = new THREE.Group(); const tm = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.5,8), matC(color)); tm.position.y = 0.25; tail.add(tm); tail.position.set(0.3,0.15,-0.3); tail.rotation.z = -0.6; g.add(tail); catTails2.push(tail);
-  g.position.set(x,3.6,z); g.userData.detail = 'cat'; g.traverse(function(o){ o.userData.detail = 'cat'; }); floor2Group.add(g); }
-makeCat2(-8,3.2,0x95a5a6); makeCat2(3,3.2,0xecf0f1);
+  g.position.set(x,3.6,z); g.userData.detail = 'cat'; g.traverse(function(o){ o.userData.detail = 'cat'; }); floor2Group.add(g); globalThis.__catGroups2 = globalThis.__catGroups2 || []; globalThis.__catGroups2.push(g); return g; }
+var cat2Grey = makeCat2(-0.8,3.2,0x95a5a6); var cat2White = makeCat2(0.4,3.2,0xecf0f1); if (cat2Grey) cat2Grey.rotation.y = Math.PI/2; if (cat2White) cat2White.rotation.y = -Math.PI/2; /* v39: kucing lt2 SEBELAHAN, jarak 1.2 m, saling menghadap (abu-abu menghadap timur, putih menghadap barat) */
 
 // TANGGA DALAM v24 — sayap kiri dekat Arsip (barat), x=-10, 12 anak tangga naik 0.3/anak (total 3.6),
 // dari dasar (-10,0,6) ke atas (-10,3.6,2). Tidak lagi di tengah pintu masuk; lantai 1 tidak digeser.
@@ -602,7 +629,7 @@ const exteriorGroup = new THREE.Group(); scene.add(exteriorGroup); exteriorGroup
    [-6,0,6].forEach(function(wz){ extWin(0.05,2.0,2.7,matC(0xffffff),-13.12,5.4,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),-13.20,5.4,wz); extWin(0.05,2.0,2.7,matC(0xffffff),13.12,5.4,wz); extWin(0.1,1.8,2.5,matC(0x9ecfff),13.20,5.4,wz); });
   // PINTU UTAMA yang bagus: kusen putih, pintu ganda kayu + kaca, gagang emas, anak tangga, kanopi, papan nama
   extWin(2.4,2.6,0.2,matC(0xffffff),0,1.3,9.1);
-  extWin(1.0,2.2,0.1,matC(0x6b4226),-0.55,1.1,9.15); extWin(1.0,2.2,0.1,matC(0x6b4226),0.55,1.1,9.15);
+  globalThis.__extDoorL = extWin(1.0,2.2,0.1,matC(0x6b4226),-0.55,1.1,9.15); globalThis.__extDoorR = extWin(1.0,2.2,0.1,matC(0x6b4226),0.55,1.1,9.15); /* v39 POV: dua daun pintu ini disembunyikan saat POV (pintu terbuka), dikembalikan saat keluar POV */
   extWin(0.7,1.2,0.05,matC(0x9ecfff),-0.55,1.4,9.22); extWin(0.7,1.2,0.05,matC(0x9ecfff),0.55,1.4,9.22);
   extWin(0.12,0.12,0.12,matC(0xd4ac0d),-0.15,1.1,9.25); extWin(0.12,0.12,0.12,matC(0xd4ac0d),0.15,1.1,9.25);
   extWin(3,0.2,0.8,matC(0xcccccc),0,-0.3,9.6); extWin(2.5,0.2,0.6,matC(0xbbbbbb),0,-0.15,9.4);
@@ -614,12 +641,26 @@ const exteriorGroup = new THREE.Group(); scene.add(exteriorGroup); exteriorGroup
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); sp.scale.set(4,1,1); sp.position.set(0,3.4,9.4); exteriorGroup.add(sp);
   })();
 })();
+// ===== v39 POV: plafon + lampu + kipas + AC — grup sendiri, TERSEMBUNYI saat POV nonaktif (view normal tetap dollhouse tanpa atap), HANYA tampil saat POV. Semua visual saja (emissive, tanpa PointLight baru) demi performa HP. =====
+const povCeilingGroup = new THREE.Group(); povCeilingGroup.visible = false; scene.add(povCeilingGroup);
+(function(){
+  const ceilMat = new THREE.MeshLambertMaterial({ color: 0xf5efe0, side: THREE.DoubleSide });
+  function ceil(y){ const m = new THREE.Mesh(new THREE.BoxGeometry(26,0.12,18), ceilMat); m.position.set(0,y,0); povCeilingGroup.add(m); }
+  ceil(3.15); ceil(7.15);
+  function lamp(x, z, yTop){ const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.25,6), new THREE.MeshLambertMaterial({ color: 0x222222 })); cord.position.set(x, yTop - 0.12, z); povCeilingGroup.add(cord); const fix = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.22,0.08,14), new THREE.MeshLambertMaterial({ color: 0xffffff })); fix.position.set(x, yTop - 0.28, z); povCeilingGroup.add(fix); const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.12,12,10), new THREE.MeshLambertMaterial({ color: 0xffe9a8, emissive: 0xffc46b })); bulb.position.set(x, yTop - 0.38, z); povCeilingGroup.add(bulb); }
+  [[0,4],[-1,-5],[-9,-5],[9,4],[9,-5],[5,-6]].forEach(function(p){ lamp(p[0], p[1], 3.15); });
+  [[-9,-5],[0,-5],[0,7],[9,-5]].forEach(function(p){ lamp(p[0], p[1], 7.15); });
+  function fan(x, z, yTop){ const g = new THREE.Group(); const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,0.12,12), new THREE.MeshLambertMaterial({ color: 0xdddddd })); hub.position.y = -0.1; g.add(hub); for (let i = 0; i < 4; i++) { const bl = new THREE.Mesh(new THREE.BoxGeometry(0.9,0.03,0.14), new THREE.MeshLambertMaterial({ color: 0xbbbbbb })); bl.position.set(Math.cos(i*Math.PI/2)*0.55, -0.1, Math.sin(i*Math.PI/2)*0.55); bl.rotation.y = -i*Math.PI/2; g.add(bl); } g.position.set(x, yTop, z); povCeilingGroup.add(g); globalThis.__povFans = globalThis.__povFans || []; globalThis.__povFans.push(g); }
+  fan(0, 2, 3.15); fan(0, 7, 7.15); fan(0, -5, 7.15);
+  function ac(x, y, z){ const u = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.5,0.3), new THREE.MeshLambertMaterial({ color: 0xffffff })); u.position.set(x, y, z); povCeilingGroup.add(u); const v = new THREE.Mesh(new THREE.BoxGeometry(1.4,0.06,0.05), new THREE.MeshLambertMaterial({ color: 0x555555 })); v.position.set(x, y - 0.15, z + 0.16); povCeilingGroup.add(v); }
+  ac(0, 2.2, -1.85); ac(-1, 2.2, -8.8); ac(0, 6.2, -8.8); /* AC open space menempel dinding z=-2 (sisi selatan, menghadap open space); AC Meeting 1 + AC Oki menempel dinding utara */
+})();
 function door(x,z,ry){ const g = new THREE.Group(); const p = new THREE.Mesh(new THREE.BoxGeometry(1.0,2.0,0.08), matW()); p.position.set(0.5,1,0); p.castShadow = true; g.add(p); const h = new THREE.Mesh(new THREE.SphereGeometry(0.06,10,8), matC(0xd4ac0d)); h.position.set(0.9,1,0.08); g.add(h); g.position.set(x,0,z); g.rotation.y = ry; scene.add(g); return g; }
 const frontDoorL = door(-1,9,0.9); const frontDoorR = door(1,9,-0.9);
 box(0.25,2.2,7,matW(),-5,1.1,-5.5);
-box(3.9,2.2,0.25,matW(),-11.05,1.1,-2); box(3.1,2.2,0.25,matW(),-6.55,1.1,-2); door(-9.9,-2,1.0);
+box(3.9,2.2,0.25,matW(),-11.05,1.1,-2); box(3.1,2.2,0.25,matW(),-6.55,1.1,-2); door(-9.9,-2,1.4); /* v40: dibuka ~80 derajat supaya celah pintu Direktur jelas */
 box(0.25,2.2,7,matW(),3,1.1,-5.5);
-box(3.1,2.2,0.25,matW(),-3.45,1.1,-2); box(3.1,2.2,0.25,matW(),1.45,1.1,-2); door(-1.9,-2,1.0);
+box(3.1,2.2,0.25,matW(),-3.45,1.1,-2); box(3.1,2.2,0.25,matW(),1.45,1.1,-2); door(-1.9,-2,1.4); /* v40: dibuka ~80 derajat supaya celah pintu Meeting 1 jelas */
 // v16: toilet lama di depan Meeting 2 DIHAPUS — area meeting jadi luas, tidak ada lagi yang kerja dekat toilet
 
 function table(x,z){ box(2.2,0.12,1.2,matW(),x,0.75,z); [[-1,-0.5],[1,-0.5],[-1,0.5],[1,0.5]].forEach(function(o){ cyl(0.07,0.07,0.75,matC(0x5d3a1a),x+o[0],0.37,z+o[1]); }); }
@@ -631,8 +672,8 @@ function monitorDesk(x,z){ table(x,z); box(0.9,0.55,0.08,matC(0x222222),x,1.25,z
 function filing(x,z){ box(0.9,1.5,0.5,matC(0x8a8f98),x,0.75,z); for(let i=0;i<3;i++) box(0.7,0.35,0.05,matC(0xb8bcc4),x,0.35+i*0.45,z+0.27); }
 function filingDoc(x,z){ const m = box(1.0,1.8,0.5,matC(0x2e5d33),x,0.9,z); m.userData.detail = 'arsip'; for(let i=0;i<4;i++){ const d = box(0.8,0.32,0.05,matC(0x4a7a4a),x,0.25+i*0.42,z+0.27); d.userData.detail = 'arsip'; } }
 function plant(x,z){ cyl(0.3,0.22,0.4,matC(0xb5651d),x,0.2,z,12); ball(0.38,matC(0x2e7d32),x,0.75,z); ball(0.28,matC(0x3fae4a),x+0.2,0.6,z); }
-function tvWall(x,z,ry){ const g = new THREE.Group(); const f = new THREE.Mesh(new THREE.BoxGeometry(1.8,1.0,0.1), matC(0x222222)); f.position.y=1.6; f.castShadow=true; g.add(f); const s = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.85,0.05), matC(0xd6eaf8)); s.position.set(0,1.6,0.08); g.add(s); g.position.set(x,0,z); g.rotation.y = ry; scene.add(g); }
-function tvStandDir(x,z,ry){ const g = new THREE.Group(); const st = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.12,0.5), matW()); st.position.y=0.6; st.castShadow=true; g.add(st); const f = new THREE.Mesh(new THREE.BoxGeometry(1.6,1.0,0.12), matC(0x222222)); f.position.y=1.2; f.castShadow=true; g.add(f); const s = new THREE.Mesh(new THREE.BoxGeometry(1.4,0.8,0.05), matC(0xd6eaf8)); s.position.set(0,1.2,-0.08); g.add(s); g.position.set(x,0,z); g.rotation.y = ry; scene.add(g); }
+function tvWall(x,z,ry){ const g = new THREE.Group(); const f = new THREE.Mesh(new THREE.BoxGeometry(1.8,1.0,0.1), matC(0x222222)); f.position.y=1.6; f.castShadow=true; g.add(f); const s = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.85,0.05), matC(0xd6eaf8)); s.position.set(0,1.6,0.08); g.add(s); g.position.set(x,0,z); g.rotation.y = ry; scene.add(g); g.traverse(function(o){ o.userData.povTv = true; }); }
+function tvStandDir(x,z,ry){ const g = new THREE.Group(); const st = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.12,0.5), matW()); st.position.y=0.6; st.castShadow=true; g.add(st); const f = new THREE.Mesh(new THREE.BoxGeometry(1.6,1.0,0.12), matC(0x222222)); f.position.y=1.2; f.castShadow=true; g.add(f); const s = new THREE.Mesh(new THREE.BoxGeometry(1.4,0.8,0.05), matC(0xd6eaf8)); s.position.set(0,1.2,-0.08); g.add(s); g.position.set(x,0,z); g.rotation.y = ry; scene.add(g); g.traverse(function(o){ o.userData.povTv = true; }); }
 
 // DIREKTUR + LAPTOP OEMAR
 table(-9,-7); chair(-9,-6,Math.PI); shelf(-12.3,-8.2); plant(-5.8,-8.2); tvWall(-9,-8.8,0); box(0.6,1.4,1.2,matC(0x8a5a2b),-12.4,0.7,-3.5);
@@ -648,22 +689,23 @@ plant(3.5,-7); cyl(0.08,0.08,1.2,matC(0x5d3a1a),6.8,0.6,-7); ball(0.22,matC(0xff
 // PANTRY KECIL
 box(3.5,0.12,0.8,matW(),9.5,0.95,-8.4); box(0.8,1.7,0.7,matC(0xdde3ea),12.2,0.85,-8.2); roundTable(9,-5); stool(9,-3.6); stool(7.8,-5); stool(9,-6.5);
 // OPEN SPACE + MEJA KETIGA PER SEGMEN + MEJA LUX
-monitorDesk(-11,0.5); monitorDesk(-8,0.5); filing(-12.3,-1.2); filing(-6.8,-1.2);
-monitorDesk(-4,0.5); monitorDesk(-1.5,0.5); filing(-5.8,-1.2); box(2.6,0.12,1.6,matW(),-3,3.2); box(2.2,0.05,1.2,matC(0x7fb069),-3,3.28,3.2);
-monitorDesk(1.5,0.5); monitorDesk(4,0.5); filing(5.8,-1.2);
-monitorDesk(7,0.5); monitorDesk(9,0.5); filing(6.2,-1.2); shelf(12,8);
-monitorDesk(0,2.5);
+// OPEN SPACE v40 — SENGGANG: utara 5 meja (BK barat, JK tengah, RU timur), jarak tepi >=1,4 m, koridor pintu Direktur (x=-8.6) & Meeting 1 (x=-1.0) BERSIH; filing ganda (-5.8 & 6.2) DIHAPUS supaya koridor utara tidak jadi tembok
+monitorDesk(-11.5,0.5); monitorDesk(-4.5,0.5); filing(-12.3,-1.2); filing(-6.8,-1.2);
+monitorDesk(1,0.5); monitorDesk(5,0.5); filing(5.8,-1.2); box(2.6,0.12,1.6,matW(),-3,3.2); box(2.2,0.05,1.2,matC(0x7fb069),-3,3.28,3.2);
+monitorDesk(9,0.5);
+monitorDesk(3,2.5);
 
 // TOILET BARU v16 — timur pantry, jalan tembus dari pantry (meja pantry 10,-5 -> pintu barat toilet 10.5,-2.8)
 box(0.25,2.2,1.3,matW(),10.5,1.1,-3.85); box(0.25,2.2,0.9,matW(),10.5,1.1,-1.95);
+var toiletDoorV39 = door(10.5,-3.2,-0.35); toiletDoorV39.traverse(function(o){ o.userData.detail = 'toilet'; }); /* v39: daun pintu toilet, engsel di ujung utara celah, terbuka ~70 derajat ke dalam toilet — celah z -3.2..-2.4 tetap bisa dilewati, daunnya TIDAK menutup celah */
 box(2.5,2.2,0.25,matW(),11.75,1.1,-4.5); box(2.5,2.2,0.25,matW(),11.75,1.1,-1.5);
 cyl(0.28,0.22,0.4,matC(0xffffff),12,0.2,-3.5); box(0.5,0.5,0.2,matC(0xffffff),12,0.6,-4.2);
 box(0.6,0.1,0.4,matC(0xffffff),11,0.85,-1.8); cyl(0.06,0.06,0.85,matC(0x8a8f98),11,0.42,-1.8,10);
 // MEJA PERIMETER SELATAN (menghadap utara, dekat tembok depan, sirkulasi tengah bebas)
-monitorDesk(-7,7.5); monitorDesk(-10,7.5); monitorDesk(3,7.5); monitorDesk(8,7.5);
+monitorDesk(-11.5,7.5); monitorDesk(-7,7.5); monitorDesk(4,7.5); monitorDesk(8,7.5);
 // KURSI KERJA v30 — pola: meja utara + meja Lux: kursi tepat di belakang karakter (desk z + 1.85, sandaran ke selatan, ry=PI), terlihat dari kamera Keseluruhan tanpa menutupi karakter. Meja selatan (perimeter, karakter sudah dekat dinding depan z=9): kursi di sisi timur karakter (x + 0.9, z sama) karena di belakang karakter sudah dinding depan — tidak ada kursi yang menembus dinding.
-chair(-11,2.35,Math.PI); chair(-8,2.35,Math.PI); chair(-4,2.35,Math.PI); chair(-1.5,2.35,Math.PI); chair(1.5,2.35,Math.PI); chair(4,2.35,Math.PI); chair(7,2.35,Math.PI); chair(9,2.35,Math.PI); chair(0,4.25,Math.PI);
-chair(-6.1,8.5,Math.PI); chair(-9.1,8.5,Math.PI); chair(3.9,8.5,Math.PI); chair(8.9,8.5,Math.PI);
+chair(-11.5,2.35,Math.PI); chair(-4.5,2.35,Math.PI); chair(1,2.35,Math.PI); chair(5,2.35,Math.PI); chair(9,2.35,Math.PI); chair(3,4.25,Math.PI);
+chair(-10.6,8.5,Math.PI); chair(-6.1,8.5,Math.PI); chair(4.9,8.5,Math.PI); chair(8.9,8.5,Math.PI);
 plant(-6,4); plant(2,6);
 filingDoc(-12.4,3); filingDoc(-12.4,5); filingDoc(12.4,7); filingDoc(12.4,-6);
 box(0.8,0.6,0.6,matC(0xdddddd),-12.3,0.9,7); box(0.6,0.05,0.4,matC(0xffffff),-12.3,1.22,7); plant(-12.5,7); plant(12.5,6); plant(-5,7);
@@ -699,9 +741,47 @@ let catTail = null;
   add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), -0.1,0.8,0.36);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), 0.1,0.8,0.36);
   catTail = new THREE.Group(); const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.5,8), matC(0xe67e22)); tail.position.y = 0.25; catTail.add(tail); catTail.position.set(0.3,0.15,-0.3); catTail.rotation.z = -0.6; g.add(catTail);
-  g.position.set(5,0,7.8); g.userData.detail = 'cat'; g.traverse(function(o){ o.userData.detail = 'cat'; });
+  g.position.set(5,0,7.8); globalThis.__cat1 = g; g.userData.detail = 'cat'; g.traverse(function(o){ o.userData.detail = 'cat'; });
   scene.add(g);
 })();
+// ===== v39: SISTEM JALAN KUCING — tiap kucing jalan sendiri tiap 20-40 detik, 25% pindah lantai lewat tangga (bukan teleport), kecepatan 1.0 (lebih pelan dari orang 1.8), tidak menembus tembok/perabot (pakai routePath yang sama; bila rute gagal, kucing diam). Kucing lt2 yang diam di dekat rumahnya saling mengangguk (interaksi). =====
+const CATS = [];
+(function(){
+  if (globalThis.__cat1) CATS.push({ g: globalThis.__cat1, floor: 1, home: [5,7.8], queue: [], nextMove: 20 + Math.random()*20, baseRot: 0 });
+  (globalThis.__catGroups2 || []).forEach(function(g, i){
+    const home = i === 0 ? [-0.8,3.2] : [0.4,3.2];
+    CATS.push({ g: g, floor: 2, home: home, queue: [], nextMove: 25 + Math.random()*20, baseRot: (i === 0 ? Math.PI/2 : -Math.PI/2) });
+  });
+  globalThis.__CATS = CATS;
+})();
+const CAT_WALK1 = [[0,4.8],[-3,4],[3,4],[-6,3],[6,3],[0,8],[-8,8],[5,6],[2,8.5],[-4.5,9.5]];
+const CAT_WALK2 = [[-8,2],[0,2],[8,2],[-2,7],[6,7],[0,0.5],[-8,0.5],[8,0.5]];
+function catPickTarget(cat){
+  const cur = cat.g.position; const curFloor = (cur.y > 1) ? 2 : 1;
+  const cross = Math.random() < 0.25;
+  const tf = cross ? (curFloor === 1 ? 2 : 1) : curFloor;
+  const pts = tf === 2 ? CAT_WALK2 : CAT_WALK1;
+  const tp = pts[Math.floor(Math.random() * pts.length)];
+  if (tf === curFloor) { const rt = routePath(tf, cur.x, cur.z, tp[0], tp[1]); if (!rt) return false; cat.queue = rt.map(function(p){ return tf === 2 ? [p[0],p[1],3.6] : [p[0],p[1]]; }); return true; }
+  if (tf === 2) { const q = stairUpQueue(); const rt = routePath(2, -10, 1, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else q.push([-10,1,3.6],[tp[0],tp[1],3.6]); cat.queue = q; return true; }
+  const q = stairDownQueue(); const rt = routePath(1, -7, 6.5, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); }); else q.push([-7,6.5],[tp[0],tp[1]]); cat.queue = q; return true;
+}
+function updateCats(t, dt){
+  if (typeof CATS === 'undefined') return;
+  CATS.forEach(function(cat){
+    const g = cat.g; const p = g.position;
+    if (cat.queue.length > 0) {
+      const wp = cat.queue[0]; const dx = wp[0] - p.x, dz = wp[1] - p.z; const dist = Math.hypot(dx, dz);
+      const wantY = (wp.length > 2 && typeof wp[2] === 'number') ? wp[2] : ((p.y > 1) ? 3.6 : 0);
+      if (dist < 0.2 && Math.abs(wantY - p.y) < 0.15) { cat.queue.shift(); if (cat.queue.length === 0) cat.nextMove = t + 20 + Math.random()*20; }
+      else { const sp = 1.0 * dt; if (dist >= 0.2) { p.x += dx/dist*sp; p.z += dz/dist*sp; g.rotation.y = Math.atan2(dx, dz); } if (Math.abs(wantY - p.y) > sp) p.y += Math.sign(wantY - p.y)*sp; else p.y = wantY + Math.abs(Math.sin(t*8))*0.02; }
+    } else {
+      const by = (p.y > 1) ? 3.6 : 0; p.y = by + Math.sin(t*2 + (cat.baseRot||0))*0.01;
+      if (cat.floor === 2 && Math.hypot(p.x - cat.home[0], p.z - cat.home[1]) < 1.6) { g.rotation.y = cat.baseRot + Math.sin(t*1.5 + (cat.baseRot||0))*0.18; }
+      if (t > cat.nextMove) { if (!catPickTarget(cat)) cat.nextMove = t + 10; }
+    }
+  });
+}
 
 // PEKARANGAN
 function paving(x,z){ box(0.9,0.08,0.9,matC(0xcccccc),x,-0.4,z); }
@@ -822,11 +902,12 @@ const strangers = [];
 function strangerBody(shirt, hair, skin){
   const g = new THREE.Group();
   function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); return mesh; }
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), -0.16,0.16,0);
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), 0.16,0.16,0);
+  function slimb(mesh, px, py, pz, offY){ const gp = new THREE.Group(); gp.position.set(px,py,pz); mesh.position.set(0,offY,0); mesh.castShadow = true; gp.add(mesh); g.add(gp); return gp; }
+  g.userData.legL = slimb(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), -0.16,0.32,0, -0.16);
+  g.userData.legR = slimb(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), 0.16,0.32,0, -0.16);
   add(new THREE.Mesh(new THREE.CapsuleGeometry(0.3,0.3,4,12), matC(shirt)), 0,0.68,0);
-  add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(shirt)), -0.42,0.68,0);
-  add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(shirt)), 0.42,0.68,0);
+  g.userData.armL = slimb(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(shirt)), -0.42,0.85,0, -0.17);
+  g.userData.armR = slimb(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(shirt)), 0.42,0.85,0, -0.17);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.36,18,14), matC(skin)), 0,1.38,0);
   const hr = new THREE.Mesh(new THREE.SphereGeometry(0.38,18,14), matC(hair)); hr.scale.set(1,0.65,1); add(hr, 0,1.56,-0.04);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.045,10,8), matC(0x111111)), -0.14,1.4,0.33);
@@ -925,10 +1006,10 @@ function snowReset(i, top){ snowPos[i*3] = -30 + Math.random()*60; snowPos[i*3+1
 for (let i=0;i<snowCount;i++) snowReset(i, false);
 const snowGeo = new THREE.BufferGeometry(); snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
 const snowPoints = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.22, transparent: true, opacity: 0.9 })); snowPoints.visible = false; scene.add(snowPoints);
-const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2,16,12), new THREE.MeshBasicMaterial({ color: 0xffd93d })); sunMesh.position.set(8,6,-12); scene.add(sunMesh); /* v38: posisi masuk frame Keseluruhan (azimuth ~10.9 deg, elevasi ~18.5 deg) */
-const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.9,16,12), new THREE.MeshBasicMaterial({ color: 0xe8eaf0 })); moonMesh.position.set(-8,6,-12); moonMesh.scale.set(1.7,1.7,1.7); moonMesh.visible = false; scene.add(moonMesh); /* v38: masuk frame Keseluruhan Malam */
+const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2,16,12), new THREE.MeshBasicMaterial({ color: 0xffd93d })); sunMesh.position.set(12,10,-2); scene.add(sunMesh); /* v39: matahari sisi TIMUR rumah (x=12, bukan tengah belakang), y=10 di atas dinding 7.2 — dari kamera Keseluruhan (0,24,28)->(0,0,2): selisih elevasi ~19.3 deg (<21 deg setengah FOV vertikal 42 deg), azimuth ~21.8 deg (<31.6 deg setengah FOV horizontal desktop) -> masuk frame, di strip langit atas sisi rumah. Di HP portrait sempit, matahari bisa jatuh di tepi kanan frame — itu konsekuensi menggesernya ke sisi. Matahari 'overhead tengah langit' tidak mungkin di view Keseluruhan yang menunduk. */
+const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.9,16,12), new THREE.MeshBasicMaterial({ color: 0xe8eaf0 })); moonMesh.position.set(-12,10,-2); moonMesh.scale.set(1.7,1.7,1.7); moonMesh.visible = false; scene.add(moonMesh); /* v38: masuk frame Keseluruhan Malam */
 const starCount = 150; const starPos = new Float32Array(starCount * 3);
-for (let i=0;i<starCount;i++){ starPos[i*3] = -18 + Math.random()*36; starPos[i*3+1] = 5.5 + Math.random()*2; starPos[i*3+2] = -15 + Math.random()*3; } /* v38: bintang di strip langit utara di atas dinding belakang, masuk frame Keseluruhan Malam */
+for (let i=0;i<starCount;i++){ starPos[i*3] = -18 + Math.random()*36; starPos[i*3+1] = 8 + Math.random()*3; starPos[i*3+2] = -13 + Math.random()*8; } /* v38: bintang di strip langit utara di atas dinding belakang, masuk frame Keseluruhan Malam */
 const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
 const starPoints = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.35, transparent: true, opacity: 0.9 })); starPoints.visible = false; scene.add(starPoints);
 const lightningBolt = new THREE.Mesh(new THREE.BoxGeometry(0.15,6,0.15), new THREE.MeshBasicMaterial({ color: 0xffffcc })); lightningBolt.visible = false; scene.add(lightningBolt);
@@ -953,16 +1034,16 @@ function applyTimeWeather(){
   rainPoints.visible = (weather === 'hujan' || weather === 'petir' || weather === 'badai');
   snowPoints.visible = (weather === 'salju');
   sunMesh.visible = (period !== 'Malam'); moonMesh.visible = (period === 'Malam'); starPoints.visible = (period === 'Malam');
-  if (period === 'Senja') { sunMesh.position.set(10,5.5,-12); sunMesh.material.color.set(0xff7a3d); sunMesh.scale.set(1.9,1.9,1.9); }
-  else if (weather === 'panasterik') { sunMesh.position.set(8,6,-12); sunMesh.material.color.set(0xfff176); sunMesh.scale.set(2.0,2.0,2.0); }
-  else { sunMesh.position.set(8,6,-12); sunMesh.material.color.set(0xffd93d); sunMesh.scale.set(1.7,1.7,1.7); }
+  if (period === 'Senja') { sunMesh.position.set(14,7,-2); sunMesh.material.color.set(0xff7a3d); sunMesh.scale.set(2.1,2.1,2.1); /* v39 Senja: sisi timur, lebih tinggi dari v38 (10,5.5,-12) */ }
+  else if (weather === 'panasterik') { sunMesh.position.set(12,10,-2); sunMesh.material.color.set(0xfff176); sunMesh.scale.set(2.2,2.2,2.2); /* v39 Panas Terik */ }
+  else { sunMesh.position.set(12,10,-2); sunMesh.material.color.set(0xffd93d); sunMesh.scale.set(1.9,1.9,1.9); /* v39 Siang/Pagi/Sore */ }
   currentPeriod = period;
   document.getElementById('clockWeather').textContent = "Jam kantor: " + hh + ":" + mm + " — " + period + " • Cuaca: " + weatherLabel[weather];
   syncHud();
   updateWeatherOutdoorAudio();
 }
 applyTimeWeather(); setInterval(applyTimeWeather, 30000);
-function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v38"; }
+function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v40"; }
 updateHeaderClock(); setInterval(updateHeaderClock, 1000);
 window.cycleWeather = function(){ const order = ['cerah','mendung','hujan','salju','petir','badai','panasterik']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
 
@@ -984,11 +1065,12 @@ let charIdx = 0; let clockTime = 0;
 function chibi(person, x, z, ry, active, isOemar, baseY){
   const g = new THREE.Group();
   function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); }
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), -0.16,0.16,0);
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), 0.16,0.16,0);
+  function limb(mesh, px, py, pz, offY){ const gp = new THREE.Group(); gp.position.set(px,py,pz); mesh.position.set(0,offY,0); mesh.castShadow = true; gp.add(mesh); g.add(gp); return gp; }
+  const legL = limb(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), -0.16,0.32,0, -0.16);
+  const legR = limb(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), 0.16,0.32,0, -0.16);
   add(new THREE.Mesh(new THREE.CapsuleGeometry(0.3,0.3,4,12), matC(person.shirt)), 0,0.68,0);
-  add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(person.shirt)), -0.42,0.68,0);
-  add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(person.shirt)), 0.42,0.68,0);
+  const armL = limb(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(person.shirt)), -0.42,0.85,0, -0.17);
+  const armR = limb(new THREE.Mesh(new THREE.CapsuleGeometry(0.09,0.3,4,10), matC(person.shirt)), 0.42,0.85,0, -0.17);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.36,18,14), matC(person.skin)), 0,1.38,0);
   // Rambut per gender/gaya
   if (person.hairStyle === 'panjang') {
@@ -1013,7 +1095,7 @@ function chibi(person, x, z, ry, active, isOemar, baseY){
   const roleShort = {'Director':'Director','Manager & Producer':'Manager','Content & Script':'Content','Social Media Admin':'Socmed','Finance & Research':'Finance','Research & Fact-Check':'Research','Visual-Motion':'Visual','Content & Sosmed':'Content','Admin & Order':'Admin','Finance & Vendor':'Finance','Product Curation':'Produk','Distribution & Admin':'Distribusi','Produk':'Produk','Marketing':'Marketing','Admin':'Admin','Riset & Konten':'Riset','Socmed':'Socmed'}[person.role] || person.role.split(' ')[0];
   const lb = label1(person.nick, roleShort, segCode); lb.position.y = 2.0; g.add(lb);
   g.position.set(x,baseY||0,z); g.rotation.y = ry||0; g.userData.detail = person.key;
-  const entry = { g:g, home:{x:x,z:z,ry:ry||0,y:baseY||0}, homeY:baseY||0, state:'kerja', stateUntil: 8 + charIdx*3, queue:[], phase:Math.random()*6, active: !!active, idx: charIdx, isOemar: !!isOemar, key: person.key };
+  const entry = { g:g, legL:legL, legR:legR, armL:armL, armR:armR, home:{x:x,z:z,ry:ry||0,y:baseY||0}, homeY:baseY||0, state:'kerja', stateUntil: 8 + charIdx*3, queue:[], phase:Math.random()*6, active: !!active, idx: charIdx, isOemar: !!isOemar, key: person.key };
   g.userData.charEntry = entry; g.traverse(function(o){ o.userData.detail = person.key; o.userData.charEntry = entry; });
   scene.add(g); characters.push(entry); charIdx++; return g;
 }
@@ -1024,8 +1106,8 @@ function chibi(person, x, z, ry, active, isOemar, baseY){
 const P = function(nick, role, segment, key, shirt, hair, hairStyle, skin, gender){
   return {nick:nick, role:role, segment:segment, key:key, shirt:shirt, hair:hair, hairStyle:hairStyle, skin:skin, gender:gender};
 };
-const DEFAULT_EMPLOYEES = [{"key": "direktur", "nick": "Oemar", "full": "Oemar", "role": "Director", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#922b21", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [-9.0, -6.0], "ry": "PI", "isOemar": true, "profileBody": "<ul><li><b>Peran:</b> Director OSCR Works, meja direktur + laptop, sesekali keliling lewat pintu direktur ke Meeting 1 / open space / pantry / halaman.</li></ul>", "kpi": {"tepat": 90, "metrics": [{"name": "Keputusan tepat waktu", "target": 10, "actual": 8}, {"name": "Rapat dipimpin", "target": 8, "actual": 7}]}}, {"key": "lux", "nick": "Lux", "full": "Lux", "role": "Manager & Producer", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#1a5276", "hair": "#222222", "hairStyle": "pendek", "skin": "#ffd9a8", "floor": 1, "pos": [0.0, 3.5], "ry": "PI", "isOemar": false, "profileBody": "<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space dekat Meeting 2, aktivitas bergantian seperti tim lain.</li></ul>", "kpi": {"tepat": 92, "metrics": [{"name": "Produksi selesai", "target": 12, "actual": 10}, {"name": "Update status tepat waktu", "target": 12, "actual": 11}]}}, {"key": "nadia", "nick": "Nadia", "full": "Nadia Ayu Lestari", "role": "Content & Script", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "27", "born": "Yogyakarta, 14 Feb 1999", "origin": "Yogyakarta", "suku": "Jawa", "agama": "Islam", "karakter": "Teliti, suka analogi sehari-hari, perfeksionis ringan", "shirt": "#16a085", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [-11.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Naskah selesai", "target": 10, "actual": 7}, {"name": "Hook lolos QC", "target": 10, "actual": 8}]}}, {"key": "rizky", "nick": "Rizky", "full": "Rizky Aditya Pratama", "role": "Social Media Admin", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cowo", "age": "29", "born": "Bandung, 3 Jul 1997", "origin": "Bandung", "suku": "Sunda", "agama": "Islam", "karakter": "Santai, cepat tanggap komen, humor", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [-8.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 200, "actual": 165}]}}, {"key": "jess", "nick": "Jess", "full": "Jessica Tan", "role": "Finance & Research", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "26", "born": "Medan, 22 Nov 1999", "origin": "Medan", "suku": "Tionghoa", "agama": "Kristen Protestan", "karakter": "Analitis, tenang, suka angka", "shirt": "#8e44ad", "hair": "#222222", "hairStyle": "bun", "skin": "#ffd9a8", "floor": 1, "pos": [-7.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Laporan keuangan akurat", "target": 8, "actual": 6}, {"name": "Riset terverifikasi", "target": 10, "actual": 8}]}}, {"key": "fajar", "nick": "Fajar", "full": "Fajar Ramadhan", "role": "Research & Fact-Check", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "31", "born": "Makassar, 10 Jan 1995", "origin": "Makassar", "suku": "Bugis", "agama": "Islam", "karakter": "Penasaran sejarah, suka peta", "shirt": "#27ae60", "hair": "#111111", "hairStyle": "cepak", "skin": "#c68642", "floor": 1, "pos": [-4.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 82, "metrics": [{"name": "Fakta terverifikasi", "target": 8, "actual": 6}, {"name": "Peta akurat", "target": 6, "actual": 5}]}}, {"key": "maria", "nick": "Maria", "full": "Maria Simanjuntak", "role": "Content & Script", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cewe", "age": "28", "born": "Medan, 8 Mei 1998", "origin": "Medan", "suku": "Batak Toba", "agama": "Katolik", "karakter": "Storytelling kuat, suka riset arsip", "shirt": "#d64545", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 1, "pos": [-1.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Naskah storytelling selesai", "target": 10, "actual": 7}, {"name": "Arsip terverifikasi", "target": 8, "actual": 6}]}}, {"key": "made", "nick": "Made", "full": "I Made Wirawan", "role": "Visual-Motion", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "30", "born": "Denpasar, 19 Sep 1996", "origin": "Denpasar", "suku": "Bali", "agama": "Hindu", "karakter": "Visual, detail warna, tenang", "shirt": "#d4ac0d", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 1, "pos": [-10.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 80, "metrics": [{"name": "Visual selesai", "target": 8, "actual": 5}, {"name": "Render tepat waktu", "target": 8, "actual": 6}]}}, {"key": "ratna", "nick": "Ratna", "full": "Ratna Sari Dewi", "role": "Content & Sosmed", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cewe", "age": "25", "born": "Solo, 27 Apr 2001", "origin": "Solo", "suku": "Jawa", "agama": "Islam", "karakter": "Ramah, komunikatif, suka desain", "shirt": "#e74c8c", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [1.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 84, "metrics": [{"name": "Konten sosmed selesai", "target": 10, "actual": 6}, {"name": "Desain disetujui", "target": 8, "actual": 6}]}}, {"key": "yusuf", "nick": "Yusuf", "full": "Yusuf Hamdani", "role": "Admin & Order", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "32", "born": "Padang, 15 Des 1993", "origin": "Padang", "suku": "Minangkabau", "agama": "Islam", "karakter": "Tertib, cepat balas chat klien", "shirt": "#2e86c1", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [4.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 9}, {"name": "Chat dibalas cepat", "target": 50, "actual": 44}]}}, {"key": "kevin", "nick": "Kevin", "full": "Kevin Wijaya", "role": "Finance & Vendor", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "28", "born": "Pontianak, 6 Jun 1998", "origin": "Pontianak", "suku": "Tionghoa", "agama": "Buddha", "karakter": "Negosiator, teliti harga", "shirt": "#7f8c8d", "hair": "#111111", "hairStyle": "cepak", "skin": "#ffd9a8", "floor": 1, "pos": [3.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 89, "metrics": [{"name": "Vendor dinegosiasi", "target": 8, "actual": 6}, {"name": "Harga terverifikasi", "target": 10, "actual": 8}]}}, {"key": "intan", "nick": "Intan", "full": "Intan Permata", "role": "Research & Fact-Check", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "24", "born": "Palembang, 11 Mar 2002", "origin": "Palembang", "suku": "Melayu", "agama": "Islam", "karakter": "Detail, suka coba barang sampai paham", "shirt": "#ff6b9d", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 1, "pos": [7.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 83, "metrics": [{"name": "Produk terverifikasi", "target": 8, "actual": 5}, {"name": "Fakta produk dicek", "target": 10, "actual": 7}]}}, {"key": "yohan", "nick": "Yohan", "full": "Yohanis Wenda", "role": "Product Curation", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cowo", "age": "27", "born": "Jayapura, 2 Feb 1999", "origin": "Jayapura", "suku": "Papua", "agama": "Kristen Protestan", "karakter": "Praktis, suka barang berguna, jujur soal produk", "shirt": "#8a5a2b", "hair": "#111111", "hairStyle": "keriting", "skin": "#8d5524", "floor": 1, "pos": [9.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Produk terkurasi", "target": 8, "actual": 5}, {"name": "Rekomendasi konversi", "target": 6, "actual": 4}]}}, {"key": "lina", "nick": "Lina", "full": "Lina Marlina", "role": "Distribution & Admin", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "26", "born": "Banjarmasin, 30 Aug 2000", "origin": "Banjarmasin", "suku": "Banjar", "agama": "Islam", "karakter": "Gesit, rapi jadwal posting 5 platform", "shirt": "#00bcd4", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 1, "pos": [8.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Posting 5 platform tepat waktu", "target": 12, "actual": 8}, {"name": "Jadwal rapi", "target": 12, "actual": 10}]}}, {"key": "bima", "nick": "Bima", "full": "Bima Aryo Nugroho", "role": "Produk", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cowo", "age": "27", "born": "Semarang, 12 Mar 1999", "origin": "Semarang", "suku": "Jawa", "agama": "Islam", "karakter": "Telaten prototipe, suka uji main sampai seru — karakter fiktif simulasi", "shirt": "#1abc9c", "hair": "#111111", "hairStyle": "cepak", "skin": "#e8b88a", "floor": 2, "pos": [-11.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Prototipe game diuji", "target": 8, "actual": 6}, {"name": "Fitur produk selesai", "target": 10, "actual": 7}]}}, {"key": "alya", "nick": "Alya", "full": "Alya Putri Maharani", "role": "Marketing", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "25", "born": "Jakarta, 8 Jun 2001", "origin": "Jakarta", "suku": "Betawi", "agama": "Islam", "karakter": "Ceria, jago bikin konten main bareng — karakter fiktif simulasi", "shirt": "#9b59b6", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 2, "pos": [-8.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Konten promosi selesai", "target": 10, "actual": 7}, {"name": "Kampanye tepat waktu", "target": 8, "actual": 6}]}}, {"key": "tari", "nick": "Tari", "full": "Tari Wulandari", "role": "Admin", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "26", "born": "Malang, 20 Sep 2000", "origin": "Malang", "suku": "Jawa", "agama": "Kristen Protestan", "karakter": "Rapi, cepat balas order dan atur stok — karakter fiktif simulasi", "shirt": "#3498db", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 2, "pos": [-6.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 10}, {"name": "Data admin rapi", "target": 10, "actual": 8}]}}, {"key": "raka", "nick": "Raka", "full": "Raka Aditya Saputra", "role": "Riset & Konten", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cowo", "age": "26", "born": "Surabaya, 5 Apr 2000", "origin": "Surabaya", "suku": "Jawa", "agama": "Islam", "karakter": "Suka riset tools AI lalu coba sendiri sebelum dishare — karakter fiktif simulasi", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 2, "pos": [-1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Riset AI terverifikasi", "target": 8, "actual": 6}, {"name": "Konten selesai", "target": 10, "actual": 7}]}}, {"key": "nisa", "nick": "Nisa", "full": "Nisa Rahmawati", "role": "Socmed", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cewe", "age": "24", "born": "Cirebon, 14 Jan 2002", "origin": "Cirebon", "suku": "Sunda", "agama": "Islam", "karakter": "Gesit posting, suka bahasa sehari-hari — karakter fiktif simulasi", "shirt": "#f39c12", "hair": "#222222", "hairStyle": "ponytail", "skin": "#ffd9a8", "floor": 2, "pos": [1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 50, "actual": 38}]}}];
-const STATIC_SEGMENT_DATA = {"bk": {"title": "💰 Bedah Keuangan", "status": "SEGMEN — NADIA, RIZKY, JESS — #1 TAYANG", "cls": "", "body": "<ul><li><b>Tim:</b> Nadia (Content &amp; Script), Rizky (Social Media Admin), Jess (Finance &amp; Research).</li><li><b>Terbaru 27 Okt sekitar 14:51:</b> Slate #1 v2 Rp5.000 1996 vs 2026 SUDAH TAYANG di luar slot 18:00 atas perintah Oemar untuk menaikkan v2 sekarang — https://www.instagram.com/reel/De_XGXqD0E-/ — beras 2026 sekitar Rp14.700/kg dipertahankan.</li><li><b>Berikutnya:</b> #2 emas, slot 28 Okt 12:00, produksi jalan menyusul. Ritme 2 reels/hari 12:00 &amp; 18:00, story 15:00, carousel HOLD.</li></ul>"}, "jk": {"title": "🌍 Jejak Kuasa", "status": "SEGMEN — FAJAR, MARIA, MADE — GARIS WALLACE JALAN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Fajar (Research), Maria (Content &amp; Script), Made (Visual-Motion).</li><li><b>Terbaru 27 Okt 14:48:</b> Next content = GARIS WALLACE — riset + naskah jalan dulu, render full 3D setelah naskah di-ACC, vibes cerah daylight.</li><li><b>Sebelumnya:</b> Puncak Jaya + Cincin Api di-ACC semua 13:31; Keluar dari PBB v2 tayang manual 26 Okt. Menunggu verdict WW sebelum link share WW1 kedaluwarsa awal 29 Okt.</li></ul>"}, "ru": {"title": "💌 Rancang Undangan", "status": "SEGMEN — RATNA, YUSUF, KEVIN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Ratna (Content &amp; Sosmed), Yusuf (Admin &amp; Order), Kevin (Finance &amp; Vendor).</li><li><b>Terakhir:</b> Template digital v2 live di Vercel. Menunggu alamat Batu Aji untuk pin Maps.</li></ul>"}, "bta": {"title": "🛒 BaruTauAda", "status": "SEGMEN — INTAN, YOHAN, LINA", "cls": "hold", "body": "<ul><li><b>Tim:</b> Intan (Research), Yohan (Product Curation), Lina (Distribution &amp; Admin).</li><li><b>Terakhir:</b> Handle @barutauada dikunci 23 Okt, segmen Rumah &amp; Kos dipagar. Menunggu registrasi + link produk pertama.</li></ul>"}, "meeting1": {"title": "🤝 Meeting 1 — Bersekat + Pintu", "status": "RUANG RAPAT TERTUTUP", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat tertutup, meja bundar + TV dinding.</li></ul>"}, "meeting2": {"title": "🤝 Meeting 2 — Lounge Timur", "status": "RUANG RAPAT TERBUKA — BERKARPET", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat santai di lounge timur, meja bundar di atas karpet, TV di dinding timur.</li><li><b>Briefing:</b> Briefing pagi 08:00 oleh Oemar, briefing penutup 17:00 oleh Lux — semua berkumpul di sini, Oemar/Lux di depan, yang lain menghadap ke depan.</li></ul>"}, "tamu": {"title": "🛋️ Ruang Tamu", "status": "RUANG TAMU", "cls": "", "body": "<ul><li><b>Isi:</b> sofa teal + meja + karpet + lukisan + lampu.</li></ul>"}, "pantry": {"title": "☕ Pantry — Diperkecil", "status": "AREA MAKAN & ISTIRAHAT", "cls": "", "body": "<ul><li><b>Isi:</b> counter pendek, kulkas, meja bundar kecil + 3 stool (meja digeser ke barat supaya tidak nabrak toilet).</li></ul>"}, "toilet": {"title": "🚻 Toilet — Timur Pantry", "status": "TERTUTUP KECIL — PRIVASI", "cls": "", "body": "<ul><li><b>Lokasi baru:</b> timur pantry, jalan tembus dari pantry (meja pantry -> pintu barat toilet), tidak lagi di depan dekat Meeting 2.</li><li><b>Isi:</b> kloset + wastafel, pintu di sisi barat menghadap pantry.</li><li><b>Efek:</b> area Meeting 2 di selatan jadi jauh lebih luas, tidak ada lagi yang kerja dekat toilet.</li></ul>"}, "arsip": {"title": "🗄️ Arsip Dokumen", "status": "LEMARI FILING DOKUMEN", "cls": "", "body": "<ul><li><b>Isi:</b> lemari filing dokumen hijau tua di dinding barat &amp; timur, plus filing per segmen.</li></ul>"}, "aquarium": {"title": "🐠 Aquarium", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> 3 ikan berenang di tank dekat pintu masuk.</li></ul>"}, "cat": {"title": "🐱 Kucing Kantor", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Kucing oranye</b> duduk dekat Meeting 2, ekor goyang. Kadang ada tim yang datang main sama dia.</li></ul>"}, "yard": {"title": "🌳 Pekarangan", "status": "AREA LUAR — RAPI & HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> rumput, pohon, bunga di rumput selatan parkir, trotoar + jalan aspal, kotak surat di dekat pintu masuk, mobil, motor, sepeda, burung, kupu-kupu. Paving masuk dihapus karena sudah ada trotoar + jalan. Bed bunga tinggal 1 di selatan parkir, sisanya jadi jalan keluar kendaraan parkir -> jalan.</li></ul>"}};
+const DEFAULT_EMPLOYEES = [{"key": "direktur", "nick": "Oemar", "full": "Oemar", "role": "Director", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#922b21", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [-9.0, -6.0], "ry": "PI", "isOemar": true, "profileBody": "<ul><li><b>Peran:</b> Director OSCR Works, meja direktur + laptop, sesekali keliling lewat pintu direktur ke Meeting 1 / open space / pantry / halaman.</li></ul>", "kpi": {"tepat": 90, "metrics": [{"name": "Keputusan tepat waktu", "target": 10, "actual": 8}, {"name": "Rapat dipimpin", "target": 8, "actual": 7}]}}, {"key": "lux", "nick": "Lux", "full": "Lux", "role": "Manager & Producer", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#1a5276", "hair": "#222222", "hairStyle": "pendek", "skin": "#ffd9a8", "floor": 1, "pos": [3.0, 3.5], "ry": "PI", "isOemar": false, "profileBody": "<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space tengah-timur, aktivitas bergantian seperti tim lain.</li></ul>", "kpi": {"tepat": 92, "metrics": [{"name": "Produksi selesai", "target": 12, "actual": 10}, {"name": "Update status tepat waktu", "target": 12, "actual": 11}]}}, {"key": "nadia", "nick": "Nadia", "full": "Nadia Ayu Lestari", "role": "Content & Script", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "27", "born": "Yogyakarta, 14 Feb 1999", "origin": "Yogyakarta", "suku": "Jawa", "agama": "Islam", "karakter": "Teliti, suka analogi sehari-hari, perfeksionis ringan", "shirt": "#16a085", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [-11.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Naskah selesai", "target": 10, "actual": 7}, {"name": "Hook lolos QC", "target": 10, "actual": 8}]}}, {"key": "rizky", "nick": "Rizky", "full": "Rizky Aditya Pratama", "role": "Social Media Admin", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cowo", "age": "29", "born": "Bandung, 3 Jul 1997", "origin": "Bandung", "suku": "Sunda", "agama": "Islam", "karakter": "Santai, cepat tanggap komen, humor", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [8.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 200, "actual": 165}]}}, {"key": "jess", "nick": "Jess", "full": "Jessica Tan", "role": "Finance & Research", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "26", "born": "Medan, 22 Nov 1999", "origin": "Medan", "suku": "Tionghoa", "agama": "Kristen Protestan", "karakter": "Analitis, tenang, suka angka", "shirt": "#8e44ad", "hair": "#222222", "hairStyle": "bun", "skin": "#ffd9a8", "floor": 1, "pos": [-7.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Laporan keuangan akurat", "target": 8, "actual": 6}, {"name": "Riset terverifikasi", "target": 10, "actual": 8}]}}, {"key": "fajar", "nick": "Fajar", "full": "Fajar Ramadhan", "role": "Research & Fact-Check", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "31", "born": "Makassar, 10 Jan 1995", "origin": "Makassar", "suku": "Bugis", "agama": "Islam", "karakter": "Penasaran sejarah, suka peta", "shirt": "#27ae60", "hair": "#111111", "hairStyle": "cepak", "skin": "#c68642", "floor": 1, "pos": [-4.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 82, "metrics": [{"name": "Fakta terverifikasi", "target": 8, "actual": 6}, {"name": "Peta akurat", "target": 6, "actual": 5}]}}, {"key": "maria", "nick": "Maria", "full": "Maria Simanjuntak", "role": "Content & Script", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cewe", "age": "28", "born": "Medan, 8 Mei 1998", "origin": "Medan", "suku": "Batak Toba", "agama": "Katolik", "karakter": "Storytelling kuat, suka riset arsip", "shirt": "#d64545", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 1, "pos": [1.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Naskah storytelling selesai", "target": 10, "actual": 7}, {"name": "Arsip terverifikasi", "target": 8, "actual": 6}]}}, {"key": "made", "nick": "Made", "full": "I Made Wirawan", "role": "Visual-Motion", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "30", "born": "Denpasar, 19 Sep 1996", "origin": "Denpasar", "suku": "Bali", "agama": "Hindu", "karakter": "Visual, detail warna, tenang", "shirt": "#d4ac0d", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 1, "pos": [-11.5, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 80, "metrics": [{"name": "Visual selesai", "target": 8, "actual": 5}, {"name": "Render tepat waktu", "target": 8, "actual": 6}]}}, {"key": "ratna", "nick": "Ratna", "full": "Ratna Sari Dewi", "role": "Content & Sosmed", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cewe", "age": "25", "born": "Solo, 27 Apr 2001", "origin": "Solo", "suku": "Jawa", "agama": "Islam", "karakter": "Ramah, komunikatif, suka desain", "shirt": "#e74c8c", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [5.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 84, "metrics": [{"name": "Konten sosmed selesai", "target": 10, "actual": 6}, {"name": "Desain disetujui", "target": 8, "actual": 6}]}}, {"key": "yusuf", "nick": "Yusuf", "full": "Yusuf Hamdani", "role": "Admin & Order", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "32", "born": "Padang, 15 Des 1993", "origin": "Padang", "suku": "Minangkabau", "agama": "Islam", "karakter": "Tertib, cepat balas chat klien", "shirt": "#2e86c1", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [9.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 9}, {"name": "Chat dibalas cepat", "target": 50, "actual": 44}]}}, {"key": "kevin", "nick": "Kevin", "full": "Kevin Wijaya", "role": "Finance & Vendor", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "28", "born": "Pontianak, 6 Jun 1998", "origin": "Pontianak", "suku": "Tionghoa", "agama": "Buddha", "karakter": "Negosiator, teliti harga", "shirt": "#7f8c8d", "hair": "#111111", "hairStyle": "cepak", "skin": "#ffd9a8", "floor": 1, "pos": [4.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 89, "metrics": [{"name": "Vendor dinegosiasi", "target": 8, "actual": 6}, {"name": "Harga terverifikasi", "target": 10, "actual": 8}]}}, {"key": "intan", "nick": "Intan", "full": "Intan Permata", "role": "Research & Fact-Check", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "24", "born": "Palembang, 11 Mar 2002", "origin": "Palembang", "suku": "Melayu", "agama": "Islam", "karakter": "Detail, suka coba barang sampai paham", "shirt": "#ff6b9d", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 2, "pos": [6.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 83, "metrics": [{"name": "Produk terverifikasi", "target": 8, "actual": 5}, {"name": "Fakta produk dicek", "target": 10, "actual": 7}]}}, {"key": "yohan", "nick": "Yohan", "full": "Yohanis Wenda", "role": "Product Curation", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cowo", "age": "27", "born": "Jayapura, 2 Feb 1999", "origin": "Jayapura", "suku": "Papua", "agama": "Kristen Protestan", "karakter": "Praktis, suka barang berguna, jujur soal produk", "shirt": "#8a5a2b", "hair": "#111111", "hairStyle": "keriting", "skin": "#8d5524", "floor": 2, "pos": [8.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Produk terkurasi", "target": 8, "actual": 5}, {"name": "Rekomendasi konversi", "target": 6, "actual": 4}]}}, {"key": "lina", "nick": "Lina", "full": "Lina Marlina", "role": "Distribution & Admin", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "26", "born": "Banjarmasin, 30 Aug 2000", "origin": "Banjarmasin", "suku": "Banjar", "agama": "Islam", "karakter": "Gesit, rapi jadwal posting 5 platform", "shirt": "#00bcd4", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 2, "pos": [11.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Posting 5 platform tepat waktu", "target": 12, "actual": 8}, {"name": "Jadwal rapi", "target": 12, "actual": 10}]}}, {"key": "bima", "nick": "Bima", "full": "Bima Aryo Nugroho", "role": "Produk", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cowo", "age": "27", "born": "Semarang, 12 Mar 1999", "origin": "Semarang", "suku": "Jawa", "agama": "Islam", "karakter": "Telaten prototipe, suka uji main sampai seru — karakter fiktif simulasi", "shirt": "#1abc9c", "hair": "#111111", "hairStyle": "cepak", "skin": "#e8b88a", "floor": 2, "pos": [-11.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Prototipe game diuji", "target": 8, "actual": 6}, {"name": "Fitur produk selesai", "target": 10, "actual": 7}]}}, {"key": "alya", "nick": "Alya", "full": "Alya Putri Maharani", "role": "Marketing", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "25", "born": "Jakarta, 8 Jun 2001", "origin": "Jakarta", "suku": "Betawi", "agama": "Islam", "karakter": "Ceria, jago bikin konten main bareng — karakter fiktif simulasi", "shirt": "#9b59b6", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 2, "pos": [-8.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Konten promosi selesai", "target": 10, "actual": 7}, {"name": "Kampanye tepat waktu", "target": 8, "actual": 6}]}}, {"key": "tari", "nick": "Tari", "full": "Tari Wulandari", "role": "Admin", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "26", "born": "Malang, 20 Sep 2000", "origin": "Malang", "suku": "Jawa", "agama": "Kristen Protestan", "karakter": "Rapi, cepat balas order dan atur stok — karakter fiktif simulasi", "shirt": "#3498db", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 2, "pos": [-6.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 10}, {"name": "Data admin rapi", "target": 10, "actual": 8}]}}, {"key": "raka", "nick": "Raka", "full": "Raka Aditya Saputra", "role": "Riset & Konten", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cowo", "age": "26", "born": "Surabaya, 5 Apr 2000", "origin": "Surabaya", "suku": "Jawa", "agama": "Islam", "karakter": "Suka riset tools AI lalu coba sendiri sebelum dishare — karakter fiktif simulasi", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 2, "pos": [-1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Riset AI terverifikasi", "target": 8, "actual": 6}, {"name": "Konten selesai", "target": 10, "actual": 7}]}}, {"key": "nisa", "nick": "Nisa", "full": "Nisa Rahmawati", "role": "Socmed", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cewe", "age": "24", "born": "Cirebon, 14 Jan 2002", "origin": "Cirebon", "suku": "Sunda", "agama": "Islam", "karakter": "Gesit posting, suka bahasa sehari-hari — karakter fiktif simulasi", "shirt": "#f39c12", "hair": "#222222", "hairStyle": "ponytail", "skin": "#ffd9a8", "floor": 2, "pos": [1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 50, "actual": 38}]}}];
+const STATIC_SEGMENT_DATA = {"bk": {"title": "💰 Bedah Keuangan", "status": "SEGMEN — NADIA, RIZKY, JESS — #1 TAYANG", "cls": "", "body": "<ul><li><b>Tim:</b> Nadia (Content &amp; Script), Rizky (Social Media Admin), Jess (Finance &amp; Research).</li><li><b>Terbaru 27 Okt sekitar 14:51:</b> Slate #1 v2 Rp5.000 1996 vs 2026 SUDAH TAYANG di luar slot 18:00 atas perintah Oemar untuk menaikkan v2 sekarang — https://www.instagram.com/reel/De_XGXqD0E-/ — beras 2026 sekitar Rp14.700/kg dipertahankan.</li><li><b>Berikutnya:</b> #2 emas, slot 28 Okt 12:00, produksi jalan menyusul. Ritme 2 reels/hari 12:00 &amp; 18:00, story 15:00, carousel HOLD.</li></ul>"}, "jk": {"title": "🌍 Jejak Kuasa", "status": "SEGMEN — FAJAR, MARIA, MADE — GARIS WALLACE JALAN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Fajar (Research), Maria (Content &amp; Script), Made (Visual-Motion).</li><li><b>Terbaru 27 Okt 14:48:</b> Next content = GARIS WALLACE — riset + naskah jalan dulu, render full 3D setelah naskah di-ACC, vibes cerah daylight.</li><li><b>Sebelumnya:</b> Puncak Jaya + Cincin Api di-ACC semua 13:31; Keluar dari PBB v2 tayang manual 26 Okt. Menunggu verdict WW sebelum link share WW1 kedaluwarsa awal 29 Okt.</li></ul>"}, "ru": {"title": "💌 Rancang Undangan", "status": "SEGMEN — RATNA, YUSUF, KEVIN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Ratna (Content &amp; Sosmed), Yusuf (Admin &amp; Order), Kevin (Finance &amp; Vendor).</li><li><b>Terakhir:</b> Template digital v2 live di Vercel. Menunggu alamat Batu Aji untuk pin Maps.</li></ul>"}, "bta": {"title": "🛒 BaruTauAda", "status": "SEGMEN — INTAN, YOHAN, LINA", "cls": "hold", "body": "<ul><li><b>Tim:</b> Intan (Research), Yohan (Product Curation), Lina (Distribution &amp; Admin).</li><li><b>Terakhir:</b> Handle @barutauada dikunci 23 Okt, segmen Rumah &amp; Kos dipagar. Menunggu registrasi + link produk pertama.</li></ul>"}, "meeting1": {"title": "🤝 Meeting 1 — Bersekat + Pintu", "status": "RUANG RAPAT TERTUTUP", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat tertutup, meja bundar + TV dinding.</li></ul>"}, "meeting2": {"title": "🤝 Meeting 2 — Lounge Timur", "status": "RUANG RAPAT TERBUKA — BERKARPET", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat santai di lounge timur, meja bundar di atas karpet, TV di dinding timur.</li><li><b>Briefing:</b> Briefing pagi 08:00 oleh Oemar, briefing penutup 17:00 oleh Lux — semua berkumpul di sini, Oemar/Lux di depan, yang lain menghadap ke depan.</li></ul>"}, "tamu": {"title": "🛋️ Ruang Tamu", "status": "RUANG TAMU", "cls": "", "body": "<ul><li><b>Isi:</b> sofa teal + meja + karpet + lukisan + lampu.</li></ul>"}, "pantry": {"title": "☕ Pantry — Diperkecil", "status": "AREA MAKAN & ISTIRAHAT", "cls": "", "body": "<ul><li><b>Isi:</b> counter pendek, kulkas, meja bundar kecil + 3 stool (meja digeser ke barat supaya tidak nabrak toilet).</li></ul>"}, "toilet": {"title": "🚻 Toilet — Timur Pantry", "status": "TERTUTUP KECIL — PRIVASI", "cls": "", "body": "<ul><li><b>Lokasi baru:</b> timur pantry, jalan tembus dari pantry (meja pantry -> pintu barat toilet), tidak lagi di depan dekat Meeting 2.</li><li><b>Isi:</b> kloset + wastafel, pintu di sisi barat menghadap pantry.</li><li><b>Efek:</b> area Meeting 2 di selatan jadi jauh lebih luas, tidak ada lagi yang kerja dekat toilet.</li></ul>"}, "arsip": {"title": "🗄️ Arsip Dokumen", "status": "LEMARI FILING DOKUMEN", "cls": "", "body": "<ul><li><b>Isi:</b> lemari filing dokumen hijau tua di dinding barat &amp; timur, plus filing per segmen.</li></ul>"}, "aquarium": {"title": "🐠 Aquarium", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> 3 ikan berenang di tank dekat pintu masuk.</li></ul>"}, "cat": {"title": "🐱 Kucing Kantor", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Kucing oranye</b> duduk dekat Meeting 2, ekor goyang. Kadang ada tim yang datang main sama dia.</li></ul>"}, "yard": {"title": "🌳 Pekarangan", "status": "AREA LUAR — RAPI & HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> rumput, pohon, bunga di rumput selatan parkir, trotoar + jalan aspal, kotak surat di dekat pintu masuk, mobil, motor, sepeda, burung, kupu-kupu. Paving masuk dihapus karena sudah ada trotoar + jalan. Bed bunga tinggal 1 di selatan parkir, sisanya jadi jalan keluar kendaraan parkir -> jalan.</li></ul>"}, "rakbuku": {"title": "📚 Rak Buku Lantai 2", "status": "RAK BUKU — LANTAI 2", "cls": "", "body": "<ul><li><b>Lokasi:</b> menempel dinding timur lantai 2, di utara aquarium lantai 2 (z -5..-1).</li><li><b>Isi:</b> rak panjang 4 meter, 3 baris, buku warna-warni.</li><li><b>Aktivitas:</b> karyawan kadang membaca di depan rak ini (state Baca arsip / rak buku).</li></ul>"}};
 var SITE_CONFIG = null;
 var ACTIVE_EMPLOYEES = null;
 function hexToInt(h){
@@ -1109,9 +1191,9 @@ function applyConfigToSite(cfg){
   if (cfg.officeName && cfg.officeName !== 'OSCR Works - Digital Office') {
     var h1 = document.getElementById('officeTitle');
     if (h1) h1.textContent = cfg.officeName;
-    document.title = cfg.officeName + ' — Kantor Digital 3D v38';
+    document.title = cfg.officeName + ' — Kantor Digital 3D v40';
     var ft = document.getElementById('siteFooter');
-    if (ft) ft.textContent = cfg.officeName + ' • v38 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
+    if (ft) ft.textContent = cfg.officeName + ' • v40 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
   }
   if (cfg.soundcloudUrl && typeof cfg.soundcloudUrl === 'string' && cfg.soundcloudUrl.indexOf('https://soundcloud.com/') === 0 && cfg.soundcloudUrl !== SOUNDCLOUD_URL) {
     SOUNDCLOUD_URL = cfg.soundcloudUrl;
@@ -1143,7 +1225,7 @@ function applyConfigToSite(cfg){
     if (typeof viewNames !== 'undefined') {
       Object.keys(byKey2).forEach(function(k){
         var sg = byKey2[k];
-        if (k === 'ludo' || k === 'okisadma') viewNames[k] = sg.name + ' (Lantai 2)';
+        if (k === 'ludo' || k === 'okisadma' || k === 'bta') viewNames[k] = sg.name + ' (Lantai 2)';
         else viewNames[k] = sg.name;
       });
     }
@@ -1220,13 +1302,162 @@ function loadAndStartSite(){
 }
 /* ===== v37 CONFIG END ===== */
 
-const stateLabel = { kerja:'Kerja di meja', ngobrol:'Ngobrol di Meeting 2', pantry:'Istirahat di pantry', halaman:'Jalan di halaman (lagi kosong)', kucing:'Main sama kucing', meeting1:'Rapat di Meeting 1', meeting2:'Ngobrol di Meeting 2', toilet:'Ke toilet (timur pantry)', tamu:'Duduk di sofa Ruang Tamu', lantai2:'Di Lantai 2 (ekspansi)', briefing:'Briefing pagi — kumpul di Meeting 2, dengar Oemar', closing:'Briefing penutup — kumpul di Meeting 2, dengar Lux' };
+const stateLabel = { kerja:'Kerja di meja', ngobrol:'Ngobrol di Meeting 2', pantry:'Istirahat di pantry', makan:'Makan/minum di Pantry', halaman:'Jalan di halaman', kucing:'Main sama kucing', meeting1:'Rapat di Meeting 1', meeting2:'Ngobrol di Meeting 2', toilet:'Ke toilet (timur pantry)', tamu:'Duduk di sofa Ruang Tamu', lantai2:'Di Lantai 2 (ekspansi)', briefing:'Briefing pagi — kumpul di Meeting 2, dengar Oemar', closing:'Briefing penutup — kumpul di Meeting 2, dengar Lux', tv:'Nonton TV', arsip:'Baca arsip / rak buku', aquarium:'Lihat aquarium', lounge2:'Nongkrong di lounge lantai 2', grup_meeting1:'Rapat di Meeting 1', grup_meeting2:'Ngobrol lintas segmen di Meeting 2', grup_pantry:'Ngobrol di Pantry', grup_tamu:'Duduk di Ruang Tamu', grup_lounge2:'Nongkrong di lounge lantai 2', grup_meet2:'Rapat di meja meeting lantai 2', grup:'Kegiatan grup lintas segmen' };
 // Rute tangga v24 — waypoint [x,z,y]; y naik/turun bertahap, bukan teleport. Pendekatan lantai 1 dari koridor timur z=6.5 (x -7..-10), bukan dari selatan lewat meja Made.
 const STAIR_UP = [[-7,6.5,0],[-10,6.5,0],[-10,5.833,0.3],[-10,5.5,0.6],[-10,5.167,0.9],[-10,4.833,1.2],[-10,4.5,1.5],[-10,4.167,1.8],[-10,3.833,2.1],[-10,3.5,2.4],[-10,3.167,2.7],[-10,2.833,3.0],[-10,2.5,3.3],[-10,2.167,3.6],[-10,1,3.6]];
 const STAIR_DOWN = [[-10,1,3.6],[-10,2.167,3.6],[-10,2.5,3.3],[-10,2.833,3.0],[-10,3.167,2.7],[-10,3.5,2.4],[-10,3.833,2.1],[-10,4.167,1.8],[-10,4.5,1.5],[-10,4.833,1.2],[-10,5.167,0.9],[-10,5.5,0.6],[-10,5.833,0.3],[-10,6.5,0],[-7,6.5,0]];
 const EXP_PTS = [[-8,-4],[0,-4],[8,-4]];
 function stairUpQueue(){ return STAIR_UP.map(function(p){ return [p[0],p[1],p[2]]; }); }
 function stairDownQueue(){ return STAIR_DOWN.map(function(p){ return [p[0],p[1],p[2]]; }); }
+
+// ===== v39 PATHFINDING GRID (sel 0.25 m, BFS — sel 0.5 m + margin 0.35 m terbukti menutup celah antar-meja 0.8 m sehingga rute direktur->pantry gagal dan rute ke Meeting 1 muter ke timur; grid 0.25 m + margin perabot 0.2 m membuka celah itu) — karakter & kucing & pemain POV tidak menembus tembok/perabot/TV =====
+// Rintangan = rect [x1,z1,x2,z2] (sudah termasuk margin ~0.35 m). Stool/kursi SENGAJA bukan rintangan
+// (karakter memang berdiri DI stool saat rapat/ngobrol); tanaman kecil juga dilewati supaya koridor tidak buntu.
+// Celah yang HARUS tetap terbuka: pintu depan x -1..1 (z=9), pintu Meeting 1 x -1.9..-0.1 (z=-2),
+// pintu direktur x -9.1..-8.1 (z=-2), celah toilet z -3.2..-2.4 (x=10.5).
+function pfRects(floor){
+  if (floor === 2) {
+    const r = [];
+    r.push([-13,-9.25,13,-8.75]); r.push([-13.25,-9,-12.75,9]); r.push([12.75,-9,13.25,9]); r.push([-13,8.75,13,9.25]);
+    r.push([-4.4,-9,-3.6,0]); r.push([3.6,-9,4.4,0]);
+    r.push([-11.5,2,-8.5,6]); // lubang tangga: jangan jalan di atasnya (tangga dilewati lewat stair queue, bukan grid)
+    [[-11,-5.2],[-8.5,-5.2],[-6,-5.2],[-1.5,-5.2],[1.5,-5.2],[6,-5.2],[8.5,-5.2],[11,-5.2]].forEach(function(c){ r.push([c[0]-1.3,c[1]-0.8,c[0]+1.3,c[1]+0.8]); });
+    r.push([2.65,5.65,5.35,8.35]); // meja meeting lt2
+    r.push([-1.1,7.35,1.1,8.25]); // sofa lounge lt2
+    r.push([-1.25,4.45,1.25,5.55]); // TV lt2 BARU (0,5.0) + konsol
+    r.push([11.6,0.65,13.2,3.35]); // aquarium lt2
+    r.push([12.3,-5.3,13.1,-0.7]); // rak buku lt2 BARU
+    [[-12.4,-8.2],[-12.4,-6.8]].forEach(function(c){ r.push([c[0]-0.7,c[1]-0.45,c[0]+0.7,c[1]+0.45]); });
+    return r;
+  }
+  const r = [];
+  r.push([-13,-9.25,13,-8.75]); r.push([-13.25,-9,-12.75,11]); r.push([12.75,-9,13.25,11]);
+  r.push([-13,8.75,-1,9.25]); r.push([1,8.75,13,9.25]); // dinding depan, celah pintu -1..1
+  r.push([-5.4,-9,-4.6,-2]); r.push([2.6,-9,3.4,-2]); // partisi dalam
+  r.push([-5,-2.25,-1.9,-1.75]); r.push([-0.1,-2.25,3,-1.75]); // dinding selatan Meeting 1, celah -1.9..-0.1
+  r.push([-13,-2.25,-9.1,-1.75]); r.push([-8.1,-2.25,-5,-1.75]); // dinding selatan direktur, celah -9.1..-8.1
+  r.push([10.375,-4.5,10.625,-3.2]); r.push([10.375,-2.4,10.625,-1.5]); // dinding barat toilet, celah -3.2..-2.4
+  r.push([10.5,-4.625,13,-4.375]); r.push([10.5,-1.625,13,-1.375]); // dinding utara/selatan toilet
+  r.push([10.5,-3.25,11.5,-2.85]); // daun pintu toilet terbuka (di dalam toilet, celah tetap lewat)
+  r.push([-11,2,-9,6]); // zona tangga lt1: dilewati lewat stair queue, bukan jalan datar menembus anak tangga
+  [[-11.5,0.5],[-4.5,0.5],[1,0.5],[5,0.5],[9,0.5],[3,2.5],[-11.5,7.5],[-7,7.5],[4,7.5],[8,7.5],[-9,-7]].forEach(function(c){ r.push([c[0]-1.3,c[1]-0.8,c[0]+1.3,c[1]+0.8]); });
+  [[-1,-5.5],[9,-5],[9,4]].forEach(function(c){ r.push([c[0]-1.35,c[1]-1.35,c[0]+1.35,c[1]+1.35]); }); // meja bundar
+  r.push([3.75,-8.0,6.25,-7.0]); r.push([4.15,-6.75,5.85,-5.65]); // sofa + meja tamu
+  [[-12.3,-1.2],[-6.8,-1.2],[5.8,-1.2]].forEach(function(c){ r.push([c[0]-0.65,c[1]-0.45,c[0]+0.65,c[1]+0.45]); });
+  [[-12.4,3],[-12.4,5],[12.4,7],[12.4,-6]].forEach(function(c){ r.push([c[0]-0.7,c[1]-0.45,c[0]+0.7,c[1]+0.45]); });
+  r.push([-13.2,-8.65,-11.4,-7.75]); r.push([11.1,7.55,12.9,8.45]); // shelf
+  r.push([-5.55,6.65,-2.45,8.35]); // aquarium lt1
+  r.push([7.4,-9.15,11.6,-7.65]); r.push([11.55,-8.9,12.85,-7.5]); // counter pantry + kulkas
+  r.push([-10.25,-9.1,-7.75,-8.45]); r.push([-2.25,-9.1,0.25,-8.45]); // TV dinding direktur + Meeting 1
+  r.push([12.3,2.75,13.3,5.25]); // TV timur Meeting 2
+  r.push([-13.0,-4.4,-11.8,-2.6]); // lemari direktur
+  return r;
+}
+function pfInRect(x, z, rects){ for (let i = 0; i < rects.length; i++) { const q = rects[i]; if (x >= q[0] && x <= q[2] && z >= q[1] && z <= q[3]) return true; } return false; }
+function pfBlocked(floor, x, z){
+  if (floor === 2) { if (x < -12.9 || x > 12.9 || z < -8.9 || z > 8.9) return true; }
+  else { if (x < -12.9 || x > 12.9 || z < -8.9 || z > 10.9) return true; }
+  return pfInRect(x, z, pfRects(floor));
+}
+function pfGrid(floor){ return floor === 2 ? { nx: 104, nz: 72, z0: -9 } : { nx: 104, nz: 80, z0: -9 }; }
+function pfCellXY(floor, ix, iz){ const g = pfGrid(floor); return [-13 + (ix + 0.5) * 0.25, g.z0 + (iz + 0.5) * 0.25]; }
+function pfCellOf(floor, x, z){ const g = pfGrid(floor); return [Math.floor((x + 13) / 0.25), Math.floor((z - g.z0) / 0.25)]; }
+function pfCellBlocked(floor, ix, iz){
+  const g = pfGrid(floor);
+  if (ix < 0 || ix >= g.nx || iz < 0 || iz >= g.nz) return true;
+  const c = pfCellXY(floor, ix, iz);
+  return pfBlocked(floor, c[0], c[1]);
+}
+function pfSnapTarget(floor, tx, tz){
+  const cell = pfCellOf(floor, tx, tz);
+  if (!pfCellBlocked(floor, cell[0], cell[1])) return pfCellXY(floor, cell[0], cell[1]);
+  for (let rad = 1; rad <= 8; rad++) {
+    for (let dx = -rad; dx <= rad; dx++) for (let dz = -rad; dz <= rad; dz++) {
+      if (Math.max(Math.abs(dx), Math.abs(dz)) !== rad) continue;
+      if (!pfCellBlocked(floor, cell[0] + dx, cell[1] + dz)) return pfCellXY(floor, cell[0] + dx, cell[1] + dz);
+    }
+  }
+  return null;
+}
+function pfRoute(floor, sx, sz, tx, tz){
+  const g = pfGrid(floor);
+  const start = pfCellOf(floor, sx, sz), targetXY = pfSnapTarget(floor, tx, tz);
+  if (!targetXY) return null;
+  const goal = pfCellOf(floor, targetXY[0], targetXY[1]);
+  const key = function(ix, iz){ return ix + ',' + iz; };
+  const prev = {}; const seen = {}; const q = [[start[0], start[1]]]; seen[key(start[0], start[1])] = true;
+  let found = (start[0] === goal[0] && start[1] === goal[1]);
+  while (q.length && !found) {
+    const cur = q.shift();
+    const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+    for (let d = 0; d < 4; d++) {
+      const nx = cur[0] + dirs[d][0], nz = cur[1] + dirs[d][1];
+      if (seen[key(nx, nz)]) continue;
+      if (pfCellBlocked(floor, nx, nz)) continue;
+      seen[key(nx, nz)] = true; prev[key(nx, nz)] = cur; q.push([nx, nz]);
+      if (nx === goal[0] && nz === goal[1]) { found = true; break; }
+    }
+  }
+  if (!found) return null;
+  const cells = []; let cur = goal;
+  while (!(cur[0] === start[0] && cur[1] === start[1])) { cells.push(cur); cur = prev[key(cur[0], cur[1])]; if (!cur) return null; }
+  cells.reverse();
+  return cells.map(function(c){ return pfCellXY(floor, c[0], c[1]); });
+}
+function pfSegClear(floor, x1, z1, x2, z2){
+  const dist = Math.hypot(x2 - x1, z2 - z1); const steps = Math.max(1, Math.ceil(dist / 0.125));
+  for (let i = 1; i < steps; i++) { const t = i / steps; if (pfBlocked(floor, x1 + (x2 - x1) * t, z1 + (z2 - z1) * t)) return false; }
+  return true;
+}
+function routePath(floor, sx, sz, tx, tz){
+  const raw = pfRoute(floor, sx, sz, tx, tz);
+  if (!raw) return null;
+  const pts = [[sx, sz]].concat(raw);
+  const out = []; let i = 0;
+  while (i < pts.length - 1) {
+    let j = pts.length - 1;
+    while (j > i + 1 && !pfSegClear(floor, pts[i][0], pts[i][1], pts[j][0], pts[j][1])) j--;
+    out.push([Math.round(pts[j][0] * 100) / 100, Math.round(pts[j][1] * 100) / 100]);
+    i = j;
+  }
+  return out;
+}
+// Haluskan antrean lama: tiap segmen satu lantai di-route lewat grid; segmen tangga (y berubah /
+// koridor tangga x -11.5..-8.5, z 0..7) dibiarkan apa adanya; waypoint warisan halaman (-2.5,7.5)/(-2.5,9.5)
+// dibuang karena grid sudah me-route lewat celah pintu depan. Bila rute gagal -> segmen lurus lama (fallback).
+function smoothQueue(q, sx, sz, sy){
+  const out = []; let cx = sx, cz = sz, cy = sy;
+  q.forEach(function(wp){
+    if (wp[0] === -2.5 && (wp[1] === 7.5 || wp[1] === 9.5)) return;
+    const wy = (wp.length > 2 && typeof wp[2] === 'number') ? wp[2] : cy;
+    const inStair = (cx >= -11.5 && cx <= -8.5 && cz >= 0 && cz <= 7) || (wp[0] >= -11.5 && wp[0] <= -8.5 && wp[1] >= 0 && wp[1] <= 7);
+    if (Math.abs(wy - cy) > 0.01 || inStair) { out.push(wp); cx = wp[0]; cz = wp[1]; cy = wy; return; }
+    const floor = (cy > 1) ? 2 : 1;
+    const rt = routePath(floor, cx, cz, wp[0], wp[1]);
+    if (rt && rt.length) { rt.forEach(function(p){ if (wp.length > 2) out.push([p[0],p[1],wp[2]]); else out.push([p[0],p[1]]); }); }
+    else out.push(wp);
+    cx = wp[0]; cz = wp[1]; cy = wy;
+  });
+  return out;
+}
+// Antrean ke satu titik dengan pindah lantai bila perlu (dipakai grup + kucing + kembali-ke-meja).
+function buildQueueTo(entry, tx, tz, targetFloor){
+  const cur = entry.g.position; const curFloor = (cur.y > 1) ? 2 : 1;
+  if (curFloor === targetFloor) {
+    const rt = routePath(curFloor, cur.x, cur.z, tx, tz);
+    if (rt) return rt.map(function(p){ return (targetFloor === 2) ? [p[0],p[1],3.6] : [p[0],p[1]]; });
+    return targetFloor === 2 ? [[tx,tz,3.6]] : [[tx,tz]];
+  }
+  if (targetFloor === 2) {
+    const q = stairUpQueue(); const rt = routePath(2, -10, 1, tx, tz);
+    if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else q.push([-10,1,3.6],[tx,tz,3.6]);
+    return q;
+  }
+  const q = stairDownQueue(); const rt = routePath(1, -7, 6.5, tx, tz);
+  if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); }); else q.push([-7,6.5],[tx,tz]);
+  return q;
+}
+
 function buildOemarQueue(entry, target, targetKey){
   const cur = entry.g.position;
    if (cur.y > 1) {
@@ -1260,6 +1491,20 @@ function buildOemarQueue(entry, target, targetKey){
   else q.push(target);
   return q;
 }
+const _buildOemarQueueOrig = buildOemarQueue;
+buildOemarQueue = function(entry, target, targetKey){ const cur = entry.g.position; return smoothQueue(_buildOemarQueueOrig(entry, target, targetKey), cur.x, cur.z, cur.y); };
+// Target "main sama kucing" memakai posisi kucing TERBARU (kucing sekarang jalan-jalan), bukan titik lama.
+function liveCatTarget(entry){
+  try {
+    const cats = globalThis.__CATS || [];
+    if (!cats.length) return null;
+    let cat = null;
+    if (entry.homeY > 1) cat = cats.filter(function(cc){ return cc.floor === 2; })[0] || cats[0];
+    else cat = cats.filter(function(cc){ return cc.floor === 1; })[0] || cats[0];
+    const p = cat.g.position;
+    return { target: [p.x, p.z + 1.0], face: [p.x, p.z] };
+  } catch(e) { return null; }
+}
 function pickState(entry){
   let s, target, targetKey;
   if (entry.isOemar) {
@@ -1274,7 +1519,9 @@ function pickState(entry){
     else if (r < 0.97) { s='lantai2'; const ep = EXP_PTS[Math.floor(Math.random()*EXP_PTS.length)]; target=[ep[0],ep[1]]; targetKey='lantai2'; }
     else { s='tamu'; target=[4.5,-6.8]; targetKey='tamu'; }
     entry.state = s;
-    const dur = { kerja: 20 + Math.random()*10, meeting1: 12 + Math.random()*5, meeting2: 10 + Math.random()*5, pantry: 10 + Math.random()*5, halaman: 12 + Math.random()*6, kucing: 10 + Math.random()*4, toilet: 6 + Math.random()*4, tamu: 10 + Math.random()*5, lantai2: 10 + Math.random()*5 };
+    const dur = { kerja: 20 + Math.random()*20, meeting1: 25 + Math.random()*20, meeting2: 25 + Math.random()*20, pantry: 20 + Math.random()*15, halaman: 20 + Math.random()*15, kucing: 15 + Math.random()*10, toilet: 8 + Math.random()*6, tamu: 20 + Math.random()*15, lantai2: 20 + Math.random()*15 };
+    entry.faceTarget = null; entry.catFace = null;
+    if (s === 'kucing') { const ct = liveCatTarget(entry); if (ct) { target = ct.target; entry.catFace = ct.face; } }
     entry.stateUntil = clockTime + dur[s];
     const cur = entry.g.position;
     if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) entry.queue = [];
@@ -1282,12 +1529,13 @@ function pickState(entry){
     return;
   }
   const r = Math.random();
-  if (r < 0.35) s = 'kerja'; else if (r < 0.5) s = 'ngobrol'; else if (r < 0.62) s = 'pantry'; else if (r < 0.74) s = 'halaman'; else if (r < 0.84) s = 'kucing'; else if (r < 0.90) s = 'toilet'; else if (r < 0.94) s = 'lantai2'; else s = 'tamu';
+  entry.faceTarget = null; entry.catFace = null; entry.targetFloor = 1;
+  if (r < 0.28) s = 'kerja'; else if (r < 0.40) s = 'ngobrol'; else if (r < 0.50) s = 'pantry'; else if (r < 0.58) s = 'tv'; else if (r < 0.66) s = 'arsip'; else if (r < 0.73) s = 'aquarium'; else if (r < 0.82) s = 'halaman'; else if (r < 0.89) s = 'kucing'; else if (r < 0.93) s = 'toilet'; else if (r < 0.97) s = 'lantai2'; else s = 'tamu';
   if (s === entry.state) s = 'kerja';
   entry.state = s;
-  const dur = { kerja: 15 + Math.random()*10, ngobrol: 10 + Math.random()*5, pantry: 10 + Math.random()*5, halaman: 12 + Math.random()*6, kucing: 10 + Math.random()*4, toilet: 6 + Math.random()*4, tamu: 10 + Math.random()*5, lantai2: 10 + Math.random()*5 };
+  const dur = { kerja: 20 + Math.random()*20, ngobrol: 25 + Math.random()*20, pantry: 20 + Math.random()*15, tv: 20 + Math.random()*15, arsip: 15 + Math.random()*10, aquarium: 15 + Math.random()*10, halaman: 20 + Math.random()*15, kucing: 15 + Math.random()*10, toilet: 8 + Math.random()*6, tamu: 20 + Math.random()*15, lantai2: 20 + Math.random()*15 };
   entry.stateUntil = clockTime + dur[s];
-  const chatPts = [[9,2.6],[7.5,4],[10.5,4],[9,5.4]]; const pantryPts = [[9,-3.6],[7.8,-5],[9,-6.5]]; const yardPts = [[-4.5,9.5],[3.5,9.5],[0,9.8],[-1,9.8]]; const catPts = [[4,7],[6,7],[5,6.5]]; const toiletPts = [[11.5,-3.5],[12.2,-2.5],[11.5,-2.0],[12.2,-3.8]]; const tamuPts = [[4.5,-6.8],[5.5,-6.8]];
+  const chatPts = [[9,2.6],[7.5,4],[10.5,4],[9,5.4]]; const pantryPts = [[9,-3.6],[7.8,-5],[9,-6.5]]; const yardPts = [[-4.5,9.5],[3.5,9.5],[0,9.8],[-1,9.8]]; const toiletPts = [[11.5,-3.5],[12.2,-2.5],[11.5,-2.0],[12.2,-3.8]]; const tamuPts = [[4.5,-6.8],[5.5,-6.8]]; const arsipPtsF1 = [[-11.4,3],[-11.4,5]]; const arsipFacesF1 = [[-12.4,3],[-12.4,5]];
   if (s === 'kerja') target = [entry.home.x, entry.home.z];
   else if (s === 'ngobrol') target = chatPts[entry.idx % chatPts.length];
   else if (s === 'pantry') target = pantryPts[entry.idx % pantryPts.length];
@@ -1295,26 +1543,31 @@ function pickState(entry){
   else if (s === 'toilet') target = toiletPts[entry.idx % toiletPts.length];
   else if (s === 'tamu') target = tamuPts[entry.idx % tamuPts.length];
    else if (s === 'lantai2') { const ep = EXP_PTS[Math.floor(Math.random()*EXP_PTS.length)]; target = [ep[0],ep[1]]; }
-  else target = catPts[entry.idx % catPts.length];
+  else if (s === 'tv') { if (entry.homeY > 1) { target = [0,7.0]; entry.faceTarget = [0,5.0]; entry.targetFloor = 2; } else { target = [11,4]; entry.faceTarget = [12.8,4]; entry.targetFloor = 1; } }
+  else if (s === 'arsip') { if (entry.homeY > 1) { target = [11.4,-3]; entry.faceTarget = [12.7,-3]; entry.targetFloor = 2; } else { const ai2 = entry.idx % arsipPtsF1.length; target = arsipPtsF1[ai2]; entry.faceTarget = arsipFacesF1[ai2]; entry.targetFloor = 1; } }
+  else if (s === 'aquarium') { if (entry.homeY > 1) { target = [11.2,2.0]; entry.faceTarget = [12.4,2.0]; entry.targetFloor = 2; } else { target = [-4,6.3]; entry.faceTarget = [-4,7.5]; entry.targetFloor = 1; } }
+  else { const ct = liveCatTarget(entry); if (ct) { target = ct.target; entry.catFace = ct.face; } else target = [4,7]; }
    const cur = entry.g.position;
-   if (entry.homeY > 1 && s === 'lantai2') { const pts = [[4.0,7.0],[0,7.0]]; const tp = pts[entry.idx % pts.length]; if (cur.y > 1) { entry.queue = [[cur.x,1.5,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]]; } else { const qu0 = stairUpQueue(); qu0.push([-10,1,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]); entry.queue = qu0; } return; }
+    if (entry.homeY > 1 && s === 'lantai2') { const pts = [[4.0,7.0],[0,7.0]]; const tp = pts[entry.idx % pts.length]; if (cur.y > 1) { entry.queue = smoothQueue([[cur.x,1.5,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]], cur.x, cur.z, cur.y); } else { const qu0 = stairUpQueue(); qu0.push([-10,1,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]); entry.queue = smoothQueue(qu0, cur.x, cur.z, cur.y); } return; }
    if (cur.y > 1) {
-     if (s === 'kerja' && entry.homeY > 1) { entry.queue = [[target[0],target[1],3.6]]; return; }
-     if (s === 'lantai2') { entry.queue = [[-10,1,3.6],[target[0],target[1],3.6]]; return; }
+      if (s === 'tv' || s === 'arsip' || s === 'aquarium') { entry.queue = buildQueueTo(entry, target[0], target[1], entry.targetFloor || 1); return; }
+      if (s === 'kerja' && entry.homeY > 1) { entry.queue = smoothQueue([[target[0],target[1],3.6]], cur.x, cur.z, cur.y); return; }
+      if (s === 'lantai2') { entry.queue = smoothQueue([[-10,1,3.6],[target[0],target[1],3.6]], cur.x, cur.z, cur.y); return; }
      const qd = stairDownQueue();
      if (s === 'toilet') qd.push([10,-2.8]);
      else if (s === 'tamu') qd.push([5,-1.5]);
      else if (target[1] > 9) qd.push([-2.5,9.5]);
-     qd.push(target); entry.queue = qd; return;
+      qd.push(target); entry.queue = smoothQueue(qd, cur.x, cur.z, cur.y); return;
    }
+    if (s === 'tv' || s === 'arsip' || s === 'aquarium') { entry.queue = buildQueueTo(entry, target[0], target[1], entry.targetFloor || 1); return; }
    if (s === 'lantai2') {
      const qu = [];
      const inToiletQ0 = cur.x >= 10.5 && cur.x <= 13 && cur.z >= -4.5 && cur.z <= -1.5;
      const inTamuQ0 = cur.x >= 3 && cur.x <= 8 && cur.z >= -9 && cur.z <= -2;
      if (inToiletQ0) qu.push([10,-2.8]); else if (inTamuQ0) qu.push([5,-1.5]);
-     qu.push.apply(qu, stairUpQueue()); qu.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu; return;
+      qu.push.apply(qu, stairUpQueue()); qu.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = smoothQueue(qu, cur.x, cur.z, cur.y); return;
    }
-   if (entry.homeY > 1 && s === 'kerja' && cur.y <= 1) { const qu1 = stairUpQueue(); qu1.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu1; return; }
+    if (entry.homeY > 1 && s === 'kerja' && cur.y <= 1) { const qu1 = stairUpQueue(); qu1.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = smoothQueue(qu1, cur.x, cur.z, cur.y); return; }
    if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
    const q = [];
   const inToiletQ = cur.x >= 10.5 && cur.x <= 13 && cur.z >= -4.5 && cur.z <= -1.5;
@@ -1331,7 +1584,33 @@ function pickState(entry){
     if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
     else if (target[1] <= 9 && cur.z > 9) q.push([-2.5,9.5],[-2.5,7.5]);
   }
-  q.push(target); entry.queue = q;
+  entry.queue = smoothQueue(q, cur.x, cur.z, cur.y);
+}
+// ===== v39 SCHEDULER GRUP — tiap ~60-90 detik, SATU grup 3-5 orang dari SEGMEN BERBEDA ke satu ruangan (rotasi supaya semua ruangan terpakai, termasuk Meeting 1 yang dulu kosong). stateUntil SAMA -> selesai bersamaan, lalu bubar ke meja masing-masing (returnHome). =====
+const GROUP_SPOTS = [
+  { key:'grup_meeting1', floor:1, center:[-1,-5.5], pts:[[-1,-3.9],[-2.6,-5.5],[0.6,-5.5],[-1,-7.1],[-2.0,-3.9]] },
+  { key:'grup_meeting2', floor:1, center:[9,4], pts:[[9,2.6],[7.5,4],[10.5,4],[9,5.4],[8,2.8]] },
+  { key:'grup_pantry', floor:1, center:[9,-5], pts:[[9,-3.6],[7.8,-5],[9,-6.5],[7.8,-3.8]] },
+  { key:'grup_tamu', floor:1, center:[5,-6.2], pts:[[3.8,-6.0],[6.2,-6.0],[5,-5.0],[4.0,-5.2]] },
+  { key:'grup_lounge2', floor:2, center:[0,7.0], pts:[[-1.2,6.6],[1.2,6.6],[-1.2,7.6],[1.2,7.6]] },
+  { key:'grup_meet2', floor:2, center:[4.0,7.0], pts:[[5.3,7.0],[2.7,7.0],[4.0,8.3],[4.0,5.7]] }
+];
+let groupSpotIdx = 0, lastGroupTime = 0;
+function startGroupActivity(){
+  if (typeof characters === 'undefined' || !characters.length) return;
+  const spot = GROUP_SPOTS[groupSpotIdx % GROUP_SPOTS.length]; groupSpotIdx++;
+  const pool = characters.filter(function(c){ return c.active && !c.briefing && !c.povControlled && clockTime > (c.groupUntil || 0); });
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp; }
+  const picked = [], seenSeg = {};
+  pool.forEach(function(c){ if (picked.length >= 5) return; const seg = (typeof personSegment !== 'undefined' && personSegment[c.key]) ? personSegment[c.key] : 'all'; if (!seenSeg[seg]) { seenSeg[seg] = true; picked.push(c); } });
+  if (picked.length < 3) { pool.forEach(function(c){ if (picked.length >= 3) return; if (picked.indexOf(c) < 0) picked.push(c); }); }
+  if (picked.length < 2) return;
+  const durUntil = clockTime + 25 + Math.random() * 20;
+  picked.forEach(function(c, i){
+    const pt = spot.pts[i % spot.pts.length];
+    c.state = spot.key; c.stateUntil = durUntil; c.groupUntil = durUntil; c.returnHome = true; c.faceTarget = spot.center; c.catFace = null;
+    c.queue = buildQueueTo(c, pt[0], pt[1], spot.floor);
+  });
 }
 function faceForState(entry){
   const p = entry.g.position;
@@ -1340,6 +1619,7 @@ function faceForState(entry){
     entry.g.rotation.y = isLeader ? 0 : Math.atan2(9 - p.x, 2.6 - p.z);
     return;
   }
+  if (entry.faceTarget) { entry.g.rotation.y = Math.atan2(entry.faceTarget[0] - p.x, entry.faceTarget[1] - p.z); return; }
   if (entry.state === 'kerja') entry.g.rotation.y = entry.home.ry;
   else if (entry.state === 'meeting1') entry.g.rotation.y = Math.atan2(-1 - p.x, -5.5 - p.z);
   else if (entry.state === 'meeting2' || entry.state === 'ngobrol') entry.g.rotation.y = Math.atan2(9 - p.x, 4 - p.z);
@@ -1348,7 +1628,7 @@ function faceForState(entry){
   else if (entry.state === 'tamu') entry.g.rotation.y = Math.atan2(5 - p.x, -6.2 - p.z);
   else if (entry.state === 'lantai2') entry.g.rotation.y = Math.atan2(0 - p.x, -4 - p.z);
   else if (entry.state === 'halaman') entry.g.rotation.y = Math.PI;
-  else if (entry.state === 'kucing') entry.g.rotation.y = Math.atan2(5 - p.x, 7.8 - p.z);
+  else if (entry.state === 'kucing') { if (entry.catFace) entry.g.rotation.y = Math.atan2(entry.catFace[0] - p.x, entry.catFace[1] - p.z); else entry.g.rotation.y = Math.atan2(5 - p.x, 7.8 - p.z); }
 }
 
 
@@ -1399,7 +1679,7 @@ function startBriefing(mode){
       const q = (cur.y > 1) ? stairDownQueue() : [];
       if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
       else if (target[1] <= 9 && cur.z > 9) q.push([-2.5,9.5],[-2.5,7.5]);
-      q.push(target); entry.queue = q;
+      entry.queue = smoothQueue(q, cur.x, cur.z, cur.y);
     }
   });
   briefingSpoken = true; speakBriefing(mode);
@@ -1412,12 +1692,12 @@ function endBriefing(){
     const target = [entry.home.x, entry.home.z]; const cur = entry.g.position;
     if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
     if (entry.isOemar) entry.queue = buildOemarQueue(entry, target, 'kerja');
-    else if (entry.homeY > 1) { if (cur.y > 1) { entry.queue = [[target[0],target[1],3.6]]; } else { const qu2 = stairUpQueue(); qu2.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu2; } }
+    else if (entry.homeY > 1) { if (cur.y > 1) { entry.queue = [[target[0],target[1],3.6]]; } else { const qu2 = stairUpQueue(); qu2.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = smoothQueue(qu2, cur.x, cur.z, cur.y); } }
     else {
       const q = [];
       if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
       else if (target[1] <= 9 && cur.z > 9) q.push([-2.5,9.5],[-2.5,7.5]);
-      q.push(target); entry.queue = q;
+      entry.queue = smoothQueue(q, cur.x, cur.z, cur.y);
     }
   });
 }
@@ -1429,13 +1709,13 @@ function checkBriefing(){
   }
 }
 window.testBriefing = function(mode){ manualBriefingMode = mode; manualBriefingUntil = Date.now() + 60000; checkBriefing(); };
-const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,5,9],[8,0.8,1]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], ludo:[[-8,9,4],[-8,3.6,-4]], okisadma:[[0,9,4],[0,3.6,-4]], tangga:[[-5,7,11],[-10,1.8,4]] };
+const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,9,4],[8,3.6,-4]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], ludo:[[-8,9,4],[-8,3.6,-4]], okisadma:[[0,9,4],[0,3.6,-4]], tangga:[[-5,7,11],[-10,1.8,4]] };
 let camPos = new THREE.Vector3(0,24,28), camLook = new THREE.Vector3(0,0,2);
 let targetPos = camPos.clone(), targetLook = camLook.clone();
 camera.position.copy(camPos); camera.lookAt(camLook);
 let orbitCenter = new THREE.Vector3(0,1.2,2), orbitRadius = 30, orbitTheta = 0, orbitPhi = 0.9, orbitAuto = false, focusPerson = null, focusIdx = -1, suppressClick = false;
 let persons = [];
-const viewNames = {all:'Keseluruhan',direktur:'Direktur',meeting1:'Meeting 1',meeting2:'Meeting 2 — Lounge Timur',tamu:'Ruang Tamu',pantry:'Pantry',toilet:'Toilet',bk:'Bedah Keuangan',jk:'Jejak Kuasa',ru:'Rancang Undangan',bta:'BaruTauAda',arsip:'Arsip Dokumen',yard:'Pekarangan',exp1:'Ruang Ekspansi 1 — Kosong',exp2:'Ruang Ekspansi 2 — Kosong',exp3:'Ruang Ekspansi 3 — Kosong',ludo:'Ludo Berdua (Lantai 2)',okisadma:'Oki | AI Sehari-hari (Lantai 2)',tangga:'Tangga Lantai 2'};
+const viewNames = {all:'Keseluruhan',direktur:'Direktur',meeting1:'Meeting 1',meeting2:'Meeting 2 — Lounge Timur',tamu:'Ruang Tamu',pantry:'Pantry',toilet:'Toilet',bk:'Bedah Keuangan',jk:'Jejak Kuasa',ru:'Rancang Undangan',bta:'BaruTauAda (Lantai 2)',arsip:'Arsip Dokumen',yard:'Pekarangan',exp1:'Ruang Ekspansi 1 — Kosong',exp2:'Ruang Ekspansi 2 — Kosong',exp3:'BaruTauAda (Lantai 2)',ludo:'Ludo Berdua (Lantai 2)',okisadma:'Oki | AI Sehari-hari (Lantai 2)',tangga:'Tangga Lantai 2'};
 function updateOrbitTarget(){
   targetPos.set(orbitCenter.x + orbitRadius * Math.sin(orbitPhi) * Math.sin(orbitTheta), orbitCenter.y + orbitRadius * Math.cos(orbitPhi), orbitCenter.z + orbitRadius * Math.sin(orbitPhi) * Math.cos(orbitTheta));
   targetLook.copy(orbitCenter);
@@ -1450,13 +1730,13 @@ let activeFloor = 1;
 /* Lantai 2 dipilih tapi platnya disembunyikan tidak boleh lagi menyisakan */
 /* karakter lantai 2 melayang di y=3.6: karakter adalah anak scene, bukan */
 /* floor2Group, jadi visibilitasnya diatur di sini, bukan dipindah grup. */
-function updateCharacterFloorVisibility(){ if (typeof characters === 'undefined') return; const isExterior = (typeof exteriorGroup !== 'undefined') && exteriorGroup.visible; characters.forEach(function(c){ if (focusPerson && c === focusPerson) { c.g.visible = true; return; } if (isExterior) { c.g.visible = true; return; } c.g.visible = (activeFloor === 2) ? (c.g.position.y > 1.8) : (c.g.position.y <= 1.8); }); }
+function updateCharacterFloorVisibility(){ if (typeof characters === 'undefined') return; const isExterior = (typeof exteriorGroup !== 'undefined') && exteriorGroup.visible; characters.forEach(function(c){ if (c.povHidden) { c.g.visible = false; return; } if (focusPerson && c === focusPerson) { c.g.visible = true; return; } if (isExterior) { c.g.visible = true; return; } c.g.visible = (activeFloor === 2) ? (c.g.position.y > 1.8) : (c.g.position.y <= 1.8); }); }
 function setFloorVisibility(f){ activeFloor = f; if (typeof floor2Group !== 'undefined') floor2Group.visible = (f === 2);  updateCharacterFloorVisibility(); }
 function setInterior(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = true; frontWallR.visible = true; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = true; frontDoorR.visible = true; } if (typeof floor2Group !== 'undefined') floor2Group.visible = (activeFloor === 2);  updateCharacterFloorVisibility(); }
-window.setFloor = function(f){ setFloorVisibility(f); setInterior(); focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); if (f === 2) { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 2 — Ludo Berdua, Oki, dan Ekspansi 3'; syncHud(); targetPos.set(0,12,14); targetLook.set(0,3.6,0); } else { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 1 — Keseluruhan'; syncHud(); targetPos.set(0,24,28); targetLook.set(0,0,2); } };
-window.viewExterior = function(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = true; if (typeof floor2Group !== 'undefined') floor2Group.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = false; frontWallR.visible = false; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = false; frontDoorR.visible = false; } focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); updateCharacterFloorVisibility(); document.getElementById('focusLabel').textContent = 'Fokus: Gedung Utuh (Luar) — seperti gedung tetangga'; syncHud(); targetPos.set(0,36,46); targetLook.set(0,3.6,0); };
-window.goView = function(k){ setFloorVisibility((k === 'exp1' || k === 'exp2' || k === 'exp3' || k === 'tangga' || k === 'ludo' || k === 'okisadma') ? 2 : 1); setInterior(); const v = views[k]; if(!v) return; focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); document.getElementById('focusLabel').textContent = 'Fokus: ' + (viewNames[k] || k); syncHud(); targetPos.set(v[0][0],v[0][1],v[0][2]); targetLook.set(v[1][0],v[1][1],v[1][2]); };
-window.nextPerson = function(){
+window.setFloor = function(f){ if (typeof povActive !== 'undefined' && povActive) return; setFloorVisibility(f); setInterior(); focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); if (f === 2) { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 2 — Ludo Berdua, Oki, dan BaruTauAda'; syncHud(); targetPos.set(0,12,14); targetLook.set(0,3.6,0); } else { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 1 — Keseluruhan'; syncHud(); targetPos.set(0,24,28); targetLook.set(0,0,2); } };
+window.viewExterior = function(){ if (typeof povActive !== 'undefined' && povActive) return; if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = true; if (typeof floor2Group !== 'undefined') floor2Group.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = false; frontWallR.visible = false; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = false; frontDoorR.visible = false; } focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); updateCharacterFloorVisibility(); document.getElementById('focusLabel').textContent = 'Fokus: Gedung Utuh (Luar) — seperti gedung tetangga'; syncHud(); targetPos.set(0,36,46); targetLook.set(0,3.6,0); };
+window.goView = function(k){ if (typeof povActive !== 'undefined' && povActive) return; setFloorVisibility((k === 'exp1' || k === 'exp2' || k === 'exp3' || k === 'tangga' || k === 'ludo' || k === 'okisadma' || k === 'bta') ? 2 : 1); setInterior(); const v = views[k]; if(!v) return; focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); document.getElementById('focusLabel').textContent = 'Fokus: ' + (viewNames[k] || k); syncHud(); targetPos.set(v[0][0],v[0][1],v[0][2]); targetLook.set(v[1][0],v[1][1],v[1][2]); };
+window.nextPerson = function(){ if (typeof povActive !== 'undefined' && povActive) return;
   focusIdx = (focusIdx + 1) % persons.length; const person = persons[focusIdx];
   const entry = characters.find(function(c){ return c.key === person.key; }); if (!entry) return;
   setFloorVisibility(entry.homeY > 1 ? 2 : 1); setInterior();
@@ -1464,10 +1744,90 @@ window.nextPerson = function(){
   document.getElementById('focusLabel').textContent = 'Fokus: ' + person.nick + ' — ' + person.role + ', ' + person.segment + ' (' + (focusIdx+1) + '/' + persons.length + ')';
   showDetail(person.key, stateLabel[entry.state] || ''); syncHud();
 };
-window.rotateView = function(deg){ ensureOrbit(); orbitTheta += deg * Math.PI / 180; updateOrbitTarget(); };
-window.tiltView = function(deg){ ensureOrbit(); orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi + deg * Math.PI / 180)); updateOrbitTarget(); };
-window.toggleOrbit = function(){ ensureOrbit(); orbitAuto = !orbitAuto; const ob = document.getElementById('orbitBtn'); if (ob) { ob.textContent = orbitAuto ? '⏸' : '🔄'; ob.title = orbitAuto ? 'Hentikan 360°' : '360° Otomatis'; ob.setAttribute('aria-label', orbitAuto ? 'Hentikan 360°' : '360° Otomatis'); } };
-window.zoom = function(f){ const dir = targetPos.clone().sub(targetLook).multiplyScalar(f); targetPos.copy(targetLook).add(dir); };
+window.rotateView = function(deg){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitTheta += deg * Math.PI / 180; updateOrbitTarget(); };
+window.tiltView = function(deg){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi + deg * Math.PI / 180)); updateOrbitTarget(); };
+window.toggleOrbit = function(){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitAuto = !orbitAuto; const ob = document.getElementById('orbitBtn'); if (ob) { ob.textContent = orbitAuto ? '⏸' : '🔄'; ob.title = orbitAuto ? 'Hentikan 360°' : '360° Otomatis'; ob.setAttribute('aria-label', orbitAuto ? 'Hentikan 360°' : '360° Otomatis'); } };
+window.zoom = function(f){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitRadius = Math.min(60, Math.max(3, orbitRadius * f)); updateOrbitTarget(); };
+/* ===== v39 MODE POV — main sebagai Oemar, first-person, satu tombol toggle =====
+   Spawn: posisi Oemar saat itu (atau mejanya bila sedang briefing). Mata 1.6 m di atas lantai.
+   Kontrol: WASD + panah (wajib dua-duanya), Shift = lari 2x, drag = menengok (pitch -60..+60 deg),
+   Esc = keluar. D-pad layar hanya tampil saat POV. Selama POV: orbit/Tour/Segmen/Lantai/klik-zoom
+   diabaikan; Musik/Suara tetap jalan. Oemar disembunyikan + AI-nya dijeda; saat keluar, Oemar
+   kembali dari posisi pemain dan jalan ke mejanya lewat pathfinding (tanpa teleport). */
+let povActive = false, povYaw = 0, povPitch = 0, povFloor = 1;
+let povPos = null, povKeys = {}, povTouch = { fwd:false, back:false, left:false, right:false };
+let povSaved = null;
+function povPointBlocked(floor, x, z){
+  if (floor === 1) { if (x < -12.5 || x > 12.5 || z < -8.5 || z > 11) return true; }
+  else { if (x < -12.5 || x > 12.5 || z < -8.5 || z > 8.5) return true; }
+  if (x >= -11.5 && x <= -8.5 && z >= 0 && z <= 7) return false; // koridor tangga: y diinterpolasi, bukan tembus plat
+  return pfBlocked(floor, x, z);
+}
+function povTryMove(nx, nz, floor){
+  /* v40: tabrakan POV = TITIK PUSAT saja terhadap pfBlocked (rintangan SUDAH mengandung margin ~0,2-0,3 m di luar perabot asli, jadi pusat kamera tidak pernah menembus perabot beneran). Cross-check 5 titik (pusat +-0,25 m) v39 TERBUKTI menjebak pemain: audit v40 menunjukkan dari spawn Direktur (-9,-6) TIDAK ADA gerakan yang lolos (titik utara -6,25 masuk rect meja Direktur yang tepinya -6,2), dan jalur sel BFS yang sah di barat TV lt2 (x=-1,375) juga mentok karena titik timur -1,125 masuk rect TV — jadi radius cross-check DIHAPUS, bukan sekadar dikecilkan. Trade-off jujur: kamera bisa mendekat sampai tepi rect (0,2 m dari perabot asli), tapi tidak bisa lewat menembus rect; celah pintu 1,0 m tetap bisa dilewati lewat tengah celah. Karakter/kucing memang TIDAK PERNAH jadi rintangan grid (hanya perabot/dinding statis di pfRects), jadi POV bisa melewati orang — disengaja demi kebebasan jalan POV. */
+  return !povPointBlocked(floor, nx, nz);
+}
+function enterPOV(){
+  if (povActive) return;
+  const oe = characters.find(function(c){ return c.key === 'direktur'; });
+  if (!oe) return;
+  povSaved = { targetPos: targetPos.clone(), targetLook: targetLook.clone(), activeFloor: activeFloor, exterior: exteriorGroup.visible, frontL: frontWallL.visible, frontR: frontWallR.visible, floor2: floor2Group.visible };
+  let sx = oe.g.position.x, sz = oe.g.position.z, sy = oe.g.position.y;
+  if (oe.briefing) { sx = oe.home.x; sz = oe.home.z; sy = 0; }
+  povFloor = (sy > 1) ? 2 : 1;
+  // v40: spawn di dalam rintangan -> geser ke sel bebas terdekat (jangan spawn terjebak di meja);
+  // bila masih terhalang (batas POV lebih ketat dari grid), pakai titik koridor yang pasti bebas.
+  if (typeof povPointBlocked === 'function' && povPointBlocked(povFloor, sx, sz) && typeof pfSnapTarget === 'function') {
+    const sn = pfSnapTarget(povFloor, sx, sz);
+    if (sn) { sx = Math.max(-12.5, Math.min(12.5, sn[0])); sz = Math.max(-8.5, Math.min(8.5, sn[1])); }
+    if (povPointBlocked(povFloor, sx, sz)) { if (povFloor === 2) { sx = 0; sz = -4; } else { sx = -8.6; sz = 0; } }
+  }
+  povPos = new THREE.Vector3(sx, (povFloor === 2 ? 3.6 : 0) + 1.6, sz);
+  povYaw = Math.PI - oe.g.rotation.y; povPitch = 0;
+  povActive = true;
+  oe.povHidden = true; oe.povControlled = true; oe.g.visible = false; oe.queue = [];
+  focusPerson = null; orbitAuto = false;
+  if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = true;
+  if (typeof frontWallL !== 'undefined') { frontWallL.visible = false; frontWallR.visible = false; }
+  if (typeof floor2Group !== 'undefined') floor2Group.visible = (povFloor === 2);
+  if (typeof globalThis !== 'undefined' && globalThis.__f2DupWalls) globalThis.__f2DupWalls.forEach(function(m){ m.visible = false; });
+  if (typeof globalThis !== 'undefined' && globalThis.__extDoorL) { globalThis.__extDoorL.visible = false; globalThis.__extDoorR.visible = false; }
+  if (typeof povCeilingGroup !== 'undefined') povCeilingGroup.visible = true;
+  const btn = document.getElementById('povBtn'); if (btn) { btn.textContent = '❌'; btn.title = 'Keluar POV'; btn.setAttribute('aria-label','Keluar POV'); }
+  const help = document.getElementById('povHelp'); if (help) help.style.display = 'block';
+  const pad = document.getElementById('povPad'); if (pad) pad.style.display = 'grid';
+  const fl = document.getElementById('focusLabel'); if (fl) fl.textContent = 'Fokus: Mode POV — kamu Oemar'; syncHud();
+}
+function exitPOV(){
+  if (!povActive) return;
+  povActive = false;
+  const oe = characters.find(function(c){ return c.key === 'direktur'; });
+  if (oe) { oe.povHidden = false; oe.povControlled = false; oe.g.visible = true; oe.g.position.set(povPos.x, povFloor === 2 ? 3.6 : 0, povPos.z); oe.state = 'kerja'; oe.faceTarget = null; oe.catFace = null; oe.stateUntil = clockTime + 30; oe.queue = buildQueueTo(oe, oe.home.x, oe.home.z, oe.homeY > 1 ? 2 : 1); }
+  if (povSaved) { targetPos.copy(povSaved.targetPos); targetLook.copy(povSaved.targetLook); focusPerson = null; orbitAuto = false; activeFloor = povSaved.activeFloor; if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = povSaved.exterior; if (typeof frontWallL !== 'undefined') { frontWallL.visible = povSaved.frontL; frontWallR.visible = povSaved.frontR; } if (typeof floor2Group !== 'undefined') floor2Group.visible = povSaved.floor2; }
+  if (typeof globalThis !== 'undefined' && globalThis.__f2DupWalls) globalThis.__f2DupWalls.forEach(function(m){ m.visible = true; });
+  if (typeof globalThis !== 'undefined' && globalThis.__extDoorL) { globalThis.__extDoorL.visible = true; globalThis.__extDoorR.visible = true; }
+  if (typeof povCeilingGroup !== 'undefined') povCeilingGroup.visible = false;
+  const btn = document.getElementById('povBtn'); if (btn) { btn.textContent = '👁️'; btn.title = 'Mode POV — main sebagai Oemar'; btn.setAttribute('aria-label','Mode POV'); }
+  const help = document.getElementById('povHelp'); if (help) help.style.display = 'none';
+  const pad = document.getElementById('povPad'); if (pad) pad.style.display = 'none';
+  const fl = document.getElementById('focusLabel'); if (fl) fl.textContent = 'Fokus: Keseluruhan'; syncHud();
+  updateCharacterFloorVisibility();
+}
+window.togglePOV = function(){ if (povActive) exitPOV(); else enterPOV(); };
+document.addEventListener('keydown', function(e){
+  if (!povActive) return;
+  if (e.key === 'Escape') { exitPOV(); return; }
+  const k = e.key.toLowerCase();
+  if (['arrowup','arrowdown','arrowleft','arrowright'].indexOf(k) >= 0) e.preventDefault();
+  povKeys[k] = true;
+});
+document.addEventListener('keyup', function(e){ povKeys[e.key.toLowerCase()] = false; });
+document.querySelectorAll('#povPad button').forEach(function(b){
+  const k = b.getAttribute('data-pov');
+  function on(e){ e.preventDefault(); povTouch[k] = true; }
+  function off(e){ e.preventDefault(); povTouch[k] = false; }
+  b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
+});
 
 function personDetail(nick, full, gender, age, born, origin, suku, agama, karakter, role, segment){
   return { title:"👤 " + nick + " — " + role, status: segment.toUpperCase(), cls:"", body:"<ul><li><b>Nama:</b> " + full + " (" + nick + ")</li><li><b>Gender:</b> " + gender + "</li><li><b>Umur:</b> " + age + " th</li><li><b>Lahir:</b> " + born + "</li><li><b>Asal / Suku:</b> " + origin + " / " + suku + "</li><li><b>Agama:</b> " + agama + "</li><li><b>Karakter:</b> " + karakter + "</li><li><b>Role:</b> " + role + ", " + segment + "</li></ul>" };
@@ -1647,6 +2007,30 @@ function showKpi(k){
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 renderer.domElement.addEventListener('click', function(e){
+  /* v40: di mode POV, klik TV = toggle musik SoundCloud (tanpa zoom/detail/focus); klik lain di POV diabaikan total. */
+  if (typeof povActive !== 'undefined' && povActive) {
+    if (suppressClick) { suppressClick = false; return; }
+    const r = renderer.domElement.getBoundingClientRect();
+    ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ptr, camera); const hits = ray.intersectObjects(scene.children, true);
+    for (let i = 0; i < hits.length; i++) {
+      let o = hits[i].object, isTv = false, guard = 0;
+      while (o && guard++ < 8) { if (o.userData && o.userData.povTv) { isTv = true; break; } o = o.parent; }
+      if (isTv) {
+        if (hits[i].distance <= 12) {
+          try {
+            if (window.__scPlaying) { window.pauseMusic(); window.__scPlaying = false; }
+            else { window.playMusic(); window.__scPlaying = true; }
+          } catch (e2) {}
+          const fl0 = document.getElementById('focusLabel');
+          if (fl0) { fl0.textContent = '📺 TV — Musik SoundCloud ' + (window.__scPlaying ? 'diputar' : 'dijeda'); syncHud(); setTimeout(function(){ if (typeof povActive !== 'undefined' && povActive) { const fl1 = document.getElementById('focusLabel'); if (fl1) fl1.textContent = 'Fokus: Mode POV — kamu Oemar'; syncHud(); } }, 3000); }
+        }
+        return;
+      }
+      return; /* hit pertama bukan TV -> klik POV diabaikan (tidak zoom/detail/focus) */
+    }
+    return;
+  }
   if (suppressClick) { suppressClick = false; return; }
   const r = renderer.domElement.getBoundingClientRect();
   ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
@@ -1661,8 +2045,10 @@ renderer.domElement.addEventListener('click', function(e){
 });
 let dragging = false, lastDragX = 0, lastDragY = 0, dragDist = 0;
 renderer.domElement.addEventListener('pointerdown', function(e){ dragging = true; lastDragX = e.clientX; lastDragY = e.clientY; dragDist = 0; });
-renderer.domElement.addEventListener('pointermove', function(e){ if (!dragging) return; const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY; dragDist += Math.abs(dx) + Math.abs(dy); lastDragX = e.clientX; lastDragY = e.clientY; if (dragDist < 3) return; ensureOrbit(); orbitTheta -= dx * 0.005; orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi - dy * 0.005)); updateOrbitTarget(); });
+renderer.domElement.addEventListener('pointermove', function(e){ if (!dragging) return; const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY; dragDist += Math.abs(dx) + Math.abs(dy); lastDragX = e.clientX; lastDragY = e.clientY; if (dragDist < 3) return; if (typeof povActive !== 'undefined' && povActive) { povYaw += dx * 0.005; povPitch = Math.min(1.047, Math.max(-1.047, povPitch - dy * 0.005)); return; } ensureOrbit(); orbitTheta -= dx * 0.005; orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi - dy * 0.005)); updateOrbitTarget(); });
 renderer.domElement.addEventListener('pointerup', function(){ if (dragging && dragDist > 5) suppressClick = true; dragging = false; });
+/* v39: scroll mouse = zoom. Sebelumnya tidak ada wheel listener (scroll hanya menggeser halaman), dan zoom lama ditimpa focus-follow karena tidak mengubah orbitRadius. */
+renderer.domElement.addEventListener('wheel', function(e){ if (typeof povActive !== 'undefined' && povActive) return; e.preventDefault(); window.zoom(e.deltaY > 0 ? 1.1 : 0.9); }, { passive: false });
 /* v38 hover karyawan: tahan kursor ~700ms di atas seorang karyawan (mouse desktop saja) -> popup kecil di dekat kursor.
    Isi: panggilan + role + segmen, aktivitas saat ini, jobdesk = role di segmen, + 2 metrik KPI dari kpiData (tanpa invent tugas).
    Popup pointer-events:none (tidak memblokir klik/drag), hilang saat kursor geser menjauh / drag dimulai / pointer keluar kanvas.
@@ -1710,17 +2096,20 @@ function animate(){
   /* v38: cuaca auto-ganti DIMATIKAN — weather hanya berubah lewat tombol Cuaca manual (cycleWeather).
      applyTimeWeather() via setInterval 30 detik tetap mengupdate periode waktu dan jam perangkat. */
   if (t - lastBriefingCheck > 1) { lastBriefingCheck = t; checkBriefing(); }
+  if (t - lastGroupTime > 60 + Math.random()*30) { lastGroupTime = t; if (!currentBriefing) startGroupActivity(); }
   characters.forEach(function(c){
+    if (c.povControlled) return;
     if (!c.active) { c.g.position.y = Math.sin(t*2 + c.phase) * 0.03; return; }
     if (c.queue.length > 0) {
       const target = c.queue[0]; const dx = target[0] - c.g.position.x, dz = target[1] - c.g.position.z; const dist = Math.hypot(dx, dz);
       const wantY = (target.length > 2 && typeof target[2] === 'number') ? target[2] : (c.state === 'lantai2' ? 3.6 : 0);
       if (dist < 0.25 && Math.abs(wantY - c.g.position.y) < 0.15) { c.queue.shift(); if (c.queue.length === 0) faceForState(c); }
-      else { const sp = 1.8 * dt; if (dist >= 0.25) { c.g.position.x += dx / dist * sp; c.g.position.z += dz / dist * sp; c.g.rotation.y = Math.atan2(dx, dz); } if (Math.abs(wantY - c.g.position.y) > sp) c.g.position.y += Math.sign(wantY - c.g.position.y) * sp; else c.g.position.y = wantY + Math.abs(Math.sin(t*6)) * 0.05; }
-    } else if (t > c.stateUntil) { if (!c.briefing) pickState(c); }
-    else if (c.briefing) { faceForState(c); c.g.position.y = Math.sin(t*2 + c.phase) * 0.03; }
-    else { const by = (c.state === 'lantai2' ? 3.6 : (c.g.position.y > 1 ? 3.6 : 0)); c.g.position.y = by + Math.sin(t*2 + c.phase) * 0.03; }
+      else { const sp = 1.8 * dt; const moving = (dist >= 0.25 || Math.abs(wantY - c.g.position.y) > 0.15); if (dist >= 0.25) { c.g.position.x += dx / dist * sp; c.g.position.z += dz / dist * sp; c.g.rotation.y = Math.atan2(dx, dz); } if (Math.abs(wantY - c.g.position.y) > sp) c.g.position.y += Math.sign(wantY - c.g.position.y) * sp; else c.g.position.y = wantY + Math.abs(Math.sin(t*9 + c.phase)) * 0.06; if (moving && c.legL) { const sw = Math.sin(t*9 + c.phase); c.legL.rotation.x = sw * 0.55; c.legR.rotation.x = -sw * 0.55; c.armL.rotation.x = -sw * 0.4; c.armR.rotation.x = sw * 0.4; } }
+    } else if (t > c.stateUntil) { if (!c.briefing) { if (c.returnHome) { c.returnHome = false; c.state = 'kerja'; c.stateUntil = clockTime + 25 + Math.random()*15; c.faceTarget = null; c.catFace = null; c.queue = buildQueueTo(c, c.home.x, c.home.z, c.homeY > 1 ? 2 : 1); } else pickState(c); } }
+    else if (c.briefing) { faceForState(c); c.g.position.y = Math.sin(t*2 + c.phase) * 0.03; if (c.legL) { c.legL.rotation.x *= 0.8; c.legR.rotation.x *= 0.8; c.armL.rotation.x *= 0.8; c.armR.rotation.x *= 0.8; } }
+    else { const by = (c.state === 'lantai2' ? 3.6 : (c.g.position.y > 1 ? 3.6 : 0)); c.g.position.y = by + Math.sin(t*2 + c.phase) * 0.03; if (c.legL) { c.legL.rotation.x *= 0.8; c.legR.rotation.x *= 0.8; c.armL.rotation.x *= 0.8; c.armR.rotation.x *= 0.8; } }
   });
+  updateCats(t, dt);
   strangers.forEach(function(st){
     st.x += st.dir * st.speed * dt;
     if (st.dir === 1 && st.x > 38) st.x = -38;
@@ -1728,6 +2117,7 @@ function animate(){
     st.g.position.x = st.x;
     st.g.rotation.y = st.dir === 1 ? Math.PI/2 : -Math.PI/2;
     st.g.position.y = st.baseY + Math.abs(Math.sin(t*6 + st.phase)) * 0.03;
+    if (st.g.userData.legL && st.type !== 'bike') { const sw2 = Math.sin(t*8 + st.phase); st.g.userData.legL.rotation.x = sw2 * 0.5; st.g.userData.legR.rotation.x = -sw2 * 0.5; st.g.userData.armL.rotation.x = -sw2 * 0.35; st.g.userData.armR.rotation.x = sw2 * 0.35; }
     if (st.dog) {
       st.dog.position.x = st.x - st.dir * 0.6;
       st.dog.position.z = st.laneZ + 0.4;
@@ -1752,10 +2142,30 @@ function animate(){
   if (rainPoints.visible) { const pos = rainGeo.attributes.position.array; const rs = weather === 'badai' ? 22 : weather === 'petir' ? 16 : 14; for (let i=0;i<rainCount;i++){ pos[i*3+1] -= dt * rs; if (weather === 'badai') { pos[i*3] -= dt * 2; if (pos[i*3] < -35) pos[i*3] = 35; } if (pos[i*3+1] < 0) rainReset(i, true); } rainGeo.attributes.position.needsUpdate = true; }
   if (snowPoints.visible) { const spos = snowGeo.attributes.position.array; for (let i=0;i<snowCount;i++){ spos[i*3+1] -= dt * 2.5; spos[i*3] += Math.sin(t*1.5 + i) * dt * 0.5; if (spos[i*3+1] < 0) snowReset(i, true); } snowGeo.attributes.position.needsUpdate = true; }
   if (weather === 'petir') { lightningNext -= dt; if (lightningNext <= 0) { lightningFlash = 0.2; if (typeof playThunderBoom === 'function') playThunderBoom(); lightningNext = 2 + Math.random()*4; lightningBolt.position.set(-15 + Math.random()*30, 12, -5 + Math.random()*15); } if (lightningFlash > 0) { lightningFlash -= dt; sun.intensity = baseSunInt + 3; lightningBolt.visible = true; } else { sun.intensity = baseSunInt; lightningBolt.visible = false; } } else { lightningBolt.visible = false; }
-  if (focusPerson) { orbitCenter.set(focusPerson.g.position.x, focusPerson.g.position.y + 1.2, focusPerson.g.position.z); updateOrbitTarget(); }
-  if (orbitAuto) { orbitTheta += dt * (Math.PI * 2 / 30); updateOrbitTarget(); }
-  camPos.lerp(targetPos, 0.06); camLook.lerp(targetLook, 0.06);
-  camera.position.copy(camPos); camera.lookAt(camLook);
+  if (typeof povActive !== 'undefined' && povActive && povPos) {
+    const fwd = (povKeys['w'] || povKeys['arrowup'] || povTouch.fwd) ? 1 : 0;
+    const back = (povKeys['s'] || povKeys['arrowdown'] || povTouch.back) ? 1 : 0;
+    const left = (povKeys['a'] || povKeys['arrowleft'] || povTouch.left) ? 1 : 0;
+    const right = (povKeys['d'] || povKeys['arrowright'] || povTouch.right) ? 1 : 0;
+    const fx = Math.sin(povYaw), fz = -Math.cos(povYaw);
+    const rx = -fz, rz = fx;
+    const fb = fwd - back, rl = right - left;
+    if (fb !== 0 || rl !== 0) { const inv = 1 / Math.hypot(fb, rl); const mx = (fx*fb + rx*rl) * inv, mz = (fz*fb + rz*rl) * inv; const sp = (povKeys['shift'] ? 5.0 : 2.5) * dt; const nx = povPos.x + mx*sp, nz = povPos.z + mz*sp; if (povTryMove(nx, povPos.z, povFloor)) povPos.x = nx; if (povTryMove(povPos.x, nz, povFloor)) povPos.z = nz; }
+    if (povPos.x >= -11 && povPos.x <= -9 && povPos.z >= 0.5 && povPos.z <= 6.5) {
+      const ny = povPos.z <= 2 ? 3.6 : povPos.z >= 6 ? 0 : (6 - povPos.z) / 4 * 3.6;
+      povPos.y = ny + 1.6;
+      const nf = ny > 1.8 ? 2 : 1;
+      if (nf !== povFloor) { povFloor = nf; setFloorVisibility(nf); if (typeof floor2Group !== 'undefined') floor2Group.visible = (nf === 2); }
+    } else { povPos.y = (povFloor === 2 ? 3.6 : 0) + 1.6; }
+    const dir = new THREE.Vector3(Math.sin(povYaw)*Math.cos(povPitch), Math.sin(povPitch), -Math.cos(povYaw)*Math.cos(povPitch));
+    camera.position.copy(povPos); camera.lookAt(povPos.x + dir.x, povPos.y + dir.y, povPos.z + dir.z);
+    if (typeof globalThis !== 'undefined' && globalThis.__povFans) globalThis.__povFans.forEach(function(f){ f.rotation.y += dt * 1.2; });
+  } else {
+    if (focusPerson) { orbitCenter.set(focusPerson.g.position.x, focusPerson.g.position.y + 1.2, focusPerson.g.position.z); updateOrbitTarget(); }
+    if (orbitAuto) { orbitTheta += dt * (Math.PI * 2 / 30); updateOrbitTarget(); }
+    camPos.lerp(targetPos, 0.06); camLook.lerp(targetLook, 0.06);
+    camera.position.copy(camPos); camera.lookAt(camLook);
+  }
   renderer.render(scene, camera);
 }
 // ===== v33: KAMERA AWAL HP — dinaikkan ke atas, layar sempit saja =====
@@ -1835,7 +2245,7 @@ function botReply(q){
   if (has('kamu siapa', 'siapa kamu', 'kamu lux', 'kamu muse', 'bot apa', 'resepsionis')) return 'Gue Bot Kantor OSCR Works, resepsionis di sini. Gue tanpa AI, jawaban gue sudah disiapin, bukan Lux dan bukan Muse. Lux di kantor ini adalah karakter Manager & Producer, beda sama gue.';
   if (has('halo', 'hai', 'selamat', 'hello', 'hi ')) return 'Halo! Selamat datang di Kantor Digital OSCR Works. Tanya soal segmen, tim, briefing, atau cara pakai kantor ini, ya. Atau pencet tombol cepat di bawah.';
   if (has('terima kasih', 'makasih', 'thanks')) return 'Sama-sama! Kalau ada yang mau ditanyain lagi soal kantor ini, silakan.';
-  if (has('oscr', 'kantor ini', 'apa itu', 'tentang')) return 'OSCR Works adalah grup yang menaungi 6 segmen: Bedah Keuangan, Jejak Kuasa, Rancang Undangan, BaruTauAda, Ludo Berdua, dan Oki | AI Sehari-hari. Kantor digital ini adalah simulasi dua lantai buat memantau segmen-segmen itu, bukan kantor fisik yang bisa dikunjungi. Lantai 1 untuk 4 segmen yang sudah jalan; lantai 2: barat = Ludo Berdua (sudah ada meja, PC, dan kursi), tengah = Oki | AI Sehari-hari (sudah ada meja, PC, dan kursi), timur = Ekspansi 3 yang masih kosong, plus meja meeting, arsip, lounge sofa + TV + konsol game, aquarium, dan 2 kucing di open space lantai 2. Direktur: Oemar, Manager & Producer: Lux (karakter di kantor ini). Gue ini resepsionis, bukan Lux dan bukan Muse.';
+  if (has('oscr', 'kantor ini', 'apa itu', 'tentang')) return 'OSCR Works adalah grup yang menaungi 6 segmen: Bedah Keuangan, Jejak Kuasa, Rancang Undangan, BaruTauAda, Ludo Berdua, dan Oki | AI Sehari-hari. Kantor digital ini adalah simulasi dua lantai buat memantau segmen-segmen itu, bukan kantor fisik yang bisa dikunjungi. Lantai 1 untuk 3 segmen (Bedah Keuangan, Jejak Kuasa, Rancang Undangan); lantai 2: barat = Ludo Berdua (sudah ada meja, PC, dan kursi), tengah = Oki | AI Sehari-hari (sudah ada meja, PC, dan kursi), timur = BaruTauAda (sudah ada meja, PC, dan kursi), plus meja meeting, arsip, lounge sofa + TV + konsol game, aquarium, dan 2 kucing di open space lantai 2. Direktur: Oemar, Manager & Producer: Lux (karakter di kantor ini). Gue ini resepsionis, bukan Lux dan bukan Muse.';
   if (t === 'bk') return 'Bedah Keuangan: konten edukasi keuangan berbahasa Indonesia — reels karakter dan carousel — yang membantu orang mengatur uang (gaji, utang, tabungan) dengan bahasa sehari-hari. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Produknya template/anggaran, dan kontennya mengarah ke produk digital itu. Harga dan angka penjualan tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
   if (t === 'jk') return 'Jejak Kuasa: konten geopolitik dan sejarah — reels/cerita sejarah dan kekuasaan dengan gaya storytelling visual, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render. Angka follower/views tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
   if (t === 'ru') return 'Rancang Undangan: jasa undangan cetak dan digital di Batam (fokus Batu Aji). Oemar pegang marketing, produksi dikerjakan vendor lain, dan Oemar ambil selisih margin tanpa biaya operasional. Diferensiasinya: undangan yang ada maket dan komunikasi visual yang gampang. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web. Harga, nomor WA, alamat lengkap, dan vendor spesifik belum dikunci di info kantor ini, jadi gue tidak mengarangnya.';
@@ -1866,7 +2276,7 @@ if (has('okisadma', 'oki', 'ai sehari-hari')) return 'Oki | AI Sehari-hari: pers
   if (has('cara pakai', 'tour', 'kamera', 'ganti orang', 'klik', 'putar', 'zoom')) return 'Cara pakai: pencet tombol Tour Ruangan buat pindah ruangan, Ganti Orang buat pindah fokus ke semua karyawan satu-satu, kolom Kamera buat kiri/kanan/naik/turun/360/zoom. Klik karakter di 3D buat lihat profil + aktivitasnya. Di HP, drag di area 3D buat putar kamera.';
   if (has('dashboard', 'report', 'personel', 'kpi', 'tab')) return 'Di bawah tombol ada 4 tab: Dashboard (pilih segmen + filter socmed, plus Ongoing Task), Report (Harian/Mingguan/Bulanan), Personel & Aktivitas (filter per segmen + Management), KPI Personel (per role). Jujur ya: angka Dashboard dan KPI di sini masih contoh, target resmi belum ditetapkan.';
   if (has('jam', 'waktu', 'cuaca')) { const now = new Date(); const hh = String(now.getHours()).padStart(2, '0'); const mm = String(now.getMinutes()).padStart(2, '0'); return 'Jam di kantor ini ngikut jam perangkat yang buka halaman, sekarang sekitar ' + hh + ':' + mm + '. Cuaca di kantor berubah-ubah kira-kira tiap 45 detik, cek di HUD atas scene.'; }
-  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini sudah terisi 2 dari 3 ruang. Ada tangga di sayap kiri dekat Arsip (barat), di antara lemari Arsip dan meja selatan, tidak lagi di tengah pintu masuk, naik dari lantai 1 ke atas. Barat = Ludo Berdua (meja, PC, keyboard, kursi kerja), tengah = Oki | AI Sehari-hari (meja, PC, keyboard, kursi kerja), timur = Ekspansi 3 yang masih kosong. Di open space selatan lantai 2 ada meja meeting, arsip, lounge sofa + karpet + TV + konsol game generik, aquarium, dan 2 kucing (abu-abu dan putih). Pencet tombol Lantai 2, Ludo Berdua, Oki, atau Ekspansi 3 buat lihat.';
+  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini sudah terisi penuh (3 dari 3 ruang). Ada tangga di sayap kiri dekat Arsip (barat), di antara lemari Arsip dan meja selatan, tidak lagi di tengah pintu masuk, naik dari lantai 1 ke atas. Barat = Ludo Berdua (meja, PC, keyboard, kursi kerja), tengah = Oki | AI Sehari-hari (meja, PC, keyboard, kursi kerja), timur = BaruTauAda (meja, PC, keyboard, kursi kerja). Di open space selatan lantai 2 ada meja meeting, arsip, lounge sofa + karpet + TV + konsol game generik, aquarium, dan 2 kucing (abu-abu dan putih). Pencet tombol Lantai 2, Ludo Berdua, Oki, atau BaruTauAda buat lihat.';
   return 'Maaf, bot ini tanpa AI, jadi gue cuma bisa jawab topik kantor yang sudah disiapin: OSCR Works, bisnis dan 6 segmen, tim, briefing, toilet, pantry, parkir, musik, cara pakai kantor, dan tab Dashboard/Report/Personel/KPI. Coba pencet tombol cepat di bawah, atau tanya salah satu topik itu.';
 }
 </script>

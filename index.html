@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OSCR Works — Kantor Digital 3D v40</title>
+<title>OSCR Works — Kantor Digital 3D v42</title>
 <script>
 console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
@@ -49,7 +49,7 @@ header h1{margin:0;font-size:20px}header p{margin:0;color:#666;font-size:13px;te
 .btns button{padding:7px 10px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer}
 .btns button:hover{background:#ffd23f}
 #scene{width:100%;height:540px;background:#7fb069;border:1px solid #ddd;position:sticky;top:0;z-index:50;overflow:hidden}
-#scene canvas{display:block;width:100%;height:100%;touch-action:none}
+body.pov-full{overflow:hidden} body.pov-full header,body.pov-full .btns,body.pov-full .tab-buttons,body.pov-full #detail,body.pov-full .tab-content,body.pov-full #sceneSpacer{display:none !important} body.pov-full #scene{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;width:100vw !important;height:100vh !important;z-index:50} #scene canvas{display:block;width:100%;height:100%;touch-action:none}
 #sceneHud{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.92);border:2px solid #222;padding:6px 8px;font-size:12px;font-weight:bold;z-index:5;max-width:92%}
 #fallback{display:none;padding:20px;background:#fff}
 #scPlayer{display:none;margin-top:8px}
@@ -104,12 +104,12 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 </style>
 </head>
 <body>
-<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v40</p></header>
+<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v42</p></header>
 <div class="wrap">
 <div id="scene"><div id="sceneHud">OSCR Works - Jam kantor: - - Fokus: Keseluruhan</div><div id="fallback">⚠️ Three.js gagal dimuat. File ini butuh internet sekali untuk load library 3D-nya, coba refresh.</div></div>
 <div id="sceneSpacer"></div>
-<div id="povHelp" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1001;background:rgba(0,0,0,0.85);color:#fff;padding:8px 12px;border-radius:8px;font-size:13px;text-align:center">Mode POV — kamu Oemar • WASD / panah = jalan, drag = lihat, Shift = lari, Esc = keluar</div>
-<div id="povPad" style="display:none;position:fixed;left:16px;bottom:16px;z-index:1001;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:4px"><span></span><button data-pov="fwd" style="font-size:20px">▲</button><span></span><button data-pov="left" style="font-size:20px">◀</button><button data-pov="back" style="font-size:20px">▼</button><button data-pov="right" style="font-size:20px">▶</button><span></span><span></span><span></span></div>
+<div id="povHelp" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1001;background:rgba(0,0,0,0.85);color:#fff;padding:8px 12px;border-radius:8px;font-size:13px;text-align:center">Mode POV — kamu Oemar • Panah: ↑ maju, ↓ mundur, ← → putar 360° • WASD juga bisa jalan • Shift = lari • Esc = keluar</div>
+<div id="povPad" style="display:none;position:fixed;left:16px;bottom:64px;z-index:1001;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:4px"><span></span><button data-pov="fwd" style="font-size:20px">▲</button><span></span><button data-pov="turnL" style="font-size:20px">↶</button><button data-pov="back" style="font-size:20px">▼</button><button data-pov="turnR" style="font-size:20px">↷</button><span></span><span></span><span></span></div><div id="povPadLabelL" style="display:none;position:fixed;left:16px;bottom:220px;z-index:1001;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:6px;font-size:11px">ARAH</div><div id="povBar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:1002;background:rgba(0,0,0,0.85);color:#fff;padding:8px;text-align:center"><button onclick="togglePOV()" style="font-size:15px">❌ Keluar POV</button> <button onclick="prevMusic()" style="font-size:15px">⏮ Prev</button> <button onclick="window.__scPlaying ? window.pauseMusic() : window.playMusic()" style="font-size:15px">▶/⏸ Musik</button> <button onclick="nextMusic()" style="font-size:15px">Next ⏭</button> <button onclick="toggleAmbience()" style="font-size:15px">🔊 Suara Kantor</button></div>
 <div id="hoverTip" style="display:none;position:fixed;z-index:1000;pointer-events:none;max-width:260px;background:rgba(255,255,255,0.97);border:1px solid #ccc;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 2px 10px rgba(0,0,0,0.25);"></div>
 <div class="btns">
 <div class="btns-main">
@@ -207,11 +207,12 @@ Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="al
 <div id="kpiDetail" style="margin-top:10px"></div>
 </div>
 </div>
-<footer id="siteFooter">OSCR Works - Digital Office • v40 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
+<footer id="siteFooter">OSCR Works - Digital Office • v42 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
 </div>
 <script>
 const SOUNDCLOUD_DEFAULT_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav"; let SOUNDCLOUD_URL = SOUNDCLOUD_DEFAULT_URL;
 let scWidget = null;
+window.__scPlaying = false; window.__scLoadFailed = false; window.__scPlayPending = false;
 function ensureWidget(cb){
   if (scWidget) { cb(scWidget); return; }
   const f = document.getElementById('scFrame');
@@ -223,27 +224,32 @@ function ensureWidget(cb){
     document.getElementById('musicNote').textContent = "Memuat player SoundCloud...";
     const sc = document.createElement('script'); sc.src = "https://w.soundcloud.com/player/api.js";
     sc.onload = function(){ ensureWidget(cb); };
-    sc.onerror = function(){ document.getElementById('musicNote').textContent = "Player SoundCloud gagal dimuat (cek internet)"; };
+    sc.onerror = function(){ window.__scLoadFailed = true; document.getElementById('musicNote').textContent = "Player SoundCloud gagal dimuat (cek internet)"; };
     document.head.appendChild(sc); return;
   }
   if (typeof SC !== 'undefined' && SC.Widget) {
     scWidget = SC.Widget(f);
     try {
       scWidget.bind(SC.Widget.Events.PLAY, function(){
-        try { scWidget.getCurrentSound(function(snd){ if (snd && snd.title) document.getElementById('musicNote').textContent = "Memutar: " + snd.title; }); } catch(e) {} window.__scPlaying = true;
+        window.__scPlaying = true; window.__scPlayPending = false; window.__scLoadFailed = false;
+        try { scWidget.getCurrentSound(function(snd){ if (snd && snd.title) document.getElementById('musicNote').textContent = "Memutar: " + snd.title; }); } catch(e) {}
       });
+      try { scWidget.bind(SC.Widget.Events.PAUSE, function(){ window.__scPlaying = false; window.__scPlayPending = false; document.getElementById('musicNote').textContent = "Dijeda"; }); } catch(e) {}
+      try { scWidget.bind(SC.Widget.Events.ERROR, function(){ window.__scPlaying = false; window.__scLoadFailed = true; document.getElementById('musicNote').textContent = "Player SoundCloud gagal dimuat (cek internet)"; }); } catch(e) {}
     } catch(e) {}
-    setTimeout(function(){ cb(scWidget); }, 800);
+    cb(scWidget);
   } else {
     document.getElementById('musicNote').textContent = "Player SoundCloud belum siap (cek internet)";
   }
 }
 window.playMusic = function(){
   document.getElementById('scPlayer').style.display = 'block';
-  document.getElementById('musicNote').textContent = "Memutar";
-  window.__scPlaying = true; ensureWidget(function(w){ try { w.play(); } catch(e) {} });
+  window.__scPlayPending = true;
+  if (!window.__scPlaying) document.getElementById('musicNote').textContent = "Memuat SoundCloud...";
+  ensureWidget(function(w){ try { w.play(); } catch(e) { window.__scLoadFailed = true; document.getElementById('musicNote').textContent = "Player SoundCloud gagal dimuat (cek internet)"; } });
 };
 window.pauseMusic = function(){
+  window.__scPlayPending = false;
   if (scWidget) { try { scWidget.pause(); } catch(e) {} window.__scPlaying = false; document.getElementById('musicNote').textContent = "Dijeda"; return; }
   const f = document.getElementById('scFrame'); f.src = ""; document.getElementById('scPlayer').style.display = 'none'; window.__scPlaying = false; document.getElementById('musicNote').textContent = "Dijeda";
 };
@@ -763,8 +769,8 @@ function catPickTarget(cat){
   const pts = tf === 2 ? CAT_WALK2 : CAT_WALK1;
   const tp = pts[Math.floor(Math.random() * pts.length)];
   if (tf === curFloor) { const rt = routePath(tf, cur.x, cur.z, tp[0], tp[1]); if (!rt) return false; cat.queue = rt.map(function(p){ return tf === 2 ? [p[0],p[1],3.6] : [p[0],p[1]]; }); return true; }
-  if (tf === 2) { const q = stairUpQueue(); const rt = routePath(2, -10, 1, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else q.push([-10,1,3.6],[tp[0],tp[1],3.6]); cat.queue = q; return true; }
-  const q = stairDownQueue(); const rt = routePath(1, -7, 6.5, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); }); else q.push([-7,6.5],[tp[0],tp[1]]); cat.queue = q; return true;
+  if (tf === 2) { const q = smoothQueue(stairUpQueue(), cur.x, cur.z, cur.y); const rt = routePath(2, -10, 1, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else { const cr = corridorRoute(2, -10, 1, tp[0], tp[1]); if (cr) cr.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else return false; } cat.queue = q; return true; }
+  const q = smoothQueue(stairDownQueue(), cur.x, cur.z, cur.y); const rt = routePath(1, -7, 6.5, tp[0], tp[1]); if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); }); else { const cr = corridorRoute(1, -7, 6.5, tp[0], tp[1]); if (cr) cr.forEach(function(p){ q.push([p[0],p[1]]); }); else return false; } cat.queue = q; return true;
 }
 function updateCats(t, dt){
   if (typeof CATS === 'undefined') return;
@@ -1043,7 +1049,7 @@ function applyTimeWeather(){
   updateWeatherOutdoorAudio();
 }
 applyTimeWeather(); setInterval(applyTimeWeather, 30000);
-function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v40"; }
+function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v42"; }
 updateHeaderClock(); setInterval(updateHeaderClock, 1000);
 window.cycleWeather = function(){ const order = ['cerah','mendung','hujan','salju','petir','badai','panasterik']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
 
@@ -1193,7 +1199,7 @@ function applyConfigToSite(cfg){
     if (h1) h1.textContent = cfg.officeName;
     document.title = cfg.officeName + ' — Kantor Digital 3D v40';
     var ft = document.getElementById('siteFooter');
-    if (ft) ft.textContent = cfg.officeName + ' • v40 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
+    if (ft) ft.textContent = cfg.officeName + ' • v42 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
   }
   if (cfg.soundcloudUrl && typeof cfg.soundcloudUrl === 'string' && cfg.soundcloudUrl.indexOf('https://soundcloud.com/') === 0 && cfg.soundcloudUrl !== SOUNDCLOUD_URL) {
     SOUNDCLOUD_URL = cfg.soundcloudUrl;
@@ -1422,6 +1428,12 @@ function routePath(floor, sx, sz, tx, tz){
   }
   return out;
 }
+// v41: rute koridor selatan sebagai fallback BUKAN jalan lurus. Lantai 2 pakai z=1.0 (strip bebas di selatan partisi yang berakhir di z=0; z=2 menyentuh rect lubang tangga x -11.5..-8.5, jadi BUKAN strip bebas). Lantai 1 pakai z=2.0. Tiap segmen dicek pfSegClear; gagal -> null (karakter diam, jangan tembus tembok).
+function corridorRoute(floor, sx, sz, tx, tz){
+  const cz = (floor === 2 ? 1.0 : 2.0);
+  if (pfSegClear(floor, sx, sz, sx, cz) && pfSegClear(floor, sx, cz, tx, cz) && pfSegClear(floor, tx, cz, tx, tz)) return [[sx,cz],[tx,cz],[tx,tz]];
+  return null;
+}
 // Haluskan antrean lama: tiap segmen satu lantai di-route lewat grid; segmen tangga (y berubah /
 // koridor tangga x -11.5..-8.5, z 0..7) dibiarkan apa adanya; waypoint warisan halaman (-2.5,7.5)/(-2.5,9.5)
 // dibuang karena grid sudah me-route lewat celah pintu depan. Bila rute gagal -> segmen lurus lama (fallback).
@@ -1430,13 +1442,13 @@ function smoothQueue(q, sx, sz, sy){
   q.forEach(function(wp){
     if (wp[0] === -2.5 && (wp[1] === 7.5 || wp[1] === 9.5)) return;
     const wy = (wp.length > 2 && typeof wp[2] === 'number') ? wp[2] : cy;
-    const inStair = (cx >= -11.5 && cx <= -8.5 && cz >= 0 && cz <= 7) || (wp[0] >= -11.5 && wp[0] <= -8.5 && wp[1] >= 0 && wp[1] <= 7);
+    // v41: HANYA segmen yang KEDUA ujungnya di koridor tangga yang dilewati lurus. Sebelumnya OR membuat segmen landing->target (ujung di luar koridor) ikut lurus — inilah akar karyawan lt2 tembus partisi x=-4/x=4.
+    const inStair = (cx >= -11.5 && cx <= -8.5 && cz >= 0 && cz <= 7) && (wp[0] >= -11.5 && wp[0] <= -8.5 && wp[1] >= 0 && wp[1] <= 7);
     if (Math.abs(wy - cy) > 0.01 || inStair) { out.push(wp); cx = wp[0]; cz = wp[1]; cy = wy; return; }
     const floor = (cy > 1) ? 2 : 1;
     const rt = routePath(floor, cx, cz, wp[0], wp[1]);
-    if (rt && rt.length) { rt.forEach(function(p){ if (wp.length > 2) out.push([p[0],p[1],wp[2]]); else out.push([p[0],p[1]]); }); }
-    else out.push(wp);
-    cx = wp[0]; cz = wp[1]; cy = wy;
+    if (rt && rt.length) { rt.forEach(function(p){ if (wp.length > 2) out.push([p[0],p[1],wp[2]]); else out.push([p[0],p[1]]); }); cx = wp[0]; cz = wp[1]; cy = wy; }
+    else { const cr = corridorRoute(floor, cx, cz, wp[0], wp[1]); if (cr) { cr.forEach(function(p){ if (wp.length > 2) out.push([p[0],p[1],wp[2]]); else out.push([p[0],p[1]]); }); cx = wp[0]; cz = wp[1]; cy = wy; } /* v41: koridor pun gagal -> waypoint DILEWATI (karakter diam sampai aktivitas berikutnya), JANGAN jalan lurus menembus tembok. */ }
   });
   return out;
 }
@@ -1446,15 +1458,19 @@ function buildQueueTo(entry, tx, tz, targetFloor){
   if (curFloor === targetFloor) {
     const rt = routePath(curFloor, cur.x, cur.z, tx, tz);
     if (rt) return rt.map(function(p){ return (targetFloor === 2) ? [p[0],p[1],3.6] : [p[0],p[1]]; });
-    return targetFloor === 2 ? [[tx,tz,3.6]] : [[tx,tz]];
+    const cr = corridorRoute(curFloor, cur.x, cur.z, tx, tz);
+    if (cr) return cr.map(function(p){ return (targetFloor === 2) ? [p[0],p[1],3.6] : [p[0],p[1]]; });
+    return []; /* v41: tidak ada rute -> diam, JANGAN jalan lurus (fallback lurus lama dihapus). */
   }
   if (targetFloor === 2) {
-    const q = stairUpQueue(); const rt = routePath(2, -10, 1, tx, tz);
-    if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); }); else q.push([-10,1,3.6],[tx,tz,3.6]);
+    const q = smoothQueue(stairUpQueue(), cur.x, cur.z, cur.y); const rt = routePath(2, -10, 1, tx, tz);
+    if (rt) rt.forEach(function(p){ q.push([p[0],p[1],3.6]); });
+    else { const cr = corridorRoute(2, -10, 1, tx, tz); if (cr) cr.forEach(function(p){ q.push([p[0],p[1],3.6]); }); }
     return q;
   }
-  const q = stairDownQueue(); const rt = routePath(1, -7, 6.5, tx, tz);
-  if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); }); else q.push([-7,6.5],[tx,tz]);
+  const q = smoothQueue(stairDownQueue(), cur.x, cur.z, cur.y); const rt = routePath(1, -7, 6.5, tx, tz);
+  if (rt) rt.forEach(function(p){ q.push([p[0],p[1]]); });
+  else { const cr = corridorRoute(1, -7, 6.5, tx, tz); if (cr) cr.forEach(function(p){ q.push([p[0],p[1]]); }); }
   return q;
 }
 
@@ -1692,7 +1708,7 @@ function endBriefing(){
     const target = [entry.home.x, entry.home.z]; const cur = entry.g.position;
     if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
     if (entry.isOemar) entry.queue = buildOemarQueue(entry, target, 'kerja');
-    else if (entry.homeY > 1) { if (cur.y > 1) { entry.queue = [[target[0],target[1],3.6]]; } else { const qu2 = stairUpQueue(); qu2.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = smoothQueue(qu2, cur.x, cur.z, cur.y); } }
+    else if (entry.homeY > 1) { if (cur.y > 1) { entry.queue = buildQueueTo(entry, target[0], target[1], 2); } else { const qu2 = stairUpQueue(); qu2.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = smoothQueue(qu2, cur.x, cur.z, cur.y); } } /* v41: endBriefing lt2 yang sudah di lt2 TIDAK LAGI antrean lurus [[target,3.6]] (itu menembus partisi antar ruangan) — pakai buildQueueTo (routePath / koridor / diam). */
     else {
       const q = [];
       if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
@@ -1748,15 +1764,16 @@ window.rotateView = function(deg){ if (typeof povActive !== 'undefined' && povAc
 window.tiltView = function(deg){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi + deg * Math.PI / 180)); updateOrbitTarget(); };
 window.toggleOrbit = function(){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitAuto = !orbitAuto; const ob = document.getElementById('orbitBtn'); if (ob) { ob.textContent = orbitAuto ? '⏸' : '🔄'; ob.title = orbitAuto ? 'Hentikan 360°' : '360° Otomatis'; ob.setAttribute('aria-label', orbitAuto ? 'Hentikan 360°' : '360° Otomatis'); } };
 window.zoom = function(f){ if (typeof povActive !== 'undefined' && povActive) return; ensureOrbit(); orbitRadius = Math.min(60, Math.max(3, orbitRadius * f)); updateOrbitTarget(); };
-/* ===== v39 MODE POV — main sebagai Oemar, first-person, satu tombol toggle =====
+/* ===== v42 MODE POV — panah = jalan/putar (koreksi v41 yang menjadikan panah khusus tengok), tanpa drag kursor; fullscreen + menubar bawah; satu pad ARAH (v39: satu tombol toggle, v40: POV + plafon, v41: fullscreen + pad tengok) =====
    Spawn: posisi Oemar saat itu (atau mejanya bila sedang briefing). Mata 1.6 m di atas lantai.
    Kontrol: WASD + panah (wajib dua-duanya), Shift = lari 2x, drag = menengok (pitch -60..+60 deg),
    Esc = keluar. D-pad layar hanya tampil saat POV. Selama POV: orbit/Tour/Segmen/Lantai/klik-zoom
    diabaikan; Musik/Suara tetap jalan. Oemar disembunyikan + AI-nya dijeda; saat keluar, Oemar
    kembali dari posisi pemain dan jalan ke mejanya lewat pathfinding (tanpa teleport). */
 let povActive = false, povYaw = 0, povPitch = 0, povFloor = 1;
-let povPos = null, povKeys = {}, povTouch = { fwd:false, back:false, left:false, right:false };
+let povPos = null, povKeys = {}, povTouch = { fwd:false, back:false, left:false, right:false, turnL:false, turnR:false };
 let povSaved = null;
+let povFsRequested = false;
 function povPointBlocked(floor, x, z){
   if (floor === 1) { if (x < -12.5 || x > 12.5 || z < -8.5 || z > 11) return true; }
   else { if (x < -12.5 || x > 12.5 || z < -8.5 || z > 8.5) return true; }
@@ -1796,6 +1813,13 @@ function enterPOV(){
   const btn = document.getElementById('povBtn'); if (btn) { btn.textContent = '❌'; btn.title = 'Keluar POV'; btn.setAttribute('aria-label','Keluar POV'); }
   const help = document.getElementById('povHelp'); if (help) help.style.display = 'block';
   const pad = document.getElementById('povPad'); if (pad) pad.style.display = 'grid';
+
+  const labL = document.getElementById('povPadLabelL'); if (labL) labL.style.display = 'block';
+
+  const bar = document.getElementById('povBar'); if (bar) bar.style.display = 'block';
+  document.body.classList.add('pov-full');
+  povFsRequested = true;
+  try { if (document.documentElement.requestFullscreen) { const pr = document.documentElement.requestFullscreen(); if (pr && pr.catch) pr.catch(function(){}); } } catch(e) {}
   const fl = document.getElementById('focusLabel'); if (fl) fl.textContent = 'Fokus: Mode POV — kamu Oemar'; syncHud();
 }
 function exitPOV(){
@@ -1810,6 +1834,13 @@ function exitPOV(){
   const btn = document.getElementById('povBtn'); if (btn) { btn.textContent = '👁️'; btn.title = 'Mode POV — main sebagai Oemar'; btn.setAttribute('aria-label','Mode POV'); }
   const help = document.getElementById('povHelp'); if (help) help.style.display = 'none';
   const pad = document.getElementById('povPad'); if (pad) pad.style.display = 'none';
+
+  const labL = document.getElementById('povPadLabelL'); if (labL) labL.style.display = 'none';
+
+  const bar = document.getElementById('povBar'); if (bar) bar.style.display = 'none';
+  document.body.classList.remove('pov-full');
+  povFsRequested = false;
+  try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e) {}
   const fl = document.getElementById('focusLabel'); if (fl) fl.textContent = 'Fokus: Keseluruhan'; syncHud();
   updateCharacterFloorVisibility();
 }
@@ -1822,6 +1853,11 @@ document.addEventListener('keydown', function(e){
   povKeys[k] = true;
 });
 document.addEventListener('keyup', function(e){ povKeys[e.key.toLowerCase()] = false; });
+/* v41: Esc browser yang keluar dari fullscreen duluan -> POV ikut keluar (satu Esc tidak meninggalkan POV windowed). Flag povFsRequested + povActive mencegah loop: exitPOV sudah mematikan povActive sebelum fullscreenchange susulan. */
+document.addEventListener('fullscreenchange', function(){
+  try { window.dispatchEvent(new Event('resize')); } catch(e) {}
+  if (!document.fullscreenElement && povActive && povFsRequested) { povFsRequested = false; exitPOV(); }
+});
 document.querySelectorAll('#povPad button').forEach(function(b){
   const k = b.getAttribute('data-pov');
   function on(e){ e.preventDefault(); povTouch[k] = true; }
@@ -2007,30 +2043,30 @@ function showKpi(k){
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 renderer.domElement.addEventListener('click', function(e){
-  /* v40: di mode POV, klik TV = toggle musik SoundCloud (tanpa zoom/detail/focus); klik lain di POV diabaikan total. */
+    /* v41: di mode POV, klik TV = toggle musik SoundCloud LEWAT playMusic/pauseMusic yang sama dengan tombol Musik (tanpa toggle tiruan). Status __scPlaying hanya dari event PLAY/PAUSE widget: klik pertama saat widget belum siap menampilkan "Memuat..." (bukan "diputar"), klik berikutnya mencoba PLAY lagi (bukan PAUSE buta). Bila TV ada di belakang objek lain dalam 12 m, beri tahu terhalang; klik lain di POV diabaikan. */
   if (typeof povActive !== 'undefined' && povActive) {
     if (suppressClick) { suppressClick = false; return; }
     const r = renderer.domElement.getBoundingClientRect();
     ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
     ray.setFromCamera(ptr, camera); const hits = ray.intersectObjects(scene.children, true);
+    let tvIdx = -1;
     for (let i = 0; i < hits.length; i++) {
-      let o = hits[i].object, isTv = false, guard = 0;
-      while (o && guard++ < 8) { if (o.userData && o.userData.povTv) { isTv = true; break; } o = o.parent; }
-      if (isTv) {
-        if (hits[i].distance <= 12) {
-          try {
-            if (window.__scPlaying) { window.pauseMusic(); window.__scPlaying = false; }
-            else { window.playMusic(); window.__scPlaying = true; }
-          } catch (e2) {}
-          const fl0 = document.getElementById('focusLabel');
-          if (fl0) { fl0.textContent = '📺 TV — Musik SoundCloud ' + (window.__scPlaying ? 'diputar' : 'dijeda'); syncHud(); setTimeout(function(){ if (typeof povActive !== 'undefined' && povActive) { const fl1 = document.getElementById('focusLabel'); if (fl1) fl1.textContent = 'Fokus: Mode POV — kamu Oemar'; syncHud(); } }, 3000); }
-        }
-        return;
-      }
-      return; /* hit pertama bukan TV -> klik POV diabaikan (tidak zoom/detail/focus) */
+      let o = hits[i].object, guard = 0;
+      while (o && guard++ < 8) { if (o.userData && o.userData.povTv) { tvIdx = i; break; } o = o.parent; }
+      if (tvIdx >= 0) break;
+    }
+    function povTvMsg(msg){ const fl = document.getElementById('focusLabel'); if (fl) { fl.textContent = msg; syncHud(); setTimeout(function(){ if (typeof povActive !== 'undefined' && povActive) { const fl1 = document.getElementById('focusLabel'); if (fl1) fl1.textContent = 'Fokus: Mode POV — kamu Oemar'; syncHud(); } }, 3000); } }
+    if (tvIdx === 0 && hits[0].distance <= 12) {
+      try {
+        if (window.__scPlaying) { window.pauseMusic(); povTvMsg('📺 TV — Musik SoundCloud dijeda'); }
+        else { window.playMusic(); if (window.__scLoadFailed) povTvMsg('📺 TV — Player SoundCloud gagal dimuat, cek internet'); else povTvMsg('📺 TV — Memuat SoundCloud, klik TV lagi bila belum berbunyi'); }
+      } catch (e2) { povTvMsg('📺 TV — Player SoundCloud gagal dimuat, cek internet'); }
+    } else if (tvIdx > 0 && hits[tvIdx].distance <= 12) {
+      povTvMsg('📺 TV terhalang, mendekat / geser supaya TV terlihat langsung');
     }
     return;
   }
+
   if (suppressClick) { suppressClick = false; return; }
   const r = renderer.domElement.getBoundingClientRect();
   ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
@@ -2045,7 +2081,7 @@ renderer.domElement.addEventListener('click', function(e){
 });
 let dragging = false, lastDragX = 0, lastDragY = 0, dragDist = 0;
 renderer.domElement.addEventListener('pointerdown', function(e){ dragging = true; lastDragX = e.clientX; lastDragY = e.clientY; dragDist = 0; });
-renderer.domElement.addEventListener('pointermove', function(e){ if (!dragging) return; const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY; dragDist += Math.abs(dx) + Math.abs(dy); lastDragX = e.clientX; lastDragY = e.clientY; if (dragDist < 3) return; if (typeof povActive !== 'undefined' && povActive) { povYaw += dx * 0.005; povPitch = Math.min(1.047, Math.max(-1.047, povPitch - dy * 0.005)); return; } ensureOrbit(); orbitTheta -= dx * 0.005; orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi - dy * 0.005)); updateOrbitTarget(); });
+renderer.domElement.addEventListener('pointermove', function(e){ if (!dragging) return; const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY; dragDist += Math.abs(dx) + Math.abs(dy); lastDragX = e.clientX; lastDragY = e.clientY; if (dragDist < 3) return; if (typeof povActive !== 'undefined' && povActive) { return; } /* v42: drag kursor TIDAK mengubah kamera di POV — kamera dikunci di tombol panah / pad ARAH. */ ensureOrbit(); orbitTheta -= dx * 0.005; orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi - dy * 0.005)); updateOrbitTarget(); });
 renderer.domElement.addEventListener('pointerup', function(){ if (dragging && dragDist > 5) suppressClick = true; dragging = false; });
 /* v39: scroll mouse = zoom. Sebelumnya tidak ada wheel listener (scroll hanya menggeser halaman), dan zoom lama ditimpa focus-follow karena tidak mengubah orbitRadius. */
 renderer.domElement.addEventListener('wheel', function(e){ if (typeof povActive !== 'undefined' && povActive) return; e.preventDefault(); window.zoom(e.deltaY > 0 ? 1.1 : 0.9); }, { passive: false });
@@ -2143,10 +2179,22 @@ function animate(){
   if (snowPoints.visible) { const spos = snowGeo.attributes.position.array; for (let i=0;i<snowCount;i++){ spos[i*3+1] -= dt * 2.5; spos[i*3] += Math.sin(t*1.5 + i) * dt * 0.5; if (spos[i*3+1] < 0) snowReset(i, true); } snowGeo.attributes.position.needsUpdate = true; }
   if (weather === 'petir') { lightningNext -= dt; if (lightningNext <= 0) { lightningFlash = 0.2; if (typeof playThunderBoom === 'function') playThunderBoom(); lightningNext = 2 + Math.random()*4; lightningBolt.position.set(-15 + Math.random()*30, 12, -5 + Math.random()*15); } if (lightningFlash > 0) { lightningFlash -= dt; sun.intensity = baseSunInt + 3; lightningBolt.visible = true; } else { sun.intensity = baseSunInt; lightningBolt.visible = false; } } else { lightningBolt.visible = false; }
   if (typeof povActive !== 'undefined' && povActive && povPos) {
+    /* v42 KOREKSI (Oemar): tombol panah = NGARAHIN + JALANIN POV, bukan sekadar menengok.
+       Panah atas = maju, panah bawah = mundur, panah kiri/kanan = putar yaw 360 derajat
+       (tahan = terus berputar ~120 derajat/detik). Tombol panah saja sudah cukup menjelajah:
+       putar dulu sampai menghadap arah tujuan, lalu jalan pakai panah atas/bawah.
+       WASD tetap jalan sebagai alternatif (W/S maju/mundur, A/D geser kiri/kanan).
+       Pitch DIKUNCI 0 (kamera selalu lurus ke depan) karena panah atas/bawah dipakai jalan,
+       bukan tengok vertikal — trade-off yang disengaja, dilaporkan ke pemilik. */
     const fwd = (povKeys['w'] || povKeys['arrowup'] || povTouch.fwd) ? 1 : 0;
     const back = (povKeys['s'] || povKeys['arrowdown'] || povTouch.back) ? 1 : 0;
-    const left = (povKeys['a'] || povKeys['arrowleft'] || povTouch.left) ? 1 : 0;
-    const right = (povKeys['d'] || povKeys['arrowright'] || povTouch.right) ? 1 : 0;
+    const left = (povKeys['a'] || povTouch.left) ? 1 : 0;
+    const right = (povKeys['d'] || povTouch.right) ? 1 : 0;
+    const turnL = (povKeys['arrowleft'] || povTouch.turnL) ? 1 : 0;
+    const turnR = (povKeys['arrowright'] || povTouch.turnR) ? 1 : 0;
+    const yawRate = 2.094 * dt;
+    povYaw += (turnR - turnL) * yawRate;
+    povPitch = 0;
     const fx = Math.sin(povYaw), fz = -Math.cos(povYaw);
     const rx = -fz, rz = fx;
     const fb = fwd - back, rl = right - left;

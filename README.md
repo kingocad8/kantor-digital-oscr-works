@@ -1,5 +1,9 @@
 # OSCR Works — Kantor Digital 3D
 
+## v42 — Kendali POV dikunci di tombol arah yang tetap bisa jalan (mencakup v41)
+
+Koreksi atas v41 (tombol panah di v41 salah diubah jadi khusus menengok, sehingga panah saja tidak bisa jalan): di v42 tombol panah kembali menjadi kendali utama untuk mengarahkan DAN menjalankan POV — panah atas jalan maju, panah bawah jalan mundur, panah kiri/kanan putar 360 derajat penuh (ditahan terus muter). Panah saja sudah cukup menjelajah seluruh kantor. WASD tetap bisa jalan sebagai alternatif, Shift tetap lari, mouse tetap tidak dipakai buat kamera di POV, kamera dikunci lurus ke depan sejajar mata (tidak ada lagi tengok atas/bawah, karena panah atas-bawah dipakai jalan). Di HP, pad tengok v41 dihapus, diganti satu pad arah tunggal (atas maju, bawah mundur, kiri putar kiri, kanan putar kanan). Dari v41 dipertahankan: POV fullscreen + menubar bawah, perbaikan karyawan lantai 2 tembus tembok, dan perbaikan klik TV SoundCloud.
+
 ## Kustomisasi jadi kantor kamu (v37 — cara baru, cukup edit 1 file)
 
 Mau pakai kantor ini untuk usaha kamu sendiri, tanpa minta ke Oemar/Lux?

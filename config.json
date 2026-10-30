@@ -1,0 +1,1153 @@
+{
+  "officeName": "OSCR Works - Digital Office",
+  "soundcloudUrl": "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav",
+  "segments": [
+    {
+      "code": "BK",
+      "emoji": "💰",
+      "name": "Bedah Keuangan",
+      "viewKey": "bk",
+      "description": "Edukasi keuangan berbahasa Indonesia — reels karakter + carousel soal gaji, utang, dan tabungan. Konten mengarah ke produk digital (template/anggaran); harga dan angka penjualan tidak dipublikasikan di sini."
+    },
+    {
+      "code": "JK",
+      "emoji": "🌍",
+      "name": "Jejak Kuasa",
+      "viewKey": "jk",
+      "description": "Geopolitik & sejarah — reels sejarah dan cerita kekuasaan dengan visual storytelling dan reels peta. Tanpa klaim follower/views di sini."
+    },
+    {
+      "code": "RU",
+      "emoji": "💌",
+      "name": "Rancang Undangan",
+      "viewKey": "ru",
+      "description": "Jasa undangan cetak & digital di Batam (fokus Batu Aji) — Oemar bagian marketing, produksi dikerjakan vendor, margin tanpa biaya operasional. Keunggulan: ada maket + komunikasi visual yang mudah. Harga, nomor WA, alamat lengkap, dan vendor spesifik tidak ditulis di sini."
+    },
+    {
+      "code": "BTA",
+      "emoji": "🛒",
+      "name": "BaruTauAda",
+      "viewKey": "bta",
+      "description": "Reels pengetahuan umum segmen Rumah & Kos (@barutauada) disisipi keranjang affiliate secara soft selling. Produk dan link spesifik tidak ditulis di sini."
+    },
+    {
+      "code": "LB",
+      "emoji": "🎲",
+      "name": "Ludo Berdua",
+      "viewKey": "ludo",
+      "description": "Game web ludo berdua (truth-or-dare untuk pasangan) — produk digital berbayar. Tim: Bima (Produk), Alya (Marketing), Tari (Admin). Harga, status pembayaran, dan jumlah kartu tidak ditulis di sini."
+    },
+    {
+      "code": "OKI",
+      "emoji": "🤖",
+      "name": "Oki | AI Sehari-hari",
+      "viewKey": "okisadma",
+      "description": "Sharing utilitas AI dalam kehidupan sehari-hari untuk orang yang baru kenal AI — sesekali pop culture, ekonomi, dan keuangan — dengan persona abang-abang yang sharing, bukan influencer kaku. Tim: Raka (Riset & Konten), Nisa (Socmed). Jadwal posting dan link akun spesifik tidak ditulis di sini."
+    }
+  ],
+  "dashboard": {
+    "note": "angka di bawah ini CONTOH / ILUSTRASI, belum tersambung API socmed. Filter sudah jalan, ganti angka di dashboardData dengan data asli kapan pun.",
+    "segments": {
+      "bk": {
+        "instagram": {
+          "views": 12500,
+          "likes": 820,
+          "comments": 145,
+          "shares": 210,
+          "followers": 3400,
+          "posts": 18,
+          "weeks": [
+            2100,
+            2800,
+            3200,
+            4400
+          ]
+        },
+        "tiktok": {
+          "views": 18900,
+          "likes": 1200,
+          "comments": 210,
+          "shares": 380,
+          "followers": 2100,
+          "posts": 12,
+          "weeks": [
+            3000,
+            4200,
+            5100,
+            6600
+          ]
+        },
+        "threads": {
+          "views": 4200,
+          "likes": 180,
+          "comments": 45,
+          "shares": 60,
+          "followers": 890,
+          "posts": 22,
+          "weeks": [
+            800,
+            950,
+            1100,
+            1350
+          ]
+        },
+        "x": {
+          "views": 3100,
+          "likes": 95,
+          "comments": 30,
+          "shares": 40,
+          "followers": 620,
+          "posts": 15,
+          "weeks": [
+            600,
+            700,
+            850,
+            950
+          ]
+        },
+        "facebook": {
+          "views": 5600,
+          "likes": 240,
+          "comments": 55,
+          "shares": 90,
+          "followers": 1450,
+          "posts": 9,
+          "weeks": [
+            1000,
+            1300,
+            1500,
+            1800
+          ]
+        }
+      },
+      "jk": {
+        "instagram": {
+          "views": 22400,
+          "likes": 1450,
+          "comments": 260,
+          "shares": 420,
+          "followers": 5200,
+          "posts": 20,
+          "weeks": [
+            3800,
+            5000,
+            6200,
+            7400
+          ]
+        },
+        "tiktok": {
+          "views": 30100,
+          "likes": 2100,
+          "comments": 340,
+          "shares": 610,
+          "followers": 3800,
+          "posts": 14,
+          "weeks": [
+            5200,
+            6800,
+            8300,
+            9800
+          ]
+        },
+        "threads": {
+          "views": 6800,
+          "likes": 260,
+          "comments": 70,
+          "shares": 110,
+          "followers": 1200,
+          "posts": 18,
+          "weeks": [
+            1200,
+            1500,
+            1900,
+            2200
+          ]
+        },
+        "x": {
+          "views": 4400,
+          "likes": 130,
+          "comments": 40,
+          "shares": 65,
+          "followers": 900,
+          "posts": 12,
+          "weeks": [
+            800,
+            1000,
+            1200,
+            1400
+          ]
+        },
+        "facebook": {
+          "views": 8900,
+          "likes": 380,
+          "comments": 90,
+          "shares": 150,
+          "followers": 2100,
+          "posts": 10,
+          "weeks": [
+            1600,
+            2000,
+            2500,
+            2800
+          ]
+        }
+      },
+      "ru": {
+        "instagram": {
+          "views": 3800,
+          "likes": 260,
+          "comments": 60,
+          "shares": 90,
+          "followers": 1100,
+          "posts": 11,
+          "weeks": [
+            700,
+            850,
+            1000,
+            1250
+          ]
+        },
+        "tiktok": {
+          "views": 5200,
+          "likes": 340,
+          "comments": 80,
+          "shares": 120,
+          "followers": 750,
+          "posts": 7,
+          "weeks": [
+            900,
+            1200,
+            1400,
+            1700
+          ]
+        },
+        "threads": {
+          "views": 1100,
+          "likes": 50,
+          "comments": 15,
+          "shares": 20,
+          "followers": 300,
+          "posts": 8,
+          "weeks": [
+            200,
+            250,
+            300,
+            350
+          ]
+        },
+        "x": {
+          "views": 800,
+          "likes": 30,
+          "comments": 10,
+          "shares": 15,
+          "followers": 220,
+          "posts": 6,
+          "weeks": [
+            150,
+            180,
+            220,
+            250
+          ]
+        },
+        "facebook": {
+          "views": 1900,
+          "likes": 90,
+          "comments": 25,
+          "shares": 35,
+          "followers": 600,
+          "posts": 5,
+          "weeks": [
+            350,
+            450,
+            500,
+            600
+          ]
+        }
+      },
+      "bta": {
+        "instagram": {
+          "views": 1200,
+          "likes": 90,
+          "comments": 25,
+          "shares": 30,
+          "followers": 350,
+          "posts": 6,
+          "weeks": [
+            200,
+            280,
+            320,
+            400
+          ]
+        },
+        "tiktok": {
+          "views": 2100,
+          "likes": 150,
+          "comments": 40,
+          "shares": 55,
+          "followers": 280,
+          "posts": 5,
+          "weeks": [
+            350,
+            450,
+            600,
+            700
+          ]
+        },
+        "threads": {
+          "views": 500,
+          "likes": 25,
+          "comments": 8,
+          "shares": 12,
+          "followers": 150,
+          "posts": 9,
+          "weeks": [
+            90,
+            110,
+            140,
+            160
+          ]
+        },
+        "x": {
+          "views": 300,
+          "likes": 12,
+          "comments": 5,
+          "shares": 8,
+          "followers": 100,
+          "posts": 4,
+          "weeks": [
+            50,
+            70,
+            80,
+            100
+          ]
+        },
+        "facebook": {
+          "views": 700,
+          "likes": 35,
+          "comments": 12,
+          "shares": 18,
+          "followers": 220,
+          "posts": 3,
+          "weeks": [
+            120,
+            160,
+            190,
+            230
+          ]
+        }
+      }
+    }
+  },
+  "employees": [
+    {
+      "key": "direktur",
+      "nick": "Oemar",
+      "full": "Oemar",
+      "role": "Director",
+      "segment": "OSCR Works",
+      "segmentCode": "OSCR",
+      "filter": "management",
+      "gender": "Cowo",
+      "age": "-",
+      "born": "-",
+      "origin": "-",
+      "suku": "-",
+      "agama": "-",
+      "karakter": "-",
+      "shirt": "#922b21",
+      "hair": "#111111",
+      "hairStyle": "pendek",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        -9.0,
+        -6.0
+      ],
+      "ry": "PI",
+      "isOemar": true,
+      "profileBody": "<ul><li><b>Peran:</b> Director OSCR Works, meja direktur + laptop, sesekali keliling lewat pintu direktur ke Meeting 1 / open space / pantry / halaman.</li></ul>",
+      "kpi": {
+        "tepat": 90,
+        "metrics": [
+          {
+            "name": "Keputusan tepat waktu",
+            "target": 10,
+            "actual": 8
+          },
+          {
+            "name": "Rapat dipimpin",
+            "target": 8,
+            "actual": 7
+          }
+        ]
+      }
+    },
+    {
+      "key": "lux",
+      "nick": "Lux",
+      "full": "Lux",
+      "role": "Manager & Producer",
+      "segment": "OSCR Works",
+      "segmentCode": "OSCR",
+      "filter": "management",
+      "gender": "Cowo",
+      "age": "-",
+      "born": "-",
+      "origin": "-",
+      "suku": "-",
+      "agama": "-",
+      "karakter": "-",
+      "shirt": "#1a5276",
+      "hair": "#222222",
+      "hairStyle": "pendek",
+      "skin": "#ffd9a8",
+      "floor": 1,
+      "pos": [
+        0.0,
+        3.5
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "profileBody": "<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space dekat Meeting 2, aktivitas bergantian seperti tim lain.</li></ul>",
+      "kpi": {
+        "tepat": 92,
+        "metrics": [
+          {
+            "name": "Produksi selesai",
+            "target": 12,
+            "actual": 10
+          },
+          {
+            "name": "Update status tepat waktu",
+            "target": 12,
+            "actual": 11
+          }
+        ]
+      }
+    },
+    {
+      "key": "nadia",
+      "nick": "Nadia",
+      "full": "Nadia Ayu Lestari",
+      "role": "Content & Script",
+      "segment": "Bedah Keuangan",
+      "segmentCode": "BK",
+      "filter": "bk",
+      "gender": "Cewe",
+      "age": "27",
+      "born": "Yogyakarta, 14 Feb 1999",
+      "origin": "Yogyakarta",
+      "suku": "Jawa",
+      "agama": "Islam",
+      "karakter": "Teliti, suka analogi sehari-hari, perfeksionis ringan",
+      "shirt": "#16a085",
+      "hair": "#222222",
+      "hairStyle": "panjang",
+      "skin": "#ffd9a8",
+      "floor": 1,
+      "pos": [
+        -11.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 85,
+        "metrics": [
+          {
+            "name": "Naskah selesai",
+            "target": 10,
+            "actual": 7
+          },
+          {
+            "name": "Hook lolos QC",
+            "target": 10,
+            "actual": 8
+          }
+        ]
+      }
+    },
+    {
+      "key": "rizky",
+      "nick": "Rizky",
+      "full": "Rizky Aditya Pratama",
+      "role": "Social Media Admin",
+      "segment": "Bedah Keuangan",
+      "segmentCode": "BK",
+      "filter": "bk",
+      "gender": "Cowo",
+      "age": "29",
+      "born": "Bandung, 3 Jul 1997",
+      "origin": "Bandung",
+      "suku": "Sunda",
+      "agama": "Islam",
+      "karakter": "Santai, cepat tanggap komen, humor",
+      "shirt": "#e67e22",
+      "hair": "#111111",
+      "hairStyle": "pendek",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        -8.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 88,
+        "metrics": [
+          {
+            "name": "Posting tepat waktu",
+            "target": 12,
+            "actual": 9
+          },
+          {
+            "name": "Komen dibalas",
+            "target": 200,
+            "actual": 165
+          }
+        ]
+      }
+    },
+    {
+      "key": "jess",
+      "nick": "Jess",
+      "full": "Jessica Tan",
+      "role": "Finance & Research",
+      "segment": "Bedah Keuangan",
+      "segmentCode": "BK",
+      "filter": "bk",
+      "gender": "Cewe",
+      "age": "26",
+      "born": "Medan, 22 Nov 1999",
+      "origin": "Medan",
+      "suku": "Tionghoa",
+      "agama": "Kristen Protestan",
+      "karakter": "Analitis, tenang, suka angka",
+      "shirt": "#8e44ad",
+      "hair": "#222222",
+      "hairStyle": "bun",
+      "skin": "#ffd9a8",
+      "floor": 1,
+      "pos": [
+        -7.0,
+        8.5
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 90,
+        "metrics": [
+          {
+            "name": "Laporan keuangan akurat",
+            "target": 8,
+            "actual": 6
+          },
+          {
+            "name": "Riset terverifikasi",
+            "target": 10,
+            "actual": 8
+          }
+        ]
+      }
+    },
+    {
+      "key": "fajar",
+      "nick": "Fajar",
+      "full": "Fajar Ramadhan",
+      "role": "Research & Fact-Check",
+      "segment": "Jejak Kuasa",
+      "segmentCode": "JK",
+      "filter": "jk",
+      "gender": "Cowo",
+      "age": "31",
+      "born": "Makassar, 10 Jan 1995",
+      "origin": "Makassar",
+      "suku": "Bugis",
+      "agama": "Islam",
+      "karakter": "Penasaran sejarah, suka peta",
+      "shirt": "#27ae60",
+      "hair": "#111111",
+      "hairStyle": "cepak",
+      "skin": "#c68642",
+      "floor": 1,
+      "pos": [
+        -4.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 82,
+        "metrics": [
+          {
+            "name": "Fakta terverifikasi",
+            "target": 8,
+            "actual": 6
+          },
+          {
+            "name": "Peta akurat",
+            "target": 6,
+            "actual": 5
+          }
+        ]
+      }
+    },
+    {
+      "key": "maria",
+      "nick": "Maria",
+      "full": "Maria Simanjuntak",
+      "role": "Content & Script",
+      "segment": "Jejak Kuasa",
+      "segmentCode": "JK",
+      "filter": "jk",
+      "gender": "Cewe",
+      "age": "28",
+      "born": "Medan, 8 Mei 1998",
+      "origin": "Medan",
+      "suku": "Batak Toba",
+      "agama": "Katolik",
+      "karakter": "Storytelling kuat, suka riset arsip",
+      "shirt": "#d64545",
+      "hair": "#222222",
+      "hairStyle": "ponytail",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        -1.5,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 86,
+        "metrics": [
+          {
+            "name": "Naskah storytelling selesai",
+            "target": 10,
+            "actual": 7
+          },
+          {
+            "name": "Arsip terverifikasi",
+            "target": 8,
+            "actual": 6
+          }
+        ]
+      }
+    },
+    {
+      "key": "made",
+      "nick": "Made",
+      "full": "I Made Wirawan",
+      "role": "Visual-Motion",
+      "segment": "Jejak Kuasa",
+      "segmentCode": "JK",
+      "filter": "jk",
+      "gender": "Cowo",
+      "age": "30",
+      "born": "Denpasar, 19 Sep 1996",
+      "origin": "Denpasar",
+      "suku": "Bali",
+      "agama": "Hindu",
+      "karakter": "Visual, detail warna, tenang",
+      "shirt": "#d4ac0d",
+      "hair": "#111111",
+      "hairStyle": "pendek",
+      "skin": "#c68642",
+      "floor": 1,
+      "pos": [
+        -10.0,
+        8.5
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 80,
+        "metrics": [
+          {
+            "name": "Visual selesai",
+            "target": 8,
+            "actual": 5
+          },
+          {
+            "name": "Render tepat waktu",
+            "target": 8,
+            "actual": 6
+          }
+        ]
+      }
+    },
+    {
+      "key": "ratna",
+      "nick": "Ratna",
+      "full": "Ratna Sari Dewi",
+      "role": "Content & Sosmed",
+      "segment": "Rancang Undangan",
+      "segmentCode": "RU",
+      "filter": "ru",
+      "gender": "Cewe",
+      "age": "25",
+      "born": "Solo, 27 Apr 2001",
+      "origin": "Solo",
+      "suku": "Jawa",
+      "agama": "Islam",
+      "karakter": "Ramah, komunikatif, suka desain",
+      "shirt": "#e74c8c",
+      "hair": "#222222",
+      "hairStyle": "panjang",
+      "skin": "#ffd9a8",
+      "floor": 1,
+      "pos": [
+        1.5,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 84,
+        "metrics": [
+          {
+            "name": "Konten sosmed selesai",
+            "target": 10,
+            "actual": 6
+          },
+          {
+            "name": "Desain disetujui",
+            "target": 8,
+            "actual": 6
+          }
+        ]
+      }
+    },
+    {
+      "key": "yusuf",
+      "nick": "Yusuf",
+      "full": "Yusuf Hamdani",
+      "role": "Admin & Order",
+      "segment": "Rancang Undangan",
+      "segmentCode": "RU",
+      "filter": "ru",
+      "gender": "Cowo",
+      "age": "32",
+      "born": "Padang, 15 Des 1993",
+      "origin": "Padang",
+      "suku": "Minangkabau",
+      "agama": "Islam",
+      "karakter": "Tertib, cepat balas chat klien",
+      "shirt": "#2e86c1",
+      "hair": "#111111",
+      "hairStyle": "pendek",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        4.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 91,
+        "metrics": [
+          {
+            "name": "Order diproses",
+            "target": 12,
+            "actual": 9
+          },
+          {
+            "name": "Chat dibalas cepat",
+            "target": 50,
+            "actual": 44
+          }
+        ]
+      }
+    },
+    {
+      "key": "kevin",
+      "nick": "Kevin",
+      "full": "Kevin Wijaya",
+      "role": "Finance & Vendor",
+      "segment": "Rancang Undangan",
+      "segmentCode": "RU",
+      "filter": "ru",
+      "gender": "Cowo",
+      "age": "28",
+      "born": "Pontianak, 6 Jun 1998",
+      "origin": "Pontianak",
+      "suku": "Tionghoa",
+      "agama": "Buddha",
+      "karakter": "Negosiator, teliti harga",
+      "shirt": "#7f8c8d",
+      "hair": "#111111",
+      "hairStyle": "cepak",
+      "skin": "#ffd9a8",
+      "floor": 1,
+      "pos": [
+        3.0,
+        8.5
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 89,
+        "metrics": [
+          {
+            "name": "Vendor dinegosiasi",
+            "target": 8,
+            "actual": 6
+          },
+          {
+            "name": "Harga terverifikasi",
+            "target": 10,
+            "actual": 8
+          }
+        ]
+      }
+    },
+    {
+      "key": "intan",
+      "nick": "Intan",
+      "full": "Intan Permata",
+      "role": "Research & Fact-Check",
+      "segment": "BaruTauAda",
+      "segmentCode": "BTA",
+      "filter": "bta",
+      "gender": "Cewe",
+      "age": "24",
+      "born": "Palembang, 11 Mar 2002",
+      "origin": "Palembang",
+      "suku": "Melayu",
+      "agama": "Islam",
+      "karakter": "Detail, suka coba barang sampai paham",
+      "shirt": "#ff6b9d",
+      "hair": "#222222",
+      "hairStyle": "ponytail",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        7.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 83,
+        "metrics": [
+          {
+            "name": "Produk terverifikasi",
+            "target": 8,
+            "actual": 5
+          },
+          {
+            "name": "Fakta produk dicek",
+            "target": 10,
+            "actual": 7
+          }
+        ]
+      }
+    },
+    {
+      "key": "yohan",
+      "nick": "Yohan",
+      "full": "Yohanis Wenda",
+      "role": "Product Curation",
+      "segment": "BaruTauAda",
+      "segmentCode": "BTA",
+      "filter": "bta",
+      "gender": "Cowo",
+      "age": "27",
+      "born": "Jayapura, 2 Feb 1999",
+      "origin": "Jayapura",
+      "suku": "Papua",
+      "agama": "Kristen Protestan",
+      "karakter": "Praktis, suka barang berguna, jujur soal produk",
+      "shirt": "#8a5a2b",
+      "hair": "#111111",
+      "hairStyle": "keriting",
+      "skin": "#8d5524",
+      "floor": 1,
+      "pos": [
+        9.0,
+        1.6
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 87,
+        "metrics": [
+          {
+            "name": "Produk terkurasi",
+            "target": 8,
+            "actual": 5
+          },
+          {
+            "name": "Rekomendasi konversi",
+            "target": 6,
+            "actual": 4
+          }
+        ]
+      }
+    },
+    {
+      "key": "lina",
+      "nick": "Lina",
+      "full": "Lina Marlina",
+      "role": "Distribution & Admin",
+      "segment": "BaruTauAda",
+      "segmentCode": "BTA",
+      "filter": "bta",
+      "gender": "Cewe",
+      "age": "26",
+      "born": "Banjarmasin, 30 Aug 2000",
+      "origin": "Banjarmasin",
+      "suku": "Banjar",
+      "agama": "Islam",
+      "karakter": "Gesit, rapi jadwal posting 5 platform",
+      "shirt": "#00bcd4",
+      "hair": "#222222",
+      "hairStyle": "bun",
+      "skin": "#e8b88a",
+      "floor": 1,
+      "pos": [
+        8.0,
+        8.5
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 90,
+        "metrics": [
+          {
+            "name": "Posting 5 platform tepat waktu",
+            "target": 12,
+            "actual": 8
+          },
+          {
+            "name": "Jadwal rapi",
+            "target": 12,
+            "actual": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "bima",
+      "nick": "Bima",
+      "full": "Bima Aryo Nugroho",
+      "role": "Produk",
+      "segment": "Ludo Berdua",
+      "segmentCode": "LB",
+      "filter": "ludo",
+      "gender": "Cowo",
+      "age": "27",
+      "born": "Semarang, 12 Mar 1999",
+      "origin": "Semarang",
+      "suku": "Jawa",
+      "agama": "Islam",
+      "karakter": "Telaten prototipe, suka uji main sampai seru — karakter fiktif simulasi",
+      "shirt": "#1abc9c",
+      "hair": "#111111",
+      "hairStyle": "cepak",
+      "skin": "#e8b88a",
+      "floor": 2,
+      "pos": [
+        -11.0,
+        -4.1
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 86,
+        "metrics": [
+          {
+            "name": "Prototipe game diuji",
+            "target": 8,
+            "actual": 6
+          },
+          {
+            "name": "Fitur produk selesai",
+            "target": 10,
+            "actual": 7
+          }
+        ]
+      }
+    },
+    {
+      "key": "alya",
+      "nick": "Alya",
+      "full": "Alya Putri Maharani",
+      "role": "Marketing",
+      "segment": "Ludo Berdua",
+      "segmentCode": "LB",
+      "filter": "ludo",
+      "gender": "Cewe",
+      "age": "25",
+      "born": "Jakarta, 8 Jun 2001",
+      "origin": "Jakarta",
+      "suku": "Betawi",
+      "agama": "Islam",
+      "karakter": "Ceria, jago bikin konten main bareng — karakter fiktif simulasi",
+      "shirt": "#9b59b6",
+      "hair": "#222222",
+      "hairStyle": "panjang",
+      "skin": "#ffd9a8",
+      "floor": 2,
+      "pos": [
+        -8.5,
+        -4.1
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 88,
+        "metrics": [
+          {
+            "name": "Konten promosi selesai",
+            "target": 10,
+            "actual": 7
+          },
+          {
+            "name": "Kampanye tepat waktu",
+            "target": 8,
+            "actual": 6
+          }
+        ]
+      }
+    },
+    {
+      "key": "tari",
+      "nick": "Tari",
+      "full": "Tari Wulandari",
+      "role": "Admin",
+      "segment": "Ludo Berdua",
+      "segmentCode": "LB",
+      "filter": "ludo",
+      "gender": "Cewe",
+      "age": "26",
+      "born": "Malang, 20 Sep 2000",
+      "origin": "Malang",
+      "suku": "Jawa",
+      "agama": "Kristen Protestan",
+      "karakter": "Rapi, cepat balas order dan atur stok — karakter fiktif simulasi",
+      "shirt": "#3498db",
+      "hair": "#222222",
+      "hairStyle": "bun",
+      "skin": "#e8b88a",
+      "floor": 2,
+      "pos": [
+        -6.0,
+        -4.1
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 91,
+        "metrics": [
+          {
+            "name": "Order diproses",
+            "target": 12,
+            "actual": 10
+          },
+          {
+            "name": "Data admin rapi",
+            "target": 10,
+            "actual": 8
+          }
+        ]
+      }
+    },
+    {
+      "key": "raka",
+      "nick": "Raka",
+      "full": "Raka Aditya Saputra",
+      "role": "Riset & Konten",
+      "segment": "Oki | AI Sehari-hari",
+      "segmentCode": "OKI",
+      "filter": "oki",
+      "gender": "Cowo",
+      "age": "26",
+      "born": "Surabaya, 5 Apr 2000",
+      "origin": "Surabaya",
+      "suku": "Jawa",
+      "agama": "Islam",
+      "karakter": "Suka riset tools AI lalu coba sendiri sebelum dishare — karakter fiktif simulasi",
+      "shirt": "#e67e22",
+      "hair": "#111111",
+      "hairStyle": "pendek",
+      "skin": "#c68642",
+      "floor": 2,
+      "pos": [
+        -1.5,
+        -4.1
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 85,
+        "metrics": [
+          {
+            "name": "Riset AI terverifikasi",
+            "target": 8,
+            "actual": 6
+          },
+          {
+            "name": "Konten selesai",
+            "target": 10,
+            "actual": 7
+          }
+        ]
+      }
+    },
+    {
+      "key": "nisa",
+      "nick": "Nisa",
+      "full": "Nisa Rahmawati",
+      "role": "Socmed",
+      "segment": "Oki | AI Sehari-hari",
+      "segmentCode": "OKI",
+      "filter": "oki",
+      "gender": "Cewe",
+      "age": "24",
+      "born": "Cirebon, 14 Jan 2002",
+      "origin": "Cirebon",
+      "suku": "Sunda",
+      "agama": "Islam",
+      "karakter": "Gesit posting, suka bahasa sehari-hari — karakter fiktif simulasi",
+      "shirt": "#f39c12",
+      "hair": "#222222",
+      "hairStyle": "ponytail",
+      "skin": "#ffd9a8",
+      "floor": 2,
+      "pos": [
+        1.5,
+        -4.1
+      ],
+      "ry": "PI",
+      "isOemar": false,
+      "kpi": {
+        "tepat": 87,
+        "metrics": [
+          {
+            "name": "Posting tepat waktu",
+            "target": 12,
+            "actual": 9
+          },
+          {
+            "name": "Komen dibalas",
+            "target": 50,
+            "actual": 38
+          }
+        ]
+      }
+    }
+  ],
+  "chatbotBusiness": {
+    "oscr": "OSCR Works adalah grup yang menaungi 6 segmen: Bedah Keuangan, Jejak Kuasa, Rancang Undangan, BaruTauAda, Ludo Berdua, dan Oki | AI Sehari-hari. Kantor digital ini adalah simulasi dua lantai buat memantau segmen-segmen itu, bukan kantor fisik yang bisa dikunjungi. Lantai 1 untuk 4 segmen yang sudah jalan; lantai 2: barat = Ludo Berdua (sudah ada meja, PC, dan kursi), tengah = Oki | AI Sehari-hari (sudah ada meja, PC, dan kursi), timur = Ekspansi 3 yang masih kosong, plus meja meeting, arsip, lounge sofa + TV + konsol game, aquarium, dan 2 kucing di open space lantai 2. Direktur: Oemar, Manager & Producer: Lux (karakter di kantor ini). Gue ini resepsionis, bukan Lux dan bukan Muse.",
+    "bisnis": "Bisnis OSCR Works itu payung 6 segmen: Bedah Keuangan (edukasi keuangan + template/anggaran), Jejak Kuasa (konten sejarah dan geopolitik), Rancang Undangan (jasa undangan cetak dan digital di Batam), BaruTauAda (reels pengetahuan umum Rumah & Kos + affiliate soft selling), Ludo Berdua (game web ludo pasutri, produk digital berbayar), dan Oki | AI Sehari-hari (personal branding sharing AI sehari-hari). Direktur: Oemar, Manager & Producer: Lux (karakter di simulasi kantor ini). Tanya nama segmennya langsung kalau mau detail per segmen. Harga, kontak, dan link yang belum dikunci tidak tersedia di info kantor ini, jadi gue tidak mengarangnya. Gue ini resepsionis, bukan Lux dan bukan Muse.",
+    "bk": "Bedah Keuangan: konten edukasi keuangan berbahasa Indonesia — reels karakter dan carousel — yang membantu orang mengatur uang (gaji, utang, tabungan) dengan bahasa sehari-hari. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Produknya template/anggaran, dan kontennya mengarah ke produk digital itu. Harga dan angka penjualan tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.",
+    "jk": "Jejak Kuasa: konten geopolitik dan sejarah — reels/cerita sejarah dan kekuasaan dengan gaya storytelling visual, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render. Angka follower/views tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.",
+    "ru": "Rancang Undangan: jasa undangan cetak dan digital di Batam (fokus Batu Aji). Oemar pegang marketing, produksi dikerjakan vendor lain, dan Oemar ambil selisih margin tanpa biaya operasional. Diferensiasinya: undangan yang ada maket dan komunikasi visual yang gampang. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web. Harga, nomor WA, alamat lengkap, dan vendor spesifik belum dikunci di info kantor ini, jadi gue tidak mengarangnya.",
+    "bta": "BaruTauAda (@barutauada): reels pengetahuan umum segmen Rumah & Kos — benda kecil pemecah masalah di rumah — yang disisipi keranjang affiliate secara soft selling. Timnya Intan (Research), Yohan (Product Curation), Lina (Distribution & Admin). Produk dan link affiliate spesifik belum ada di info kantor ini, jadi gue tidak mengarangnya.",
+    "ludo": "Ludo Berdua: game web ludo pasutri (truth or dare), produk digital berbayar, yang kantornya di lantai 2 (ruang barat, sudah ada meja, PC, keyboard, dan kursi kerja). Timnya: Bima (Produk), Alya (Marketing), Tari (Admin) — ketiganya karakter fiktif simulasi, bukan orang nyata. Tombol Segmen 🎲 LB mengarah ke ruang itu. Harga dan status pembayaran tidak tersedia di info kantor ini, jadi gue tidak mengarangnya (gue juga tidak mengklaim pembayaran lewat Lynk sudah aktif).",
+    "oki": "Oki | AI Sehari-hari: personal branding okisadma yang sharing utilitas AI dalam kehidupan sehari-hari untuk orang yang baru tahu AI, sesekali pop culture, ekonomi, dan keuangan, dengan persona abang-abang yang mau sharing (bukan influencer kaku). Kantornya di lantai 2 (ruang tengah, sudah ada meja, PC, keyboard, dan kursi kerja). Timnya: Raka (Riset & Konten), Nisa (Socmed) — keduanya karakter fiktif simulasi, bukan orang nyata. Tombol Segmen 🤖 Oki mengarah ke ruang itu. Jumlah follower, jadwal posting, dan link akun spesifik tidak tersedia di info kantor ini di luar nama segmen itu, jadi gue tidak mengarangnya."
+  }
+}

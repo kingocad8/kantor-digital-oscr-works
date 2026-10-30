@@ -1,5 +1,39 @@
 # OSCR Works — Kantor Digital 3D
 
+## Kustomisasi jadi kantor kamu (v37 — cara baru, cukup edit 1 file)
+
+Mau pakai kantor ini untuk usaha kamu sendiri, tanpa minta ke Oemar/Lux?
+**Baca `README-CUSTOMIZE.md`** — caranya: fork repo ini → edit `config.json`
+langsung di web GitHub (nama kantor, album SoundCloud, deskripsi segmen,
+angka Dashboard, daftar karyawan, jawaban chatbot) → commit → deploy fork
+kamu ke Vercel (Hobby gratis, tanpa build command, tanpa env). Repo Oemar
+tidak terganggu; link kamu sendiri yang berubah. Kalau `config.json` tidak
+ada / rusak, situs tetap jalan dengan default OSCR (fallback) — tidak blank.
+
+Isi v37 singkat (file `index.html` + `config.json` di repo ini sudah v37):
+
+- `config.json` berisi default OSCR yang sama persis dengan data v36, jadi
+  situs dengan config ini tampil identik dengan v36 — kecuali satu
+  perubahan di bawah. Semua field config-driven: `officeName`,
+  `soundcloudUrl`, segmen (nama/kode/emoji/deskripsi), Dashboard,
+  karyawan (karakter 3D + profil klik + KPI + filter + chatbot tim), dan
+  jawaban bisnis chatbot. Yang tetap hardcoded: bentuk gedung, posisi
+  perabot/ruang, layout tombol, cuaca/suara/kendaraan, logika 3D.
+- **Koreksi atas bagian v36 di bawah:** span keterangan baris audio
+  "Obrolan bergantian cowo/cewe + ketawa" kini **DIHAPUS TOTAL di v37**
+  (perintah Oemar 30 Okt 2026 12:58 WIB). Yang tetap di baris audio:
+  tombol Musik (Prev/Musik/Next), tombol Suara Kantor, slider volume,
+  label Mati/Nyala. Logika obrolan ambience (bergantian cowo/cewe +
+  ketawa) tetap jalan di balik layar, hanya teks keterangannya yang
+  tidak lagi tampil. Chatbot boleh tetap menyebut obrolan bergantian
+  (itu fakta perilaku, bukan tombol).
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan (hanya
+  node --check + grep + smoke test logika di Node); config hanya terbukti
+  saat di-deploy (Vercel) atau dibuka sebagai folder lengkap
+  (`index.html` + `config.json` berdampingan) — dibuka sebagai lampiran
+  file tunggal di penampil Muse, config tidak ikut terlayani sehingga
+  tampil default OSCR (keterbatasan penampil, bukan bug config).
+
 Kantor digital 1 lantai dalam 1 file HTML. Buka file-nya, kantornya langsung hidup:
 karyawan jalan, ngobrol, ke pantry, ke halaman, main sama kucing, cuaca berubah,
 jam dan cahaya ikut jam perangkat yang buka halaman.
@@ -29,6 +63,350 @@ BaruTauAda). Silakan fork dan ganti jadi kantor kamu sendiri.
 2. Buka `index.html` di browser (Chrome / Edge)
 3. Butuh internet sekali saat dibuka: library 3D Three.js di-load dari CDN,
    dan musik di-stream dari SoundCloud. Setelah itu tidak ada instalasi apa-apa.
+
+## Hapus tombol dobel v36 (masih versi HP embedded — mencakup v28–v35)
+
+- Tombol contoh Suara Cowo/Cewe DIHAPUS dari baris audio
+  (beserta emoji 👨 👩 di depannya) — interpretasi atas chat
+  Oemar "dibilangin" = "dihilangin", sesuai konteks
+  penghapusan tombol. Yang tetap: tombol Musik (Prev/Musik/
+  Next), tombol Suara Kantor, slider volume, label Mati/Nyala,
+  dan span keterangan "Obrolan bergantian cowo/cewe + ketawa"
+  (obrolan ambience tetap bergantian + ketawa); fungsi
+  testVoice() dibiarkan sebagai dead code (tidak dirujuk HTML);
+  jawaban chatbot tentang tombol Suara Cowo/Cewe diperbarui
+  (kalimat "Ada tombol Suara Cowo / Cewe buat cek langsung."
+  dihapus).
+- Tombol ruangan segmen baru di baris Tour DIHAPUS, biar tidak
+  dobel dengan Segmen: hanya 🟦1 (Ludo) dan 🟩2 (Oki) yang
+  dihapus dari Tour (Tour kini 15 tombol, dari 17). Yang tetap:
+  semua tombol Tour lain + 🟧3 Ekspansi 3 (bukan segmen) +
+  🪜 Tangga; tombol Segmen 🎲 LB dan 🤖 Oki tetap sebagai
+  jalan masuk ke ruangan Ludo/Oki; views, goView, label
+  ruangan, dan isi ruangan tidak diubah.
+- SoundCloud TIDAK diubah (tetap album Hindia) — pertanyaan
+  ganti album dijawab terpisah, bukan di build ini.
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan
+  (hanya node --check + grep); ruangan Ludo/Oki tetap dibuka
+  lewat tombol Segmen.
+
+## Orang lt2 hilang saat pilih lt1 + freeze PC/browser v35 (masih versi HP embedded — mencakup v28–v34)
+
+- Akar melayang: setFloorVisibility() hanya mengatur
+  floor2Group.visible, sedangkan karakter dibuat scene.add(g)
+  (anak scene langsung, y=0 lt1 / 3.6 lt2) — saat lt1 dipilih,
+  plat lt2 hilang tapi 5 karakter lt2 tetap di y=3.6 melayang.
+  Perbaikan: fungsi baru updateCharacterFloorVisibility()
+  berdasarkan POSISI Y SAAT INI (bukan rumah): eksterior
+  (Gedung Utuh) = semua karakter terlihat; bukan eksterior +
+  activeFloor 1 = terlihat hanya bila y <= 1.8; activeFloor 2 =
+  terlihat hanya bila y > 1.8; pengecualian focusPerson selalu
+  terlihat; dipanggil di setFloorVisibility, setInterior,
+  viewExterior, dan SETIAP FRAME animate(); karakter tetap
+  scene.add, tidak dipindah ke floor2Group; posisi/rute/
+  aktivitas tidak diubah; label kepala ikut tersembunyi karena
+  label anak grup karakter.
+- Freeze PC/browser: aturan dasar #scene diubah dari
+  position:relative menjadi position:sticky top:0 z-index:50
+  height:540px (desktop, kanvas tetap di bawah header saat
+  pertama dibuka, menempel di atas saat scroll); mobile
+  <=768px TETAP v34 (fixed top:0 left:8px right:8px +
+  #sceneSpacer display:block tinggi sama, desktop spacer
+  display:none); tinggi desktop tetap 540px, chatBtn/chatPanel
+  tetap fixed z-index 999, canvas tetap touch-action:none.
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan
+  (hanya node --check + grep); karakter di tengah tangga (y
+  sekitar 1.8) bisa muncul/hilang sesaat saat lantai diganti di
+  tengah pendakian (efek ambang, bukan melayang); freeze desktop
+  memakai sticky — di browser PC sungguhan harusnya jalan, tapi
+  di penampil file yang scroll-nya di container luar, sticky
+  desktop bisa tetap tidak terpicu seperti kasus HP kemarin.
+
+## Perbaikan freeze kanvas v34 atas laporan tes Oemar (masih versi HP embedded — mencakup v28–v33)
+
+- Penyebab v33 tidak ke-freeze: aturan sticky v33 ADA dan
+  bentuknya benar (position:sticky top:0 height:52vh di media
+  768px, html,body overflow-x:clip) — kemungkinan sticky tidak
+  terpicu di penampil file HP Oemar (scroll jalan di container
+  luar penampil, bukan dokumen HTML) dan/atau sticky iOS Safari
+  yang tidak konsisten. v34 tidak mengulang sticky.
+- Di media 768px, #scene diganti position:fixed top:0 left:8px
+  right:8px width:auto z-index:50 height:52vh min-height:320px
+  max-height:480px (left/right 8px mengikuti padding .wrap
+  mobile, supaya kanvas sejajar konten); desktop tetap
+  position:relative.
+- Spacer: div kosong <div id="sceneSpacer"></div> tepat setelah
+  penutup #scene, di dalam .wrap, sebelum .btns — display:none
+  di desktop, display:block + tinggi SAMA PERSIS dengan kanvas
+  di media 768px, transparan tanpa border/background, tidak
+  mengganggu klik; spacer menempati ruang asli kanvas saat
+  pertama dibuka (tombol/tab/detail mulai di bawah kanvas,
+  bukan tertutup), lalu ikut terscroll ke atas saat scroll,
+  sedangkan kanvas fixed tetap menempel di atas layar.
+- Tetap: layout HP wrap v33, kamera awal HP (radius 42, phi
+  0.65), #sceneHud absolute di dalam #scene, chatBtn/chatPanel
+  fixed z-index 999, canvas touch-action:none (drag = putar
+  kamera, scroll lewat area bawah canvas), tidak ada listener
+  resize baru.
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan
+  (hanya node --check + grep); fixed + spacer lebih kuat dari
+  sticky, tapi tetap perlu dinilai visual di HP Oemar — apakah
+  kanvas benar-benar menempel saat scroll di penampil yang dia
+  pakai, dan apakah tinggi 52vh terasa pas.
+
+## Layout HP v33 atas screenshot tes Oemar (masih versi HP embedded — mencakup v28–v32)
+
+- HP satu layar penuh, ke bawah, tanpa geser kanan: akar
+  masalah `.btn-group.icon-row{flex-wrap:nowrap;overflow-x:auto}`
+  (Tour 17 ikon memaksa geser horizontal) — media baru
+  max-width:768px di akhir <style> (media 640px lama tetap):
+  html,body overflow-x:clip (clip, bukan hidden, supaya sticky
+  tetap jalan); .wrap max-width:100% padding:8px; icon-row +
+  btn-group + tab-buttons flex-wrap:wrap + overflow-x:visible
+  (Tour jadi 2–3 baris ke bawah); .btns/.btns-main column +
+  stretch juga untuk HP besar 641–768px; .camera-col
+  width:100% D-pad di tengah; #detail/.tab-content
+  max-width:100% + wrap kata.
+- Kanvas di-freeze (sticky) di atas saat scroll — mobile saja,
+  desktop tidak berubah: #scene position:sticky top:0
+  z-index:50 height:52vh min-height:320px max-height:480px;
+  .wrap tidak diberi overflow:hidden; canvas tetap
+  touch-action:none (drag di canvas = putar kamera, scroll
+  halaman lewat area di bawah canvas); chatBtn/chatPanel tetap
+  fixed (z-index 999, di atas canvas sticky).
+- Kamera smartphone dinaikkan — hanya kamera awal, hanya layar
+  sempit (innerWidth <= 768 saat load, sebelum animate()
+  pertama, pakai mekanisme orbit yang sudah ada): orbitCenter
+  (0,1.2,2), orbitRadius 42 (dari 30), orbitPhi 0.65 (dari 0.9,
+  lebih tegak dari atas), orbitTheta 0 (dari depan/selatan),
+  focusPerson=null, focusLabel 'Fokus: Keseluruhan', camPos/
+  camLook disalin dari target supaya frame pertama sudah
+  kamera HP; views.all desktop tetap [[0,24,28],[0,0,2]];
+  tombol Tour tetap posisi kameranya masing-masing.
+- Keterbatasan yang dicatat: belum diuji di browser sungguhan
+  (hanya node --check + grep); tinggi sticky 52vh perlu dinilai
+  di HP Oemar (terlalu banyak / terlalu pendek); drag canvas
+  tetap putar kamera, scroll lewat area bawah canvas.
+
+## Koreksi v32 atas screenshot + 3 pesan Oemar (masih versi HP embedded — mencakup v28–v31)
+
+- Label kepala SATU BARIS: `label3` 3 baris diganti `label1`,
+  format "Panggilan | JobSingkat | KodeSegmen" (contoh "Lux |
+  Manager | OSCR", "Nadia | Content | BK"), canvas 256×48,
+  font bold 20px auto-shrink sampai 14px bila teks lebih lebar
+  dari 236 px (tidak terpotong), sprite 2.0×0.38, y=2.0.
+  Job singkat hanya untuk label kepala (profil klik tetap peran
+  lengkap). Kode: BK/JK/RU/BTA/LB/OKI, Oemar/Lux = OSCR.
+- Kaki kursi TEBAL GELAP BERPALANG: kaki v31 (0,07, tekstur
+  kayu, nyaris tak terlihat di HP) diganti 0,12×0,43×0,12 warna
+  cokelat tua 0x5d3a1a di ±0,25 + palang penghubung y≈0,15
+  (sisi 0,08×0,08×0,5 + depan/belakang 0,5×0,08×0,08), di
+  `chair()` dan `f2chair()`; posisi/rotasi kursi tidak diubah.
+- Meja meeting lt 2 berjejer di samping lounge: lama (0,3,0)
+  dihapus → baru (4,0,7,0) timur lounge (karpet 0,7,0; sofa
+  0,7,8; TV 0,6,2), satu baris z=7,0, 4 stool (timur 5,3;
+  barat 2,7; selatan 4,0,8,3; utara 4,0,5,7); area tengah
+  selatan (0,3,0) kembali kosong; target hangout lt 2
+  diperbarui ke [[4,0,7,0],[0,7,0]] (meja + lounge baru).
+- Kendaraan lewat di jalan raya: aspal x -40..40, trotoar
+  z=11,5 tidak dilalui; 2 mobil + 2 motor bergerak looping
+  (mobil hijau z=14 timur kec.7, mobil oranye z=16 barat
+  kec.6, motor ungu z=14 timur kec.10, motor teal z=16 barat
+  kec.9), badan diputar 90° memanjang ke arah x, wrap ±40,
+  tanpa label/klik; mobil/motor parkir tetap diam.
+- Suara cuaca + luar otomatis (Web Audio sintesis, tanpa file
+  luar/CDN/lagu komersial): hujan noise lowpass 0,22; petir
+  hujan 0,25 + angin 0,10 + guruh (sine 60→30 Hz) tepat saat
+  kilat; badai hujan 0,30 + angin bandpass 0,28 LFO 0,5 Hz;
+  salju desis 0,03; mendung angin 0,02; cerah/panas terik 0.
+  Luar: burung chirp 2400–3300 Hz hanya Pagi/Siang/Sore +
+  cerah/mendung/panas terik (bukan hujan/badai/salju/malam);
+  dengung lalu lintas siang 0,10 / senja 0,06 / malam 0,03.
+  Diperbarui dari applyTimeWeather() + toggle Suara Kantor
+  (tanpa tombol baru); hanya terdengar setelah Suara Kantor
+  diketuk (autoplay browser).
+- Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep); kursi tetap sebagian tertutup karakter yang
+  berdiri di depannya (posisi karakter, bukan kaki hilang);
+  roda kendaraan tidak berputar; karakter tetap berdiri bukan
+  duduk sempurna.
+
+## Koreksi v31 atas screenshot tes Oemar (masih versi HP embedded — mencakup v28–v30)
+
+- Kursi tidak lagi cacat: `chair()` (lt 1) + `f2chair()` (lt 2)
+  dulu hanya dudukan + sandaran tanpa kaki — kini 4 kaki per
+  kursi (0,07×0,43, y lokal 0–0,43) menapak ke lantai, semua
+  kursi kerja + direktur; stool tidak diubah (sudah bertiang).
+- Lounge lt 2 pindah dari tengah jalan (sofa -6, TV -3,4,
+  karpet -4,75, semua z=2,5 — dihapus total) ke dekat dinding
+  DEPAN selatan, di depan ruang Oki (tengah): karpet (0,7,0)
+  3,5×3, sofa teal (0,7,8) menghadap utara, TV (0,6,2) layar
+  menghadap selatan ke sofa, konsol generik + kontroler ikut
+  pindah (konsol di meja TV, kontroler di karpet).
+- Aquarium lt 2 nempel dinding timur, tidak melintang: dari
+  (11,2,0) tengah open space → x=12,4, z=2,0, diputar 90°
+  (sisi panjang sejajar dinding, kaca x 12,0–12,8), ikan
+  berenang sepanjang z (z 1,3–2,7), tidak menembus dinding.
+  Aquarium lt 1 (-4,7,5) tidak diubah.
+- Meja meeting lt 2 diketengahkan: dari (8,2,0) depan ruang
+  timur → (0,3,0) tengah open space selatan, stool timur/
+  barat/selatan (tanpa stool utara, koridor z≈1 tetap lewat).
+- Cuaca 7 jenis (tombol Ganti Cuaca + auto-random): Cerah →
+  Mendung → Hujan → Salju ❄️ (partikel salju jatuh pelan) →
+  Petir ⛈️ (awan gelap + hujan + kilat berkala terlihat) →
+  Badai 🌪️ (awan 3× lebih cepat + hujan deras/miring) →
+  Panas Terik 🔥 (tanpa awan, cahaya 1,4×, matahari lebih
+  terang/besar) → kembali ke Cerah.
+- Benda langit TERLIHAT mengikuti waktu perangkat: Matahari
+  (bola kuning; senja rendah/oranye) di Pagi/Siang/Sore/Senja,
+  Bulan (bola pucat) + Bintang (150 titik) di Malam, Matahari
+  sembunyi di Malam.
+- Karpet open space lt 1: pusat (0,4,8), 9×3,5, y=0,05, warna
+  hangat — tidak menutupi aquarium/kucing/pintu masuk.
+- Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep); karakter tetap berdiri, bukan duduk sempurna;
+  efek salju/petir/badai + benda langit perlu dinilai visual.
+
+## Anggota + perabot segmen baru + label diperkecil + chatbot bisnis (v30, masih versi HP embedded — mencakup v28/v29)
+
+- Anggota baru fiktif simulasi (nama/biodata/KPI disiapkan Lux atas
+  konfirmasi Oemar, ditegaskan fiktif di profil + chatbot): Ludo
+  (barat lt 2) — Bima Aryo Nugroho (Produk, 27, Semarang), Alya
+  Putri Maharani (Marketing, 25, Jakarta), Tari Wulandari (Admin,
+  26, Malang); Oki (tengah lt 2) — Raka Aditya Saputra (Riset &
+  Konten, 26, Surabaya), Nisa Rahmawati (Socmed, 24, Cirebon).
+  Total personel 19 (Oemar + Lux + 12 lama + 5 baru), masuk
+  Personel, Ganti Orang, profil klik, KPI sampel, filter
+  Ludo/Oki, chatbot. Basis lantai 2 (y=3.6), naik/turun via
+  tangga x=-10 y bertahap, briefing lewat tangga, Ganti Orang
+  mengatur lantai sesuai rumah karakter, titik briefing 19.
+- Perabot lantai 2 (dasar y=3.6): workstation 5× (meja + PC
+  monitor + keyboard + kursi kerja) di (-11/-8.5/-6,-5.2) Ludo
+  dan (-1.5/1.5,-5.2) Oki, kursi di belakang karakter z=-3.35;
+  meja meeting bundar (8,2.0) + 4 stool; arsip 2 lemari hijau
+  (-12.4,-8.2) dan (-12.4,-6.8); lounge karpet (-4.75,2.5),
+  sofa teal (-6,2.5), TV (-3.4,2.5) + konsol generik tanpa
+  merek + kontroler di karpet; aquarium (11,2.0) 3 ikan;
+  2 kucing baru (abu-abu (-8,3.2), putih (3,3.2), ekor
+  bergoyang) di samping kucing oranye lantai 1 yang tetap.
+  Ruang timur lt 2 (Ekspansi 3) tetap kosong.
+- Lantai 1: keyboard kecil di semua monitorDesk (utara, selatan,
+  Lux; bukan meja meeting/pantry/tamu); kursi kerja 13× —
+  utara + Lux tepat di belakang karakter, selatan di sisi
+  timur karakter (karena belakangnya sudah dinding depan).
+  Meja/karakter/furnitur lantai 1 lain tidak digeser.
+- Head label diperkecil (semua karakter): canvas 256×144 →
+  200×110 px, font nama 30→26, peran/segmen 20→17, skala sprite
+  2.6×1.45 → 1.9×1.05, tinggi di atas kepala y=2.35→2.1; isi
+  3 baris: panggilan, job position, KODE segmen saja (BK/JK/
+  RU/BTA/LB/OKI, Oemar/Lux = OSCR). Profil klik tetap lengkap.
+- Chatbot knowledge bisnis (tetap canned, bukan AI): topik
+  payung 6 segmen + per segmen (model bisnis, produk/layanan,
+  tim) dari fakta file/MEMORY saja; yang belum dikunci (harga,
+  kontak, link, angka follower/penjualan, status Lynk) dijawab
+  jujur belum tersedia, tidak dikarang; fallback tetap jujur.
+- Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep); karakter berdiri di depan kursi/meja, bukan
+  duduk sempurna (keterbatasan model); garis lurus waypoint
+  masih bisa menyenggol sudut furnitur; label baru ~27% lebih
+  kecil — perlu dinilai keterbacaannya di HP saat tes.
+
+## 2 segmen baru di lantai 2 (v29, masih versi HP embedded — mencakup v28)
+
+- v28 (di dalam v29): Baris 1 Tour+Lantai+Lantai 2 gabungan
+  (17 ikon, pemisah tipis, label 🏢/⬆️); Baris 2 Segmen+Setting
+  berdampingan, masing-masing berketerangan di atas tombolnya
+  (caption-top); Baris 3 Musik; kamera D-pad kanan align-start.
+- v29: Segmen menjadi 6 — BK, JK, RU, BTA, lalu 🎲 LB (Ludo
+  Berdua, goView('ludo')) dan 🤖 Oki (Oki | AI Sehari-hari,
+  goView('okisadma')), 40 px, urutan itu di grup Segmen.
+- Kantor segmen baru di lantai 2: barat (dulu Ekspansi 1) →
+  Ludo Berdua, tengah (dulu Ekspansi 2) → Oki | AI Sehari-hari,
+  timur (Ekspansi 3) tetap kosong. Kamera ludo = kamera ruang
+  barat lantai 2, okisadma = ruang tengah; goView keduanya
+  otomatis setFloor(2). Tombol ruang di baris Tour 🟦₁/🟩₂
+  diubah judul/onclick-nya jadi Ludo/Oki (bukan Ekspansi 1/2
+  lagi), 🟧₃ tetap Ekspansi 3 — tanpa duplikasi. Ruangan tetap
+  karpet + label saja, tanpa meja/karyawan baru.
+- Tim (chatbot saja, tanpa nama karangan, tanpa karakter baru):
+  Ludo = Produk, Marketing, Admin saja; Oki = Riset & Konten,
+  Socmed saja. Chatbot OSCR menyebut 6 segmen; lantai 2
+  dijelaskan terisi 2 dari 3 ruang.
+- Tidak berubah: layout v28, 3D lain, data/status lama, angka
+  dashboard (tidak ada angka baru untuk segmen baru).
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep + diff). Catatan paket: opensource sebelumnya
+  masih v27 (v28 sengaja tidak meng-update-nya), kini langsung
+  diselaraskan ke v29 yang sudah mencakup v28.
+
+## Setting ikon saja + tombol seragam + Setting naik sebaris Segmen (v27, masih versi HP embedded)
+
+- Grup "Setting Kondisi" → "⚙️ Setting:" saja; keempat tombol jadi
+  ikon saja tanpa kata (title/aria-label lengkap): 🔄 Refresh
+  Status, 🌤️ Ganti Cuaca, ▶☀️ Briefing Pagi (play + matahari),
+  ▶🌙 Briefing Penutup (play + bulan). Label grup tetap sebagai
+  keterangan singkat.
+- Tombol Segmen diseragamkan 40 px (class .short-btn, height:40px,
+  isi terpusat) menyamai tombol ikon Tour; Lantai/Lantai 2 sudah
+  40×40 px sejak v25; tombol briefing dua emoji pakai .icon-btn-2
+  (56 px lebar, 40 px tinggi).
+- Susunan naik: Tour (1 baris penuh) | Segmen → Lantai → Lantai 2
+  → Setting (satu baris gabungan; Setting menyusut dari ~670 px
+  jadi ~300 px setelah jadi ikon, sehingga tidak lagi jatuh ke
+  baris sendiri) | Musik (baris penuh). Area tombol 4 baris → 3
+  baris, Dashboard naik lagi. Kamera tetap align-start, tidak
+  melar. Catatan jujur: baris gabungan ~950–1000 px, jadi di
+  desktop lebar muat sebaris, di desktop lebih sempit / HP bisa
+  membungkus — tes visual wajib sebelum deploy.
+- Tidak berubah: isi/fungsi tombol lain, 3D, chatbot, data/status.
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep + diff).
+
+## Layout tombol dirapatkan, ruang kosong dihilangkan (v26, masih versi HP embedded)
+
+- Akar masalah v25: `.btns` pakai `align-items:stretch` sehingga
+  kolom kamera melar setinggi kolom utama (kotak putih kosong di
+  bawah Zoom), dan `.btns-main` kolom memaksa tiap grup satu baris
+  penuh padahal grupnya sudah pendek.
+- Perbaikan: `.btns` → `align-items:flex-start`, `.camera-col` →
+  `align-self:flex-start;height:auto` (kotak berakhir tepat di bawah
+  Zoom); `.btns-main` → baris membungkus (`flex-direction:row`,
+  `flex-wrap:wrap`, `align-items:flex-start`); grup Segmen/Lantai/
+  Lantai 2/Setting `flex:0 1 auto` (berdampingan bila muat); Tour
+  `flex-basis:100%` (tetap 1 baris penuh); Musik `flex:1 1 100%`
+  (baris penuh sendiri — terlalu lebar untuk berbagi baris dengan
+  Setting tanpa terpotong). Susunan desktop: Tour | Segmen+Lantai+
+  Lantai 2 | Setting | Musik = 4 baris (dari 6), Dashboard naik ke
+  atas. Mobile tetap menumpuk vertikal, D-pad terpusat.
+- Tidak berubah: isi/fungsi semua tombol, 3D, chatbot, data/status.
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep + diff CSS); penghematan persis tergantung lebar
+  layar, tes visual desktop + HP wajib sebelum deploy.
+
+## Rapikan tombol (v25, masih versi HP embedded)
+
+- Tour Ruangan jadi ikon saja, satu baris (flex nowrap, scroll
+  horizontal di layar sempit): 🏠 🏢 👑 🤝₁ 🤝₂ 🛋️ ☕ 🚻 🗄️ 🌳 👤,
+  masing-masing title/aria-label nama lengkap; label grup 🗺️ saja;
+  tombol ikon seragam 40×40 px. Meeting 1/2 pakai angka kecil karena
+  emojinya sama.
+- Kamera jadi remot D-pad 3×3: atas ▲ Naik, tengah ◀ Kiri – tombol
+  360 di tengah – ▶ Kanan, bawah ▼ Turun; di luar salib, di bawahnya,
+  Zoom 🔍 + / 🔎 − gaya volume plus-minus. orbitBtn jadi ikon saja
+  (🔄 mati, ⏸ jalan) — semua penulisan teks panjang orbitBtn di JS
+  sudah diubah jadi ikon + title, jadi tidak balik jadi teks panjang
+  saat pindah ruangan/ganti lantai. Label grup 🎥 saja, lebar kolom
+  170 px → 132 px.
+- Lantai jadi ikon saja: ⬇️ Lantai 1, ⬆️ Lantai 2; Lantai 2 jadi
+  🟦₁ 🟩₂ 🟧₃ 🪜 (title/aria-label lengkap). Label grup 🏢 / ⬆️ saja.
+- Segmen dipersingkat: 💰 BK, 🌍 JK, 💌 RU, 🛒 BTA (title/aria-label
+  nama lengkap, onclick asli). Setting Kondisi tetap ikon + label
+  pendek (Refresh Status, Ganti Cuaca, Briefing Pagi, Briefing
+  Penutup), tidak jadi ikon saja.
+- Tidak berubah: musik/Suara Kantor, tab, jam/cuaca/fokus/status,
+  seluruh scene 3D, chatbot, data/status.
+  Keterbatasan yang dicatat: belum diuji di browser (hanya node
+  --check + grep + review diff).
 
 ## Tangga pindah sayap kiri + dinding lt 2 ditutup (v24, masih versi HP embedded)
 

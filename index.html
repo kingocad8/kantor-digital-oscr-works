@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OSCR Works — Kantor Digital 3D v6</title>
+<title>OSCR Works — Kantor Digital 3D v37</title>
 <script>
 console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
@@ -24,21 +24,31 @@ header h1{margin:0;font-size:20px}header p{margin:0;color:#666;font-size:13px;te
 .audio{background:#fff;border:1px solid #ddd;padding:8px 10px;margin-top:0;font-size:13px;line-height:1.5}
 .audio button{padding:6px 10px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer;margin:2px}
 .clock{background:#fff;border:1px solid #ddd;padding:6px 8px;margin-top:8px;font-size:13px}
-.btns{display:flex;flex-direction:row;gap:10px;align-items:stretch;margin:12px 0}
-.btns-main{flex:1;display:flex;flex-direction:column;gap:8px}
-.camera-col{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid #eee;padding:8px;min-width:170px}
-.camera-col button{width:100%;padding:7px 10px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer}
+.btns{display:flex;flex-direction:row;gap:10px;align-items:flex-start;margin:12px 0}
+.btns-main{flex:1;display:flex;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:8px}
+.btns-main>.btn-group{flex:0 1 auto}
+.btns-main>.btn-group.icon-row{flex:1 1 100%;flex-basis:100%}
+.btns-main>.audio{flex:1 1 100%}
+.camera-col{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid #eee;padding:8px;min-width:0;width:132px;align-items:center;align-self:flex-start;height:auto}
+.camera-col button{padding:7px 10px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer}
+.dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:4px}
+.dpad button{width:40px;height:40px;padding:0;font-size:18px}
+.dpad .dpad-empty{border:0;background:transparent;cursor:default}
+.zoom-row{display:flex;gap:6px}
+.zoom-row button{padding:7px 10px}
+.icon-btn{width:40px;height:40px;padding:0 !important;font-size:18px;text-align:center}.btn-sep{width:1px;height:40px;background:#ddd;margin:0 2px;flex:none}.btn-group.caption-top{flex-direction:column;align-items:flex-start}.btn-group.caption-top .btn-label{margin-bottom:2px}.btn-group.caption-top .btn-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.icon-btn-2{width:56px}.short-btn{height:40px;padding:0 10px !important;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;font-size:14px}
+.btn-group.icon-row{flex-wrap:nowrap;overflow-x:auto}
 .tab-buttons{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .tab-btn{padding:8px 12px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer}
 .tab-btn.active{background:#222;color:#fff}
 .tab-content{display:none}
 .tab-content.active{display:block}
-@media(max-width:640px){.btns{flex-direction:column}.camera-col{width:100%;min-width:0}}
+@media(max-width:640px){.btns{flex-direction:column;align-items:stretch}.btns-main{flex-direction:column;flex-wrap:nowrap}.btns-main>.btn-group,.btns-main>.audio{flex:1 1 auto}.camera-col{width:100%;min-width:0;align-items:center;align-self:stretch}}
 .btn-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:#fff;border:1px solid #eee;padding:6px 8px}
 .btn-label{font-weight:bold;font-size:12px;white-space:nowrap}
 .btns button{padding:7px 10px;border:1px solid #ccc;background:#fff;font-weight:bold;cursor:pointer}
 .btns button:hover{background:#ffd23f}
-#scene{width:100%;height:540px;background:#7fb069;border:1px solid #ddd;position:relative;overflow:hidden}
+#scene{width:100%;height:540px;background:#7fb069;border:1px solid #ddd;position:sticky;top:0;z-index:50;overflow:hidden}
 #scene canvas{display:block;width:100%;height:100%;touch-action:none}
 #sceneHud{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.92);border:2px solid #222;padding:6px 8px;font-size:12px;font-weight:bold;z-index:5;max-width:92%}
 #fallback{display:none;padding:20px;background:#fff}
@@ -63,62 +73,97 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 #chatInput{flex:1;padding:8px;border:1px solid #ccc}
 #chatInputRow button{padding:8px 12px;background:#222;color:#fff;border:1px solid #222;font-weight:bold;cursor:pointer}
 #chatNote{font-size:11px;color:#888;padding:0 10px 8px}
+
+#sceneSpacer{display:none}
+
+/* ===== v33: LAYOUT HP — satu layar penuh, ke bawah, tanpa geser kanan ===== */
+@media(max-width:768px){
+  html,body{overflow-x:clip}
+  .wrap{max-width:100%;padding:8px}
+  .btns{flex-direction:column;align-items:stretch}
+  .btns-main{flex-direction:column;align-items:stretch}
+  .btns-main>.btn-group,.btns-main>.audio{flex:1 1 auto}
+  .camera-col{width:100%;min-width:0;align-items:center;align-self:stretch}
+  .btn-group{flex-wrap:wrap;overflow-x:visible}
+  .btn-group.icon-row{flex-wrap:wrap;overflow-x:visible}
+  .tab-buttons{flex-wrap:wrap;overflow-x:visible}
+  #detail,.tab-content{max-width:100%}
+  #detail ul,.tab-content ul{overflow-wrap:break-word}
+  /* ===== v34: KANVAS 3D DI-FREEZE (fixed) DI ATAS SAAT SCROLL ===== */
+  /* v33 pakai sticky tapi tidak menempel di penampil HP Oemar, jadi
+     diganti fixed yang lebih pasti menempel. Desktop tidak berubah;
+     hanya mobile. z-index 50 < chatBtn 999. left/right 8px mengikuti
+     padding .wrap mobile 8px, supaya kanvas sejajar konten bawah. */
+  #scene{position:fixed;top:0;left:8px;right:8px;width:auto;z-index:50;height:52vh;min-height:320px;max-height:480px}
+  /* Spacer menempati ruang asli kanvas (tinggi sama persis) supaya
+     tombol/tab/detail mulai di bawah kanvas, bukan tertutup kanvas
+     fixed saat halaman pertama dibuka. Spacer ikut terscroll ke atas
+     (normal), kanvas fixed tetap menempel di atas layar. */
+  #sceneSpacer{display:block;height:52vh;min-height:320px;max-height:480px}
+}
 </style>
 </head>
 <body>
-<header><h1>OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v24</p></header>
+<header><h1 id="officeTitle">OSCR Works - Digital Office</h1><p id="headerClock">Kantor Digital 3D - v37</p></header>
 <div class="wrap">
 <div id="scene"><div id="sceneHud">OSCR Works - Jam kantor: - - Fokus: Keseluruhan</div><div id="fallback">⚠️ Three.js gagal dimuat. File ini butuh internet sekali untuk load library 3D-nya, coba refresh.</div></div>
+<div id="sceneSpacer"></div>
 <div class="btns">
 <div class="btns-main">
-<div class="btn-group"><span class="btn-label">🗺️ Tour Ruangan:</span>
-<button onclick="goView('all')">🏠 Keseluruhan</button>
-<button onclick="viewExterior()">🏢 Gedung Utuh</button>
-<button onclick="goView('direktur')">👑 Direktur</button>
-<button onclick="goView('meeting1')">🤝 Meeting 1</button>
-<button onclick="goView('meeting2')">🤝 Meeting 2</button>
-<button onclick="goView('tamu')">🛋️ Ruang Tamu</button>
-<button onclick="goView('pantry')">☕ Pantry</button>
-<button onclick="goView('toilet')">🚻 Toilet</button>
-<button onclick="goView('arsip')">🗄️ Arsip</button>
-<button onclick="goView('yard')">🌳 Pekarangan</button>
-<button onclick="nextPerson()">👤 Ganti Orang</button>
+<div class="btn-group icon-row"><span class="btn-label">🗺️</span>
+<button class="icon-btn" title="Keseluruhan" aria-label="Keseluruhan" onclick="goView('all')">🏠</button>
+<button class="icon-btn" title="Gedung Utuh" aria-label="Gedung Utuh" onclick="viewExterior()">🏢</button>
+<button class="icon-btn" title="Direktur" aria-label="Direktur" onclick="goView('direktur')">👑</button>
+<button class="icon-btn" title="Meeting 1" aria-label="Meeting 1" onclick="goView('meeting1')">🤝<sub>1</sub></button>
+<button class="icon-btn" title="Meeting 2" aria-label="Meeting 2" onclick="goView('meeting2')">🤝<sub>2</sub></button>
+<button class="icon-btn" title="Ruang Tamu" aria-label="Ruang Tamu" onclick="goView('tamu')">🛋️</button>
+<button class="icon-btn" title="Pantry" aria-label="Pantry" onclick="goView('pantry')">☕</button>
+<button class="icon-btn" title="Toilet" aria-label="Toilet" onclick="goView('toilet')">🚻</button>
+<button class="icon-btn" title="Arsip" aria-label="Arsip" onclick="goView('arsip')">🗄️</button>
+<button class="icon-btn" title="Pekarangan" aria-label="Pekarangan" onclick="goView('yard')">🌳</button>
+<button class="icon-btn" title="Ganti Orang" aria-label="Ganti Orang" onclick="nextPerson()">👤</button>
+<span class="btn-sep" aria-hidden="true"></span><span class="btn-label">🏢</span>
+<button class="icon-btn" title="Lantai 1" aria-label="Lantai 1" onclick="setFloor(1)">⬇️</button>
+<button class="icon-btn" title="Lantai 2" aria-label="Lantai 2" onclick="setFloor(2)">⬆️</button>
+<span class="btn-sep" aria-hidden="true"></span><span class="btn-label">⬆️</span>
+<button class="icon-btn" title="Ekspansi 3" aria-label="Ekspansi 3" onclick="goView('exp3')">🟧<sub>3</sub></button>
+<button class="icon-btn" title="Tangga" aria-label="Tangga" onclick="goView('tangga')">🪜</button>
 </div>
-<div class="btn-group"><span class="btn-label">📂 Segmen:</span>
-<button onclick="goView('bk')">💰 Bedah Keuangan</button>
-<button onclick="goView('jk')">🌍 Jejak Kuasa</button>
-<button onclick="goView('ru')">💌 Rancang Undangan</button>
-<button onclick="goView('bta')">🛒 BaruTauAda</button>
-</div>
-<div class="btn-group"><span class="btn-label">🏢 Lantai:</span>
-<button onclick="setFloor(1)">⬇️ Lantai 1</button>
-<button onclick="setFloor(2)">⬆️ Lantai 2</button>
-</div>
-<div class="btn-group"><span class="btn-label">⬆️ Lantai 2:</span>
-<button onclick="goView('exp1')">🟦 Ekspansi 1</button>
-<button onclick="goView('exp2')">🟩 Ekspansi 2</button>
-<button onclick="goView('exp3')">🟧 Ekspansi 3</button>
-<button onclick="goView('tangga')">🪜 Tangga</button>
-</div>
-<div class="btn-group"><span class="btn-label">⚙️ Setting Kondisi:</span>
-<button onclick="loadStatus(true)">🔄 Refresh Status</button>
-<button onclick="cycleWeather()">🌤️ Ganti Cuaca</button>
-<button onclick="testBriefing('morning')">▶ Briefing Pagi</button>
-<button onclick="testBriefing('closing')">▶ Briefing Penutup</button>
-</div>
+<div class="btn-group caption-top"><span class="btn-label">📂 Segmen:</span><div class="btn-row">
+<button class="short-btn" title="Bedah Keuangan" aria-label="Bedah Keuangan" onclick="goView('bk')">💰 BK</button>
+<button class="short-btn" title="Jejak Kuasa" aria-label="Jejak Kuasa" onclick="goView('jk')">🌍 JK</button>
+<button class="short-btn" title="Rancang Undangan" aria-label="Rancang Undangan" onclick="goView('ru')">💌 RU</button>
+<button class="short-btn" title="BaruTauAda" aria-label="BaruTauAda" onclick="goView('bta')">🛒 BTA</button>
+<button class="short-btn" title="Ludo Berdua" aria-label="Ludo Berdua" onclick="goView('ludo')">🎲 LB</button>
+<button class="short-btn" title="Oki | AI Sehari-hari" aria-label="Oki | AI Sehari-hari" onclick="goView('okisadma')">🤖 Oki</button>
+</div></div>
+<div class="btn-group caption-top"><span class="btn-label">⚙️ Setting:</span><div class="btn-row">
+<button class="icon-btn" title="Refresh Status" aria-label="Refresh Status" onclick="loadStatus(true)">🔄</button>
+<button class="icon-btn" title="Ganti Cuaca" aria-label="Ganti Cuaca" onclick="cycleWeather()">🌤️</button>
+<button class="icon-btn icon-btn-2" title="Briefing Pagi" aria-label="Briefing Pagi" onclick="testBriefing('morning')">▶☀️</button>
+<button class="icon-btn icon-btn-2" title="Briefing Penutup" aria-label="Briefing Penutup" onclick="testBriefing('closing')">▶🌙</button>
+</div></div>
 <div class="audio">🎵 <button onclick="prevMusic()">⏮ Prev</button> <button onclick="playMusic()">▶ Musik</button> <button onclick="pauseMusic()">⏸</button> <button onclick="nextMusic()">Next ⏭</button> <span id="musicNote">Hindia Full Album</span>
 <div id="scPlayer"><iframe id="scFrame" allow="autoplay" title="SoundCloud player"></iframe></div>
-🏢 <button id="ambBtn" onclick="toggleAmbience()">🔊 Suara Kantor</button> <input type="range" min="0" max="100" value="85" oninput="setAmbVol(this.value)"> <span id="ambNote">Mati</span><br>👨 <button onclick="testVoice('male')">Suara Cowo</button> 👩 <button onclick="testVoice('female')">Suara Cewe</button> <span style="font-size:12px;color:#888">Obrolan bergantian cowo/cewe + ketawa</span>
+🏢 <button id="ambBtn" onclick="toggleAmbience()">🔊 Suara Kantor</button> <input type="range" min="0" max="100" value="85" oninput="setAmbVol(this.value)"> <span id="ambNote">Mati</span>
 </div>
 </div>
-<div class="camera-col"><span class="btn-label">🎥 Kamera:</span>
-<button onclick="rotateView(-15)">◀ Kiri</button>
-<button onclick="rotateView(15)">▶ Kanan</button>
-<button onclick="tiltView(-10)">▲ Naik</button>
-<button onclick="tiltView(10)">▼ Turun</button>
-<button id="orbitBtn" onclick="toggleOrbit()">🔄 360° Otomatis</button>
-<button onclick="zoom(0.85)">🔍 Zoom In</button>
-<button onclick="zoom(1.18)">🔎 Zoom Out</button>
+<div class="camera-col"><span class="btn-label">🎥</span>
+<div class="dpad">
+<span class="dpad-empty"></span>
+<button title="Naik" aria-label="Naik" onclick="tiltView(-10)">▲</button>
+<span class="dpad-empty"></span>
+<button title="Kiri" aria-label="Kiri" onclick="rotateView(-15)">◀</button>
+<button id="orbitBtn" title="360° Otomatis" aria-label="360° Otomatis" onclick="toggleOrbit()">🔄</button>
+<button title="Kanan" aria-label="Kanan" onclick="rotateView(15)">▶</button>
+<span class="dpad-empty"></span>
+<button title="Turun" aria-label="Turun" onclick="tiltView(10)">▼</button>
+<span class="dpad-empty"></span>
+</div>
+<div class="zoom-row">
+<button title="Zoom In" aria-label="Zoom In" onclick="zoom(0.85)">🔍 +</button>
+<button title="Zoom Out" aria-label="Zoom Out" onclick="zoom(1.18)">🔎 −</button>
+</div>
 </div>
 </div>
 <div class="clock" id="clockWeather">Jam kantor: — • Cuaca: —</div>
@@ -134,7 +179,7 @@ footer{font-size:12px;line-height:1.5;color:#888;padding:12px 0 24px}
 <button class="tab-btn" onclick="showTab('kpi')">🎯 KPI Personel</button>
 </div>
 <div id="tab-dashboard" class="tab-content active">
-<p><b>Dashboard Segmen</b> — angka di bawah ini CONTOH / ILUSTRASI, belum tersambung API socmed. Filter sudah jalan, ganti angka di dashboardData dengan data asli kapan pun.</p>
+<p id="dashNote"><b>Dashboard Segmen</b> — angka di bawah ini CONTOH / ILUSTRASI, belum tersambung API socmed. Filter sudah jalan, ganti angka di dashboardData dengan data asli kapan pun.</p>
 <p>Segmen: <select id="dashSegment" onchange="updateDashboard()"><option value="all">Semua Segmen</option><option value="bk">Bedah Keuangan</option><option value="jk">Jejak Kuasa</option><option value="ru">Rancang Undangan</option><option value="bta">BaruTauAda</option></select>
 Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="all">Semua Socmed</option><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="threads">Threads</option><option value="x">X</option><option value="facebook">Facebook</option></select></p>
 <div id="dashboardCards"></div>
@@ -149,20 +194,20 @@ Socmed: <select id="dashPlatform" onchange="updateDashboard()"><option value="al
 <div id="reportContent"></div>
 </div>
 <div id="tab-personel" class="tab-content">
-<p>Filter: <select id="personFilter" onchange="renderPersonButtons()"><option value="all">Semua</option><option value="management">Management</option><option value="bk">Bedah Keuangan</option><option value="jk">Jejak Kuasa</option><option value="ru">Rancang Undangan</option><option value="bta">BaruTauAda</option></select></p><p>Klik karakter di kantor, tombol Ganti Orang, atau nama di bawah untuk lihat profil + aktivitasnya.</p>
+<p>Filter: <select id="personFilter" onchange="renderPersonButtons()"><option value="all">Semua</option><option value="management">Management</option><option value="bk">Bedah Keuangan</option><option value="jk">Jejak Kuasa</option><option value="ru">Rancang Undangan</option><option value="bta">BaruTauAda</option><option value="ludo">Ludo Berdua</option><option value="oki">Oki | AI Sehari-hari</option></select></p><p>Klik karakter di kantor, tombol Ganti Orang, atau nama di bawah untuk lihat profil + aktivitasnya.</p>
 <div id="personButtons" style="display:flex;flex-wrap:wrap;gap:6px"></div>
 <div id="personDetail" style="margin-top:10px"></div>
 </div>
 <div id="tab-kpi" class="tab-content">
-<p>KPI CONTOH — target belum ditetapkan Oemar, angka ilustrasi struktur saja.</p><p>Filter: <select id="kpiFilter" onchange="renderKpiButtons()"><option value="all">Semua</option><option value="management">Management</option><option value="bk">Bedah Keuangan</option><option value="jk">Jejak Kuasa</option><option value="ru">Rancang Undangan</option><option value="bta">BaruTauAda</option></select></p>
+<p>KPI CONTOH — target belum ditetapkan Oemar, angka ilustrasi struktur saja.</p><p>Filter: <select id="kpiFilter" onchange="renderKpiButtons()"><option value="all">Semua</option><option value="management">Management</option><option value="bk">Bedah Keuangan</option><option value="jk">Jejak Kuasa</option><option value="ru">Rancang Undangan</option><option value="bta">BaruTauAda</option><option value="ludo">Ludo Berdua</option><option value="oki">Oki | AI Sehari-hari</option></select></p>
 <div id="kpiButtons" style="display:flex;flex-wrap:wrap;gap:6px"></div>
 <div id="kpiDetail" style="margin-top:10px"></div>
 </div>
 </div>
-<footer>OSCR Works - Digital Office • v24 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
+<footer id="siteFooter">OSCR Works - Digital Office • v37 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud</footer>
 </div>
 <script>
-const SOUNDCLOUD_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav";
+const SOUNDCLOUD_DEFAULT_URL = "https://soundcloud.com/arief-347594094/sets/hindia-full-album-song-fav"; let SOUNDCLOUD_URL = SOUNDCLOUD_DEFAULT_URL;
 let scWidget = null;
 function ensureWidget(cb){
   if (scWidget) { cb(scWidget); return; }
@@ -202,6 +247,76 @@ window.pauseMusic = function(){
 window.nextMusic = function(){ ensureWidget(function(w){ try { w.next(); document.getElementById('musicNote').textContent = "Memutar: lagu berikutnya"; } catch(e) {} }); };
 window.prevMusic = function(){ ensureWidget(function(w){ try { w.prev(); document.getElementById('musicNote').textContent = "Memutar: lagu sebelumnya"; } catch(e) {} }); };
 let actx = null, ambGain = null, ambOn = false, typingTimer = null, murmurSrc = null, humSrc = null, printerTimer = null, chatterTimer = null, ambVol = 0.85;
+let rainSrc = null, windSrc = null, trafficSrc = null, rainGain = null, windGain = null, trafficGain = null, birdTimer = null, currentPeriod = 'Siang';
+// SUARA CUACA + LUAR KANTOR v32 — Web Audio SINTESIS saja (noise/filter/osilator),
+// tanpa file audio eksternal, tanpa CDN, tanpa lagu komersial. Mengikuti toggle Suara Kantor.
+function startWeatherOutdoorAudio(){
+  if (!actx) return;
+  function loopedNoise(filterType, freq, q){
+    const src = actx.createBufferSource(); src.buffer = noiseBuffer(actx, 2); src.loop = true;
+    const flt = actx.createBiquadFilter(); flt.type = filterType; flt.frequency.value = freq; if (q) flt.Q.value = q;
+    const g = actx.createGain(); g.gain.value = 0; src.connect(flt); flt.connect(g); g.connect(ambGain); src.start();
+    return { src: src, gain: g };
+  }
+  const r = loopedNoise('lowpass', 1200); rainSrc = r.src; rainGain = r.gain;   // hujan / gerimis salju
+  const w = loopedNoise('bandpass', 600, 0.8); windSrc = w.src; windGain = w.gain; // angin / badai
+  const lfo = actx.createOscillator(); lfo.frequency.value = 0.5; const lfoG = actx.createGain(); lfoG.gain.value = 0.05;
+  lfo.connect(lfoG); lfoG.connect(windGain.gain); lfo.start();
+  const t = loopedNoise('lowpass', 300); trafficSrc = t.src; trafficGain = t.gain; // dengung lalu lintas jalan
+  scheduleBirdChirp();
+}
+function stopWeatherOutdoorAudio(){
+  if (birdTimer) clearTimeout(birdTimer); birdTimer = null;
+  try { if (rainSrc) rainSrc.stop(); if (windSrc) windSrc.stop(); if (trafficSrc) trafficSrc.stop(); } catch(e) {}
+  rainSrc = null; windSrc = null; trafficSrc = null; rainGain = null; windGain = null; trafficGain = null;
+}
+function updateWeatherOutdoorAudio(){
+  // Dipanggil dari applyTimeWeather() tiap cuaca/waktu berubah + dari toggle suara.
+  // Aman dipanggil sebelum suara dinyalakan (actx/gain null -> langsung kembali).
+  if (!actx || !ambOn || !rainGain || !windGain || !trafficGain) return;
+  const t = actx.currentTime;
+  let rain = 0, wind = 0;
+  if (weather === 'hujan') { rain = 0.22; wind = 0.05; }
+  else if (weather === 'petir') { rain = 0.25; wind = 0.10; }
+  else if (weather === 'badai') { rain = 0.30; wind = 0.28; }
+  else if (weather === 'salju') { rain = 0.03; wind = 0.03; } // salju: desis sangat pelan
+  else if (weather === 'mendung') { wind = 0.02; }
+  rainGain.gain.setTargetAtTime(rain, t, 0.5);
+  windGain.gain.setTargetAtTime(wind, t, 0.5);
+  const traf = (currentPeriod === 'Malam') ? 0.03 : (currentPeriod === 'Senja' ? 0.06 : 0.10);
+  trafficGain.gain.setTargetAtTime(traf, t, 0.5);
+}
+function scheduleBirdChirp(){
+  if (!ambOn) return;
+  const ok = (currentPeriod === 'Pagi' || currentPeriod === 'Siang' || currentPeriod === 'Sore')
+    && (weather === 'cerah' || weather === 'mendung' || weather === 'panasterik');
+  if (ok && actx) {
+    try {
+      const t0 = actx.currentTime + 0.1;
+      for (let i = 0; i < 3; i++) {
+        const o = actx.createOscillator(); o.type = 'sine';
+        const f0 = 2400 + Math.random() * 800; o.frequency.setValueAtTime(f0, t0 + i * 0.18);
+        o.frequency.exponentialRampToValueAtTime(f0 + 900, t0 + i * 0.18 + 0.12);
+        const g = actx.createGain(); g.gain.setValueAtTime(0.05, t0 + i * 0.18);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + i * 0.18 + 0.14);
+        o.connect(g); g.connect(ambGain); o.start(t0 + i * 0.18); o.stop(t0 + i * 0.18 + 0.15);
+      }
+    } catch (e) {}
+  }
+  birdTimer = setTimeout(scheduleBirdChirp, ok ? 4000 + Math.random() * 6000 : 8000);
+}
+function playThunderBoom(){
+  // Guruh: dentuman frekuensi rendah. Dipanggil saat kilat petir muncul di animate().
+  if (!actx || !ambOn) return;
+  try {
+    const t = actx.currentTime;
+    const o = actx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(60, t);
+    o.frequency.exponentialRampToValueAtTime(30, t + 1.2);
+    const g = actx.createGain(); g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+    o.connect(g); g.connect(ambGain); o.start(t); o.stop(t + 1.6);
+  } catch (e) {}
+}
 function noiseBuffer(ctx, sec){ const b = ctx.createBuffer(1, ctx.sampleRate * sec, ctx.sampleRate); const d = b.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = Math.random()*2-1; return b; }
 function typeClick(){
   if (!actx || !ambOn) return; const t = actx.currentTime;
@@ -293,10 +408,12 @@ window.toggleAmbience = function(){
     const hlp = actx.createBiquadFilter(); hlp.type = 'lowpass'; hlp.frequency.value = 200;
     const hg = actx.createGain(); hg.gain.value = 0.04; humSrc.connect(hlp); hlp.connect(hg); hg.connect(ambGain); humSrc.start();
     scheduleTyping(); schedulePrinter(); chatterTimer = setTimeout(speakChatter, 3000); laughterTimer = setTimeout(playLaughter, 20000);
+    startWeatherOutdoorAudio(); updateWeatherOutdoorAudio();
   } else {
     ambOn = false; btn.textContent = "🔊 Suara Kantor"; note.textContent = "Mati";
     if (typingTimer) clearTimeout(typingTimer); if (printerTimer) clearTimeout(printerTimer); if (chatterTimer) clearTimeout(chatterTimer); if (laughterTimer) clearTimeout(laughterTimer);
     try { murmurSrc.stop(); humSrc.stop(); } catch(e) {}
+    stopWeatherOutdoorAudio();
     try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
   }
 };
@@ -351,6 +468,8 @@ const grass = new THREE.Mesh(new THREE.PlaneGeometry(90,64), matC(0x6ab04a)); gr
 const floor = new THREE.Mesh(new THREE.BoxGeometry(26,0.4,18), matW()); floor.position.set(0,-0.2,0); floor.receiveShadow = true; scene.add(floor);
 function carpet(cx,cz,w,d,c){ const f = new THREE.Mesh(new THREE.PlaneGeometry(w,d), matC(c)); f.rotation.x = -Math.PI/2; f.position.set(cx,0.03,cz); f.receiveShadow = true; scene.add(f); }
 carpet(-9,-5.5,7.6,6.6,0xd9b38c); carpet(-1,-5.5,7.6,6.6,0x9ecfff); carpet(5,-5.5,4,6.6,0x7fb3d5); carpet(10,-5.5,6,6.6,0xf7e8c3); carpet(0,3.5,25.6,10.6,0x9fe6a8);
+// KARPET OPEN SPACE LANTAI 1 v31: karpet hangat di tengah open space (0,4.8), 9x3.5, y=0.05 di atas karpet hijau — tidak menutupi aquarium (-4,7.5), kucing (5,7.8), pantry/toilet, atau pintu masuk
+(function(){ const f = new THREE.Mesh(new THREE.PlaneGeometry(9,3.5), matC(0xd9b38c)); f.rotation.x = -Math.PI/2; f.position.set(0,0.05,4.8); f.receiveShadow = true; scene.add(f); })();
 box(26,3.6,0.3,matW(),0,1.8,-9); box(0.3,2.5,18,matW(),-13,1.25,0); box(0.3,2.5,18,matW(),13,1.25,0);
 const frontWallL = box(12,0.6,0.3,matW(),-7,0.3,9); const frontWallR = box(12,0.6,0.3,matW(),7,0.3,9);
 // LANTAI 2 KOSONG v24 — plat, dinding, partisi, karpet, label; TANPA meja kerja, TANPA karakter permanen.
@@ -376,9 +495,68 @@ box2(0.3,2.2,9,matW(),4,4.7,-4.5);
 function carpet2(cx,cz,w,d,c){ const f = new THREE.Mesh(new THREE.PlaneGeometry(w,d), matC(c)); f.rotation.x = -Math.PI/2; f.position.set(cx,3.63,cz); f.receiveShadow = true; floor2Group.add(f); }
 carpet2(-8.5,-4.5,7,7,0xd9b38c); carpet2(0,-4.5,7,7,0x9ecfff); carpet2(8.5,-4.5,7,7,0xf7e8c3);
 function expLabel(txt,x,z){ const cv = document.createElement('canvas'); cv.width = 512; cv.height = 128; const ctx = cv.getContext('2d'); ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillRect(0,0,512,128); ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(0,0,512,128); ctx.fillStyle = '#222'; ctx.textAlign = 'center'; ctx.font = 'bold 36px Verdana'; ctx.fillText(txt, 256, 82); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); sp.scale.set(4,1,1); sp.position.set(x,6.4,z); floor2Group.add(sp); }
-expLabel('Ruang Ekspansi 1 — Kosong', -8.5, -4.5);
-expLabel('Ruang Ekspansi 2 — Kosong', 0, -4.5);
+expLabel('Ludo Berdua', -8.5, -4.5);
+expLabel('Oki | AI Sehari-hari', 0, -4.5);
 expLabel('Ruang Ekspansi 3 — Kosong', 8.5, -4.5);
+// ===== PERABOT LANTAI 2 v30 — semua di floor2Group, dasar y=3.6 =====
+function cyl2(rt,rb,h,material,x,y,z,seg){ const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||18), material); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; floor2Group.add(m); return m; }
+function f2table(x,z){ box2(2.2,0.12,1.2,matW(),x,3.6+0.75,z); [[-1,-0.5],[1,-0.5],[-1,0.5],[1,0.5]].forEach(function(o){ box2(0.14,0.75,0.14,matC(0x5d3a1a),x+o[0],3.6+0.37,z+o[1]); }); }
+function f2monitorDesk(x,z){ f2table(x,z); box2(0.9,0.55,0.08,matC(0x222222),x,3.6+1.25,z-0.3); box2(0.8,0.42,0.05,matC(0x9ecfff),x,3.6+1.25,z-0.25); box2(0.7,0.05,0.35,matC(0x222222),x,3.6+0.83,z+0.25); box2(0.6,0.02,0.25,matC(0x888888),x,3.6+0.86,z+0.25); }
+function f2chair(x,z,ry){ const g = new THREE.Group(); const s = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.1,18), matW()); s.position.y=0.48; s.castShadow=true; g.add(s); [-0.25,-0.25],[0.25,-0.25],[-0.25,0.25],[0.25,0.25].forEach(function(o){ const leg = new THREE.Mesh(new THREE.BoxGeometry(0.12,0.43,0.12), matC(0x5d3a1a)); leg.position.set(o[0],0.215,o[1]); leg.castShadow=true; g.add(leg); }); [[-0.25,0.15,0],[0.25,0.15,0]].forEach(function(p){ const bar = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.08,0.5), matC(0x5d3a1a)); bar.position.set(p[0],p[1],p[2]); bar.castShadow=true; g.add(bar); }); [[0,0.15,-0.25],[0,0.15,0.25]].forEach(function(p){ const bar = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.08,0.08), matC(0x5d3a1a)); bar.position.set(p[0],p[1],p[2]); bar.castShadow=true; g.add(bar); }); const b = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.7,0.1), matW()); b.position.set(0,0.9,-0.28); b.castShadow=true; g.add(b); g.position.set(x,3.6,z); g.rotation.y = ry||0; floor2Group.add(g); }
+function f2stool(x,z){ cyl2(0.32,0.32,0.1,matW(),x,3.6+0.48,z,18); cyl2(0.06,0.06,0.48,matC(0x5d3a1a),x,3.6+0.24,z,10); }
+function f2roundTable(x,z){ cyl2(1.2,1.2,0.12,matW(),x,3.6+0.78,z,24); cyl2(0.18,0.3,0.75,matC(0x5d3a1a),x,3.6+0.37,z,12); }
+function f2filingDoc(x,z){ const m = box2(1.0,1.8,0.5,matC(0x2e5d33),x,3.6+0.9,z); m.userData.detail = 'arsip'; for(let i=0;i<4;i++){ box2(0.8,0.32,0.05,matC(0x4a7a4a),x,3.6+0.25+i*0.42,z+0.27); } }
+// Workstation Ludo (ruang barat, meja z=-5.2, karakter z=-4.1, kursi z=-3.35 di belakang karakter)
+f2monitorDesk(-11,-5.2); f2monitorDesk(-8.5,-5.2); f2monitorDesk(-6,-5.2);
+f2chair(-11,-3.35,Math.PI); f2chair(-8.5,-3.35,Math.PI); f2chair(-6,-3.35,Math.PI);
+// Workstation Oki (ruang tengah, pola sama)
+f2monitorDesk(-1.5,-5.2); f2monitorDesk(1.5,-5.2);
+f2chair(-1.5,-3.35,Math.PI); f2chair(1.5,-3.35,Math.PI);
+// Meja meeting v32: PINDAH ke samping lounge (satu baris z=7.0 dengan TV/sofa), pusat (4.0,7.0) + 4 stool — TIDAK lagi di tengah (0,3.0) menghadap ruang Oki
+f2roundTable(4.0,7.0); f2stool(5.3,7.0); f2stool(2.7,7.0); f2stool(4.0,8.3); f2stool(4.0,5.7);
+// Arsip lantai 2 menempel dinding barat ruang Ludo (x=-12.4, z=-8.2 dan -6.8, bukan di tengah jalur)
+f2filingDoc(-12.4,-8.2); f2filingDoc(-12.4,-6.8);
+// Lounge lantai 2 v31: karpet + sofa + TV di dekat dinding DEPAN (selatan), di depan ruang Oki (tengah) — sofa menghadap utara ke TV, bukan di tengah jalan
+carpet2(0,7.0,3.5,3,0xc9a86a);
+(function(){ const g = new THREE.Group(); function add(m,px,py,pz){ m.position.set(px,py,pz); m.castShadow=true; g.add(m); }
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.9,0.5,2.2), matC(0x2e7d8a)), 0,0.25,0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.2,0.7,2.2), matC(0x2e7d8a)), -0.45,0.85,0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.9,0.6,0.3), matC(0x2e7d8a)), 0,0.6,1.0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.9,0.6,0.3), matC(0x2e7d8a)), 0,0.6,-1.0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.7,0.15,0.9), matC(0x7fb3d5)), 0.1,0.55,0.5);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.7,0.15,0.9), matC(0x7fb3d5)), 0.1,0.55,-0.5);
+  g.rotation.y = Math.PI/2; g.position.set(0,3.6,7.8); floor2Group.add(g); })();
+box2(1.4,0.6,0.6,matC(0x5d3a1a),0,3.6+0.3,6.2);
+box2(0.3,0.2,0.1,matC(0x222222),0,3.6+0.7,6.2);
+box2(1.8,1.0,0.1,matC(0x222222),0,3.6+1.2,6.2);
+box2(1.6,0.85,0.05,matC(0xd6eaf8),0,3.6+1.2,6.26);
+box2(0.8,0.15,0.4,matC(0x111111),0,3.6+0.68,6.2);
+box2(0.3,0.05,0.2,matC(0x222222),0.5,3.6+0.06,7.0);
+// Aquarium lantai 2 v31: NEMPEL dinding timur (x=12.4), sisi panjang SEJAJAR dinding (ke arah z), ikan berenang sepanjang z
+const fishes2 = [];
+(function(){
+  const cx = 12.4, cz = 2.0;
+  box2(1.0,0.12,2.4,matW(),cx,3.6+0.55,cz);
+  const glass = new THREE.Mesh(new THREE.BoxGeometry(0.8,1.0,2.2), matT(0x9ecfff,0.25)); glass.position.set(cx,3.6+1.15,cz); floor2Group.add(glass);
+  const water = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.8,2.0), matT(0x2e86c1,0.55)); water.position.set(cx,3.6+1.1,cz); floor2Group.add(water);
+  box2(0.6,0.12,2.0,matC(0x8a5a2b),cx,3.6+0.72,cz);
+  function fish2(color, phase, speed){ const g = new THREE.Group(); const body = new THREE.Mesh(new THREE.SphereGeometry(0.16,12,10), matC(color)); body.scale.set(1.4,0.8,0.6); g.add(body); const tail = new THREE.Mesh(new THREE.ConeGeometry(0.12,0.18,8), matC(color)); tail.rotation.z = Math.PI/2; tail.position.set(-0.28,0,0); g.add(tail); g.position.set(cx,3.6+1.15,cz); g.userData = { cx:cx, cz:cz, phase:phase, speed:speed, baseY:3.6+1.15, detail:'aquarium' }; floor2Group.add(g); fishes2.push(g); }
+  fish2(0xff7f00,0,1.2); fish2(0xffd700,2,0.9); fish2(0x2e86c1,4,1.5);
+  globalThis.__fishes2 = fishes2;
+})();
+// 2 kucing lantai 2 (abu-abu selatan-barat, putih selatan-tengah) — kucing oranye lantai 1 (5,7.8) tetap ada
+const catTails2 = []; globalThis.__catTails2 = catTails2;
+function makeCat2(x,z,color){ const g = new THREE.Group(); function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); return mesh; }
+  add(new THREE.Mesh(new THREE.SphereGeometry(0.32,14,12), matC(color)), 0,0.35,0).scale.set(1,1.1,1);
+  add(new THREE.Mesh(new THREE.SphereGeometry(0.26,14,12), matC(color)), 0,0.78,0.12);
+  add(new THREE.Mesh(new THREE.ConeGeometry(0.09,0.18,8), matC(color)), -0.15,1.02,0.12);
+  add(new THREE.Mesh(new THREE.ConeGeometry(0.09,0.18,8), matC(color)), 0.15,1.02,0.12);
+  add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), -0.1,0.8,0.36);
+  add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), matC(0x27ae60)), 0.1,0.8,0.36);
+  const tail = new THREE.Group(); const tm = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.5,8), matC(color)); tm.position.y = 0.25; tail.add(tm); tail.position.set(0.3,0.15,-0.3); tail.rotation.z = -0.6; g.add(tail); catTails2.push(tail);
+  g.position.set(x,3.6,z); g.userData.detail = 'cat'; g.traverse(function(o){ o.userData.detail = 'cat'; }); floor2Group.add(g); }
+makeCat2(-8,3.2,0x95a5a6); makeCat2(3,3.2,0xecf0f1);
+
 // TANGGA DALAM v24 — sayap kiri dekat Arsip (barat), x=-10, 12 anak tangga naik 0.3/anak (total 3.6),
 // dari dasar (-10,0,6) ke atas (-10,3.6,2). Tidak lagi di tengah pintu masuk; lantai 1 tidak digeser.
 function stairMesh(w,h,d,material,x,y,z){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; stairsGroup.add(m); return m; }
@@ -431,9 +609,9 @@ box(3.1,2.2,0.25,matW(),-3.45,1.1,-2); box(3.1,2.2,0.25,matW(),1.45,1.1,-2); doo
 function table(x,z){ box(2.2,0.12,1.2,matW(),x,0.75,z); [[-1,-0.5],[1,-0.5],[-1,0.5],[1,0.5]].forEach(function(o){ cyl(0.07,0.07,0.75,matC(0x5d3a1a),x+o[0],0.37,z+o[1]); }); }
 function roundTable(x,z){ cyl(1.2,1.2,0.12,matW(),x,0.78,z,24); cyl(0.18,0.3,0.75,matC(0x5d3a1a),x,0.37,z,12); }
 function stool(x,z){ cyl(0.32,0.32,0.1,matW(),x,0.48,z,18); cyl(0.06,0.06,0.48,matC(0x5d3a1a),x,0.24,z,10); }
-function chair(x,z,ry){ const g = new THREE.Group(); const s = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.1,18), matW()); s.position.y=0.48; s.castShadow=true; g.add(s); const b = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.7,0.1), matW()); b.position.set(0,0.9,-0.28); b.castShadow=true; g.add(b); g.position.set(x,0,z); g.rotation.y = ry||0; scene.add(g); }
+function chair(x,z,ry){ const g = new THREE.Group(); const s = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.1,18), matW()); s.position.y=0.48; s.castShadow=true; g.add(s); [-0.25,-0.25],[0.25,-0.25],[-0.25,0.25],[0.25,0.25].forEach(function(o){ const leg = new THREE.Mesh(new THREE.BoxGeometry(0.12,0.43,0.12), matC(0x5d3a1a)); leg.position.set(o[0],0.215,o[1]); leg.castShadow=true; g.add(leg); }); [[-0.25,0.15,0],[0.25,0.15,0]].forEach(function(p){ const bar = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.08,0.5), matC(0x5d3a1a)); bar.position.set(p[0],p[1],p[2]); bar.castShadow=true; g.add(bar); }); [[0,0.15,-0.25],[0,0.15,0.25]].forEach(function(p){ const bar = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.08,0.08), matC(0x5d3a1a)); bar.position.set(p[0],p[1],p[2]); bar.castShadow=true; g.add(bar); }); const b = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.7,0.1), matW()); b.position.set(0,0.9,-0.28); b.castShadow=true; g.add(b); g.position.set(x,0,z); g.rotation.y = ry||0; scene.add(g); }
 function shelf(x,z){ box(1.8,1.8,0.4,matW(),x,0.9,z); const cols=[0xb85450,0x4a7fa5,0x5a8a4a,0xc07a2e,0x7a5a8a,0xa89a3a]; for(let i=0;i<6;i++) box(0.22,0.6,0.3,matC(cols[i]),x-0.65+i*0.26,0.7,z+0.05); for(let i=0;i<4;i++) box(0.22,0.5,0.3,matC(cols[(i+3)%6]),x-0.5+i*0.3,1.4,z+0.05); }
-function monitorDesk(x,z){ table(x,z); box(0.9,0.55,0.08,matC(0x222222),x,1.25,z-0.3); box(0.8,0.42,0.05,matC(0x9ecfff),x,1.25,z-0.25); }
+function monitorDesk(x,z){ table(x,z); box(0.9,0.55,0.08,matC(0x222222),x,1.25,z-0.3); box(0.8,0.42,0.05,matC(0x9ecfff),x,1.25,z-0.25); box(0.7,0.05,0.35,matC(0x222222),x,0.83,z+0.25); box(0.6,0.02,0.25,matC(0x888888),x,0.86,z+0.25); }
 function filing(x,z){ box(0.9,1.5,0.5,matC(0x8a8f98),x,0.75,z); for(let i=0;i<3;i++) box(0.7,0.35,0.05,matC(0xb8bcc4),x,0.35+i*0.45,z+0.27); }
 function filingDoc(x,z){ const m = box(1.0,1.8,0.5,matC(0x2e5d33),x,0.9,z); m.userData.detail = 'arsip'; for(let i=0;i<4;i++){ const d = box(0.8,0.32,0.05,matC(0x4a7a4a),x,0.25+i*0.42,z+0.27); d.userData.detail = 'arsip'; } }
 function plant(x,z){ cyl(0.3,0.22,0.4,matC(0xb5651d),x,0.2,z,12); ball(0.38,matC(0x2e7d32),x,0.75,z); ball(0.28,matC(0x3fae4a),x+0.2,0.6,z); }
@@ -467,6 +645,9 @@ cyl(0.28,0.22,0.4,matC(0xffffff),12,0.2,-3.5); box(0.5,0.5,0.2,matC(0xffffff),12
 box(0.6,0.1,0.4,matC(0xffffff),11,0.85,-1.8); cyl(0.06,0.06,0.85,matC(0x8a8f98),11,0.42,-1.8,10);
 // MEJA PERIMETER SELATAN (menghadap utara, dekat tembok depan, sirkulasi tengah bebas)
 monitorDesk(-7,7.5); monitorDesk(-10,7.5); monitorDesk(3,7.5); monitorDesk(8,7.5);
+// KURSI KERJA v30 — pola: meja utara + meja Lux: kursi tepat di belakang karakter (desk z + 1.85, sandaran ke selatan, ry=PI), terlihat dari kamera Keseluruhan tanpa menutupi karakter. Meja selatan (perimeter, karakter sudah dekat dinding depan z=9): kursi di sisi timur karakter (x + 0.9, z sama) karena di belakang karakter sudah dinding depan — tidak ada kursi yang menembus dinding.
+chair(-11,2.35,Math.PI); chair(-8,2.35,Math.PI); chair(-4,2.35,Math.PI); chair(-1.5,2.35,Math.PI); chair(1.5,2.35,Math.PI); chair(4,2.35,Math.PI); chair(7,2.35,Math.PI); chair(9,2.35,Math.PI); chair(0,4.25,Math.PI);
+chair(-6.1,8.5,Math.PI); chair(-9.1,8.5,Math.PI); chair(3.9,8.5,Math.PI); chair(8.9,8.5,Math.PI);
 plant(-6,4); plant(2,6);
 filingDoc(-12.4,3); filingDoc(-12.4,5); filingDoc(12.4,7); filingDoc(12.4,-6);
 box(0.8,0.6,0.6,matC(0xdddddd),-12.3,0.9,7); box(0.6,0.05,0.4,matC(0xffffff),-12.3,1.22,7); plant(-12.5,7); plant(12.5,6); plant(-5,7);
@@ -671,6 +852,38 @@ function makeDog(){
   bikeG.position.set(-35, -0.37, 14); scene.add(bikeG);
   strangers.push({ g:bikeG, type:'bike', x:-35, laneZ:14, baseY:-0.37, dir:1, speed:3.5, phase:0, dog:null });
 })();
+// KENDARAAN BERGERAK DI JALAN RAYA v32 — looping, tanpa label, tanpa detail klik.
+// Jalan: aspal x -40..40, jalur timur z=14 (arah timur), jalur barat z=16 (arah barat).
+// Badan mobil/motor aslinya memanjang ke arah z, jadi diputar 90 derajat (ry=+/-PI/2)
+// supaya memanjang ke arah x, sesuai arah jalan. Mobil parkir (car()/motor() diam) TIDAK diubah.
+const traffic = [];
+function makeMovingCar(color){
+  const g = new THREE.Group();
+  function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); }
+  add(new THREE.Mesh(new THREE.BoxGeometry(1.8,0.6,4.0), matC(color)), 0,0.55,0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(1.6,0.55,2.0), matC(0xd6eaf8)), 0,1.05,-0.2);
+  [[-0.85,1.4],[0.85,1.4],[-0.85,-1.4],[0.85,-1.4]].forEach(function(p){ const w = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.2,14), matC(0x222222)); w.rotation.z = Math.PI/2; w.position.set(p[0],0.32,p[1]); w.castShadow = true; g.add(w); });
+  return g;
+}
+function makeMovingMotor(color){
+  const g = new THREE.Group();
+  function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); }
+  [[0,0.7],[0,-0.7]].forEach(function(p){ const w = new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.28,0.12,16), matC(0x222222)); w.rotation.z = Math.PI/2; add(w,0,0.28,p[1]); });
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.4,0.3,1.2), matC(color)), 0,0.6,0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(0.35,0.1,0.5), matC(0x111111)), 0,0.82,-0.2);
+  const hb = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.6,8), matC(0x222222)); hb.rotation.z = Math.PI/2; add(hb,0,0.95,0.65);
+  return g;
+}
+function addTraffic(make, color, x, laneZ, dir, speed){
+  const g = make(color); g.position.set(x, -0.37, laneZ);
+  // Mobil/motor memanjang ke z: ry=-PI/2 menghadap timur (+x), ry=+PI/2 menghadap barat (-x).
+  g.rotation.y = (dir === 1) ? -Math.PI/2 : Math.PI/2;
+  scene.add(g); traffic.push({ g:g, x:x, laneZ:laneZ, dir:dir, speed:speed });
+}
+addTraffic(makeMovingCar, 0x2ecc71, -30, 14, 1, 7);   // mobil hijau, jalur timur, arah timur
+addTraffic(makeMovingCar, 0xf39c12, 25, 16, -1, 6);   // mobil oranye, jalur barat, arah barat
+addTraffic(makeMovingMotor, 0x9b59b6, -10, 14, 1, 10); // motor ungu, jalur timur, arah timur
+addTraffic(makeMovingMotor, 0x1abc9c, 10, 16, -1, 9);  // motor teal, jalur barat, arah barat
 // AWAN + HUJAN
 const cloudGroups = []; const cloudMats = [];
 function cloud(x,y,z){
@@ -689,9 +902,25 @@ for (let i=0;i<rainCount;i++) rainReset(i, false);
 const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
 const rainPoints = new THREE.Points(rainGeo, new THREE.PointsMaterial({ color: 0xaaccff, size: 0.18, transparent: true, opacity: 0.7 })); rainPoints.visible = false; scene.add(rainPoints);
 
+
+// SALJU v31 + BENDA LANGIT v31 (matahari/bulan/bintang, visibilitas ikut period)
+const snowCount = 400; const snowPos = new Float32Array(snowCount * 3);
+function snowReset(i, top){ snowPos[i*3] = -30 + Math.random()*60; snowPos[i*3+1] = top ? 14 + Math.random()*2 : Math.random()*15; snowPos[i*3+2] = -20 + Math.random()*50; }
+for (let i=0;i<snowCount;i++) snowReset(i, false);
+const snowGeo = new THREE.BufferGeometry(); snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
+const snowPoints = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.22, transparent: true, opacity: 0.9 })); snowPoints.visible = false; scene.add(snowPoints);
+const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2,16,12), new THREE.MeshBasicMaterial({ color: 0xffd93d })); sunMesh.position.set(20,18,0); scene.add(sunMesh);
+const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.9,16,12), new THREE.MeshBasicMaterial({ color: 0xe8eaf0 })); moonMesh.position.set(-20,17,0); moonMesh.visible = false; scene.add(moonMesh);
+const starCount = 150; const starPos = new Float32Array(starCount * 3);
+for (let i=0;i<starCount;i++){ starPos[i*3] = -35 + Math.random()*70; starPos[i*3+1] = 12 + Math.random()*9; starPos[i*3+2] = -25 + Math.random()*50; }
+const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const starPoints = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.25, transparent: true, opacity: 0.9 })); starPoints.visible = false; scene.add(starPoints);
+const lightningBolt = new THREE.Mesh(new THREE.BoxGeometry(0.15,6,0.15), new THREE.MeshBasicMaterial({ color: 0xffffcc })); lightningBolt.visible = false; scene.add(lightningBolt);
+let lightningNext = 4, lightningFlash = 0, baseSunInt = 1;
+
 // CUACA + JAM
 let weather = 'cerah'; let weatherTimer = 45;
-const weatherLabel = { cerah:'Cerah ☀️', mendung:'Mendung ☁️', hujan:'Hujan 🌧️' };
+const weatherLabel = { cerah:'Cerah ☀️', mendung:'Mendung ☁️', hujan:'Hujan 🌧️', salju:'Salju ❄️', petir:'Petir ⛈️', badai:'Badai 🌪️', panasterik:'Panas Terik 🔥' };
 function syncHud(){ const c=document.getElementById("clockWeather"); const f=document.getElementById("focusLabel"); const hud=document.getElementById("sceneHud"); if(hud && c && f) hud.textContent = c.textContent + " | " + f.textContent; }
 function applyTimeWeather(){
   const now = new Date(); const hh = String(now.getHours()).padStart(2,'0'); const mm = String(now.getMinutes()).padStart(2,'0'); const h = now.getHours();
@@ -701,31 +930,42 @@ function applyTimeWeather(){
   else if (h >= 15 && h < 18) { sky=0xffd9a0; sunInt=0.9; sunCol=0xffc07a; amb=0.6; lamp=0.5; period='Sore'; }
   else if (h >= 18 && h < 20) { sky=0xff8a5c; sunInt=0.5; sunCol=0xff7a3d; amb=0.45; lamp=1.0; period='Senja'; }
   else { sky=0x16233f; sunInt=0.15; sunCol=0x9db4ff; amb=0.3; lamp=1.4; period='Malam'; }
-  let wf = 1; if (weather === 'mendung') wf = 0.6; if (weather === 'hujan') wf = 0.4;
-  scene.background.set(sky); sun.intensity = sunInt * wf; sun.color.set(sunCol); ambientLight.intensity = amb * (weather==='hujan'?0.7:1); warmLight.intensity = lamp;
-  cloudGroups.forEach(function(g){ g.visible = (weather !== 'cerah'); });
-  cloudMats.forEach(function(m){ m.color.set(weather === 'hujan' ? 0x888888 : 0xeeeeee); });
-  rainPoints.visible = (weather === 'hujan');
+  let wf = 1; if (weather === 'mendung') wf = 0.6; if (weather === 'hujan') wf = 0.4; if (weather === 'salju') wf = 0.7; if (weather === 'petir') wf = 0.35; if (weather === 'badai') wf = 0.3; if (weather === 'panasterik') wf = 1.4;
+  scene.background.set(sky); sun.intensity = sunInt * wf; baseSunInt = sun.intensity; sun.color.set(sunCol); ambientLight.intensity = amb * (weather==='hujan'?0.7:weather==='badai'?0.6:weather==='petir'?0.6:weather==='panasterik'?1.1:1); warmLight.intensity = lamp;
+  cloudGroups.forEach(function(g){ g.visible = (weather !== 'cerah' && weather !== 'panasterik'); });
+  cloudMats.forEach(function(m){ m.color.set(weather === 'hujan' ? 0x888888 : weather === 'petir' ? 0x555555 : weather === 'badai' ? 0x666666 : weather === 'salju' ? 0xdde3e6 : 0xeeeeee); });
+  rainPoints.visible = (weather === 'hujan' || weather === 'petir' || weather === 'badai');
+  snowPoints.visible = (weather === 'salju');
+  sunMesh.visible = (period !== 'Malam'); moonMesh.visible = (period === 'Malam'); starPoints.visible = (period === 'Malam');
+  if (period === 'Senja') { sunMesh.position.set(22,9,0); sunMesh.material.color.set(0xff7a3d); sunMesh.scale.set(1.3,1.3,1.3); }
+  else if (weather === 'panasterik') { sunMesh.position.set(20,18,0); sunMesh.material.color.set(0xfff176); sunMesh.scale.set(1.4,1.4,1.4); }
+  else { sunMesh.position.set(20,18,0); sunMesh.material.color.set(0xffd93d); sunMesh.scale.set(1,1,1); }
+  currentPeriod = period;
   document.getElementById('clockWeather').textContent = "Jam kantor: " + hh + ":" + mm + " — " + period + " • Cuaca: " + weatherLabel[weather];
   syncHud();
+  updateWeatherOutdoorAudio();
 }
 applyTimeWeather(); setInterval(applyTimeWeather, 30000);
-function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v24"; }
+function updateHeaderClock(){ const el = document.getElementById("headerClock"); if(!el) return; const now = new Date(); const day = now.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long", year:"numeric"}); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0"); const ss = String(now.getSeconds()).padStart(2,"0"); el.textContent = day + " - " + hh + ":" + mm + ":" + ss + " - Kantor Digital 3D - v37"; }
 updateHeaderClock(); setInterval(updateHeaderClock, 1000);
-window.cycleWeather = function(){ const order = ['cerah','mendung','hujan']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
+window.cycleWeather = function(){ const order = ['cerah','mendung','hujan','salju','petir','badai','panasterik']; weather = order[(order.indexOf(weather)+1) % order.length]; weatherTimer = clockTime + 45; applyTimeWeather(); };
 
 // KARAKTER v5
 const characters = [];
-function label3(nick, role, segment){
-  const cv = document.createElement('canvas'); cv.width = 256; cv.height = 144; const ctx = cv.getContext('2d');
-  ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillRect(0,4,256,136); ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(0,4,256,136);
-  ctx.fillStyle = '#222'; ctx.textAlign = 'center'; ctx.font = 'bold 30px Verdana'; ctx.fillText(nick, 128, 42);
-  ctx.font = '20px Verdana'; ctx.fillText(role, 128, 76);
-  ctx.fillStyle = '#555'; ctx.font = '20px Verdana'; ctx.fillText(segment, 128, 108);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); sp.scale.set(2.6, 1.45, 1); return sp;
+function label1(nick, roleShort, segment){
+  // v32: SATU BARIS "Panggilan | JobSingkat | KodeSegmen" (mis. "Lux | Manager | OSCR").
+  // Font dikecilkan otomatis bila teks lebih lebar dari kanvas, supaya tidak terpotong.
+  const txt = nick + ' | ' + roleShort + ' | ' + segment;
+  const cv = document.createElement('canvas'); cv.width = 256; cv.height = 48; const ctx = cv.getContext('2d');
+  ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillRect(0,2,256,44); ctx.strokeStyle = '#222'; ctx.lineWidth = 3; ctx.strokeRect(0,2,256,44);
+  ctx.fillStyle = '#222'; ctx.textAlign = 'center';
+  let fs = 20; ctx.font = 'bold ' + fs + 'px Verdana';
+  while (ctx.measureText(txt).width > 236 && fs > 14) { fs -= 1; ctx.font = 'bold ' + fs + 'px Verdana'; }
+  ctx.fillText(txt, 128, 30);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); sp.scale.set(2.0, 0.38, 1); return sp;
 }
 let charIdx = 0; let clockTime = 0;
-function chibi(person, x, z, ry, active, isOemar){
+function chibi(person, x, z, ry, active, isOemar, baseY){
   const g = new THREE.Group();
   function add(mesh,px,py,pz){ mesh.position.set(px,py,pz); mesh.castShadow = true; g.add(mesh); }
   add(new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.32,10), matC(0x222222)), -0.16,0.16,0);
@@ -753,27 +993,216 @@ function chibi(person, x, z, ry, active, isOemar){
   }
   add(new THREE.Mesh(new THREE.SphereGeometry(0.045,10,8), matC(0x111111)), -0.14,1.4,0.33);
   add(new THREE.Mesh(new THREE.SphereGeometry(0.045,10,8), matC(0x111111)), 0.14,1.4,0.33);
-  const lb = label3(person.nick, person.role, person.segment); lb.position.y = 2.35; g.add(lb);
-  g.position.set(x,0,z); g.rotation.y = ry||0; g.userData.detail = person.key;
-  const entry = { g:g, home:{x:x,z:z,ry:ry||0}, state:'kerja', stateUntil: 8 + charIdx*3, queue:[], phase:Math.random()*6, active: !!active, idx: charIdx, isOemar: !!isOemar, key: person.key };
+  const segCode = {'Bedah Keuangan':'BK','Jejak Kuasa':'JK','Rancang Undangan':'RU','BaruTauAda':'BTA','Ludo Berdua':'LB','Oki | AI Sehari-hari':'OKI','OSCR Works':'OSCR'}[person.segment] || person.segment;
+  const roleShort = {'Director':'Director','Manager & Producer':'Manager','Content & Script':'Content','Social Media Admin':'Socmed','Finance & Research':'Finance','Research & Fact-Check':'Research','Visual-Motion':'Visual','Content & Sosmed':'Content','Admin & Order':'Admin','Finance & Vendor':'Finance','Product Curation':'Produk','Distribution & Admin':'Distribusi','Produk':'Produk','Marketing':'Marketing','Admin':'Admin','Riset & Konten':'Riset','Socmed':'Socmed'}[person.role] || person.role.split(' ')[0];
+  const lb = label1(person.nick, roleShort, segCode); lb.position.y = 2.0; g.add(lb);
+  g.position.set(x,baseY||0,z); g.rotation.y = ry||0; g.userData.detail = person.key;
+  const entry = { g:g, home:{x:x,z:z,ry:ry||0,y:baseY||0}, homeY:baseY||0, state:'kerja', stateUntil: 8 + charIdx*3, queue:[], phase:Math.random()*6, active: !!active, idx: charIdx, isOemar: !!isOemar, key: person.key };
   g.userData.charEntry = entry; g.traverse(function(o){ o.userData.detail = person.key; o.userData.charEntry = entry; });
   scene.add(g); characters.push(entry); charIdx++; return g;
 }
-const P = function(nick, role, segment, key, shirt, hair, hairStyle, skin, gender){ return { nick:nick, role:role, segment:segment, key:key, shirt:shirt, hair:hair, hairStyle:hairStyle, skin:skin, gender:gender }; };
-chibi(P('Oemar','Director','OSCR Works','direktur',0x922b21,0x111111,'pendek',0xe8b88a,'Cowo'), -9,-6,Math.PI,true,true);
-chibi(P('Lux','Manager & Producer','OSCR Works','lux',0x1a5276,0x222222,'pendek',0xffd9a8,'Cowo'), 0,3.5,Math.PI,true,false);
-chibi(P('Nadia','Content & Script','Bedah Keuangan','nadia',0x16a085,0x222222,'panjang',0xffd9a8,'Cewe'), -11,1.6,Math.PI,true,false);
-chibi(P('Rizky','Social Media Admin','Bedah Keuangan','rizky',0xe67e22,0x111111,'pendek',0xe8b88a,'Cowo'), -8,1.6,Math.PI,true,false);
-chibi(P('Jess','Finance & Research','Bedah Keuangan','jess',0x8e44ad,0x222222,'bun',0xffd9a8,'Cewe'), -7,8.5,Math.PI,true,false);
-chibi(P('Fajar','Research & Fact-Check','Jejak Kuasa','fajar',0x27ae60,0x111111,'cepak',0xc68642,'Cowo'), -4,1.6,Math.PI,true,false);
-chibi(P('Maria','Content & Script','Jejak Kuasa','maria',0xd64545,0x222222,'ponytail',0xe8b88a,'Cewe'), -1.5,1.6,Math.PI,true,false);
-chibi(P('Made','Visual-Motion','Jejak Kuasa','made',0xd4ac0d,0x111111,'pendek',0xc68642,'Cowo'), -10,8.5,Math.PI,true,false);
-chibi(P('Ratna','Content & Sosmed','Rancang Undangan','ratna',0xe74c8c,0x222222,'panjang',0xffd9a8,'Cewe'), 1.5,1.6,Math.PI,true,false);
-chibi(P('Yusuf','Admin & Order','Rancang Undangan','yusuf',0x2e86c1,0x111111,'pendek',0xe8b88a,'Cowo'), 4,1.6,Math.PI,true,false);
-chibi(P('Kevin','Finance & Vendor','Rancang Undangan','kevin',0x7f8c8d,0x111111,'cepak',0xffd9a8,'Cowo'), 3,8.5,Math.PI,true,false);
-chibi(P('Intan','Research & Fact-Check','BaruTauAda','intan',0xff6b9d,0x222222,'ponytail',0xe8b88a,'Cewe'), 7,1.6,Math.PI,true,false);
-chibi(P('Yohan','Product Curation','BaruTauAda','yohan',0x8a5a2b,0x111111,'keriting',0x8d5524,'Cowo'), 9,1.6,Math.PI,true,false);
-chibi(P('Lina','Distribution & Admin','BaruTauAda','lina',0x00bcd4,0x222222,'bun',0xe8b88a,'Cewe'), 8,8.5,Math.PI,true,false);
+/* ===== v37 CONFIG START ===== */
+/* v37: data karyawan + segmen/room statis dibaca dari config.json bila ada,
+   dengan fallback penuh ke data default OSCR di bawah ini bila config tidak
+   bisa dimuat (mis. dibuka sebagai lampiran file tunggal). */
+const P = function(nick, role, segment, key, shirt, hair, hairStyle, skin, gender){
+  return {nick:nick, role:role, segment:segment, key:key, shirt:shirt, hair:hair, hairStyle:hairStyle, skin:skin, gender:gender};
+};
+const DEFAULT_EMPLOYEES = [{"key": "direktur", "nick": "Oemar", "full": "Oemar", "role": "Director", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#922b21", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [-9.0, -6.0], "ry": "PI", "isOemar": true, "profileBody": "<ul><li><b>Peran:</b> Director OSCR Works, meja direktur + laptop, sesekali keliling lewat pintu direktur ke Meeting 1 / open space / pantry / halaman.</li></ul>", "kpi": {"tepat": 90, "metrics": [{"name": "Keputusan tepat waktu", "target": 10, "actual": 8}, {"name": "Rapat dipimpin", "target": 8, "actual": 7}]}}, {"key": "lux", "nick": "Lux", "full": "Lux", "role": "Manager & Producer", "segment": "OSCR Works", "segmentCode": "OSCR", "filter": "management", "gender": "Cowo", "age": "-", "born": "-", "origin": "-", "suku": "-", "agama": "-", "karakter": "-", "shirt": "#1a5276", "hair": "#222222", "hairStyle": "pendek", "skin": "#ffd9a8", "floor": 1, "pos": [0.0, 3.5], "ry": "PI", "isOemar": false, "profileBody": "<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space dekat Meeting 2, aktivitas bergantian seperti tim lain.</li></ul>", "kpi": {"tepat": 92, "metrics": [{"name": "Produksi selesai", "target": 12, "actual": 10}, {"name": "Update status tepat waktu", "target": 12, "actual": 11}]}}, {"key": "nadia", "nick": "Nadia", "full": "Nadia Ayu Lestari", "role": "Content & Script", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "27", "born": "Yogyakarta, 14 Feb 1999", "origin": "Yogyakarta", "suku": "Jawa", "agama": "Islam", "karakter": "Teliti, suka analogi sehari-hari, perfeksionis ringan", "shirt": "#16a085", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [-11.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Naskah selesai", "target": 10, "actual": 7}, {"name": "Hook lolos QC", "target": 10, "actual": 8}]}}, {"key": "rizky", "nick": "Rizky", "full": "Rizky Aditya Pratama", "role": "Social Media Admin", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cowo", "age": "29", "born": "Bandung, 3 Jul 1997", "origin": "Bandung", "suku": "Sunda", "agama": "Islam", "karakter": "Santai, cepat tanggap komen, humor", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [-8.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 200, "actual": 165}]}}, {"key": "jess", "nick": "Jess", "full": "Jessica Tan", "role": "Finance & Research", "segment": "Bedah Keuangan", "segmentCode": "BK", "filter": "bk", "gender": "Cewe", "age": "26", "born": "Medan, 22 Nov 1999", "origin": "Medan", "suku": "Tionghoa", "agama": "Kristen Protestan", "karakter": "Analitis, tenang, suka angka", "shirt": "#8e44ad", "hair": "#222222", "hairStyle": "bun", "skin": "#ffd9a8", "floor": 1, "pos": [-7.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Laporan keuangan akurat", "target": 8, "actual": 6}, {"name": "Riset terverifikasi", "target": 10, "actual": 8}]}}, {"key": "fajar", "nick": "Fajar", "full": "Fajar Ramadhan", "role": "Research & Fact-Check", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "31", "born": "Makassar, 10 Jan 1995", "origin": "Makassar", "suku": "Bugis", "agama": "Islam", "karakter": "Penasaran sejarah, suka peta", "shirt": "#27ae60", "hair": "#111111", "hairStyle": "cepak", "skin": "#c68642", "floor": 1, "pos": [-4.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 82, "metrics": [{"name": "Fakta terverifikasi", "target": 8, "actual": 6}, {"name": "Peta akurat", "target": 6, "actual": 5}]}}, {"key": "maria", "nick": "Maria", "full": "Maria Simanjuntak", "role": "Content & Script", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cewe", "age": "28", "born": "Medan, 8 Mei 1998", "origin": "Medan", "suku": "Batak Toba", "agama": "Katolik", "karakter": "Storytelling kuat, suka riset arsip", "shirt": "#d64545", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 1, "pos": [-1.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Naskah storytelling selesai", "target": 10, "actual": 7}, {"name": "Arsip terverifikasi", "target": 8, "actual": 6}]}}, {"key": "made", "nick": "Made", "full": "I Made Wirawan", "role": "Visual-Motion", "segment": "Jejak Kuasa", "segmentCode": "JK", "filter": "jk", "gender": "Cowo", "age": "30", "born": "Denpasar, 19 Sep 1996", "origin": "Denpasar", "suku": "Bali", "agama": "Hindu", "karakter": "Visual, detail warna, tenang", "shirt": "#d4ac0d", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 1, "pos": [-10.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 80, "metrics": [{"name": "Visual selesai", "target": 8, "actual": 5}, {"name": "Render tepat waktu", "target": 8, "actual": 6}]}}, {"key": "ratna", "nick": "Ratna", "full": "Ratna Sari Dewi", "role": "Content & Sosmed", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cewe", "age": "25", "born": "Solo, 27 Apr 2001", "origin": "Solo", "suku": "Jawa", "agama": "Islam", "karakter": "Ramah, komunikatif, suka desain", "shirt": "#e74c8c", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 1, "pos": [1.5, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 84, "metrics": [{"name": "Konten sosmed selesai", "target": 10, "actual": 6}, {"name": "Desain disetujui", "target": 8, "actual": 6}]}}, {"key": "yusuf", "nick": "Yusuf", "full": "Yusuf Hamdani", "role": "Admin & Order", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "32", "born": "Padang, 15 Des 1993", "origin": "Padang", "suku": "Minangkabau", "agama": "Islam", "karakter": "Tertib, cepat balas chat klien", "shirt": "#2e86c1", "hair": "#111111", "hairStyle": "pendek", "skin": "#e8b88a", "floor": 1, "pos": [4.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 9}, {"name": "Chat dibalas cepat", "target": 50, "actual": 44}]}}, {"key": "kevin", "nick": "Kevin", "full": "Kevin Wijaya", "role": "Finance & Vendor", "segment": "Rancang Undangan", "segmentCode": "RU", "filter": "ru", "gender": "Cowo", "age": "28", "born": "Pontianak, 6 Jun 1998", "origin": "Pontianak", "suku": "Tionghoa", "agama": "Buddha", "karakter": "Negosiator, teliti harga", "shirt": "#7f8c8d", "hair": "#111111", "hairStyle": "cepak", "skin": "#ffd9a8", "floor": 1, "pos": [3.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 89, "metrics": [{"name": "Vendor dinegosiasi", "target": 8, "actual": 6}, {"name": "Harga terverifikasi", "target": 10, "actual": 8}]}}, {"key": "intan", "nick": "Intan", "full": "Intan Permata", "role": "Research & Fact-Check", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "24", "born": "Palembang, 11 Mar 2002", "origin": "Palembang", "suku": "Melayu", "agama": "Islam", "karakter": "Detail, suka coba barang sampai paham", "shirt": "#ff6b9d", "hair": "#222222", "hairStyle": "ponytail", "skin": "#e8b88a", "floor": 1, "pos": [7.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 83, "metrics": [{"name": "Produk terverifikasi", "target": 8, "actual": 5}, {"name": "Fakta produk dicek", "target": 10, "actual": 7}]}}, {"key": "yohan", "nick": "Yohan", "full": "Yohanis Wenda", "role": "Product Curation", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cowo", "age": "27", "born": "Jayapura, 2 Feb 1999", "origin": "Jayapura", "suku": "Papua", "agama": "Kristen Protestan", "karakter": "Praktis, suka barang berguna, jujur soal produk", "shirt": "#8a5a2b", "hair": "#111111", "hairStyle": "keriting", "skin": "#8d5524", "floor": 1, "pos": [9.0, 1.6], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Produk terkurasi", "target": 8, "actual": 5}, {"name": "Rekomendasi konversi", "target": 6, "actual": 4}]}}, {"key": "lina", "nick": "Lina", "full": "Lina Marlina", "role": "Distribution & Admin", "segment": "BaruTauAda", "segmentCode": "BTA", "filter": "bta", "gender": "Cewe", "age": "26", "born": "Banjarmasin, 30 Aug 2000", "origin": "Banjarmasin", "suku": "Banjar", "agama": "Islam", "karakter": "Gesit, rapi jadwal posting 5 platform", "shirt": "#00bcd4", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 1, "pos": [8.0, 8.5], "ry": "PI", "isOemar": false, "kpi": {"tepat": 90, "metrics": [{"name": "Posting 5 platform tepat waktu", "target": 12, "actual": 8}, {"name": "Jadwal rapi", "target": 12, "actual": 10}]}}, {"key": "bima", "nick": "Bima", "full": "Bima Aryo Nugroho", "role": "Produk", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cowo", "age": "27", "born": "Semarang, 12 Mar 1999", "origin": "Semarang", "suku": "Jawa", "agama": "Islam", "karakter": "Telaten prototipe, suka uji main sampai seru — karakter fiktif simulasi", "shirt": "#1abc9c", "hair": "#111111", "hairStyle": "cepak", "skin": "#e8b88a", "floor": 2, "pos": [-11.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 86, "metrics": [{"name": "Prototipe game diuji", "target": 8, "actual": 6}, {"name": "Fitur produk selesai", "target": 10, "actual": 7}]}}, {"key": "alya", "nick": "Alya", "full": "Alya Putri Maharani", "role": "Marketing", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "25", "born": "Jakarta, 8 Jun 2001", "origin": "Jakarta", "suku": "Betawi", "agama": "Islam", "karakter": "Ceria, jago bikin konten main bareng — karakter fiktif simulasi", "shirt": "#9b59b6", "hair": "#222222", "hairStyle": "panjang", "skin": "#ffd9a8", "floor": 2, "pos": [-8.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 88, "metrics": [{"name": "Konten promosi selesai", "target": 10, "actual": 7}, {"name": "Kampanye tepat waktu", "target": 8, "actual": 6}]}}, {"key": "tari", "nick": "Tari", "full": "Tari Wulandari", "role": "Admin", "segment": "Ludo Berdua", "segmentCode": "LB", "filter": "ludo", "gender": "Cewe", "age": "26", "born": "Malang, 20 Sep 2000", "origin": "Malang", "suku": "Jawa", "agama": "Kristen Protestan", "karakter": "Rapi, cepat balas order dan atur stok — karakter fiktif simulasi", "shirt": "#3498db", "hair": "#222222", "hairStyle": "bun", "skin": "#e8b88a", "floor": 2, "pos": [-6.0, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 91, "metrics": [{"name": "Order diproses", "target": 12, "actual": 10}, {"name": "Data admin rapi", "target": 10, "actual": 8}]}}, {"key": "raka", "nick": "Raka", "full": "Raka Aditya Saputra", "role": "Riset & Konten", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cowo", "age": "26", "born": "Surabaya, 5 Apr 2000", "origin": "Surabaya", "suku": "Jawa", "agama": "Islam", "karakter": "Suka riset tools AI lalu coba sendiri sebelum dishare — karakter fiktif simulasi", "shirt": "#e67e22", "hair": "#111111", "hairStyle": "pendek", "skin": "#c68642", "floor": 2, "pos": [-1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 85, "metrics": [{"name": "Riset AI terverifikasi", "target": 8, "actual": 6}, {"name": "Konten selesai", "target": 10, "actual": 7}]}}, {"key": "nisa", "nick": "Nisa", "full": "Nisa Rahmawati", "role": "Socmed", "segment": "Oki | AI Sehari-hari", "segmentCode": "OKI", "filter": "oki", "gender": "Cewe", "age": "24", "born": "Cirebon, 14 Jan 2002", "origin": "Cirebon", "suku": "Sunda", "agama": "Islam", "karakter": "Gesit posting, suka bahasa sehari-hari — karakter fiktif simulasi", "shirt": "#f39c12", "hair": "#222222", "hairStyle": "ponytail", "skin": "#ffd9a8", "floor": 2, "pos": [1.5, -4.1], "ry": "PI", "isOemar": false, "kpi": {"tepat": 87, "metrics": [{"name": "Posting tepat waktu", "target": 12, "actual": 9}, {"name": "Komen dibalas", "target": 50, "actual": 38}]}}];
+const STATIC_SEGMENT_DATA = {"bk": {"title": "💰 Bedah Keuangan", "status": "SEGMEN — NADIA, RIZKY, JESS — #1 TAYANG", "cls": "", "body": "<ul><li><b>Tim:</b> Nadia (Content &amp; Script), Rizky (Social Media Admin), Jess (Finance &amp; Research).</li><li><b>Terbaru 27 Okt sekitar 14:51:</b> Slate #1 v2 Rp5.000 1996 vs 2026 SUDAH TAYANG di luar slot 18:00 atas perintah Oemar untuk menaikkan v2 sekarang — https://www.instagram.com/reel/De_XGXqD0E-/ — beras 2026 sekitar Rp14.700/kg dipertahankan.</li><li><b>Berikutnya:</b> #2 emas, slot 28 Okt 12:00, produksi jalan menyusul. Ritme 2 reels/hari 12:00 &amp; 18:00, story 15:00, carousel HOLD.</li></ul>"}, "jk": {"title": "🌍 Jejak Kuasa", "status": "SEGMEN — FAJAR, MARIA, MADE — GARIS WALLACE JALAN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Fajar (Research), Maria (Content &amp; Script), Made (Visual-Motion).</li><li><b>Terbaru 27 Okt 14:48:</b> Next content = GARIS WALLACE — riset + naskah jalan dulu, render full 3D setelah naskah di-ACC, vibes cerah daylight.</li><li><b>Sebelumnya:</b> Puncak Jaya + Cincin Api di-ACC semua 13:31; Keluar dari PBB v2 tayang manual 26 Okt. Menunggu verdict WW sebelum link share WW1 kedaluwarsa awal 29 Okt.</li></ul>"}, "ru": {"title": "💌 Rancang Undangan", "status": "SEGMEN — RATNA, YUSUF, KEVIN", "cls": "wait", "body": "<ul><li><b>Tim:</b> Ratna (Content &amp; Sosmed), Yusuf (Admin &amp; Order), Kevin (Finance &amp; Vendor).</li><li><b>Terakhir:</b> Template digital v2 live di Vercel. Menunggu alamat Batu Aji untuk pin Maps.</li></ul>"}, "bta": {"title": "🛒 BaruTauAda", "status": "SEGMEN — INTAN, YOHAN, LINA", "cls": "hold", "body": "<ul><li><b>Tim:</b> Intan (Research), Yohan (Product Curation), Lina (Distribution &amp; Admin).</li><li><b>Terakhir:</b> Handle @barutauada dikunci 23 Okt, segmen Rumah &amp; Kos dipagar. Menunggu registrasi + link produk pertama.</li></ul>"}, "meeting1": {"title": "🤝 Meeting 1 — Bersekat + Pintu", "status": "RUANG RAPAT TERTUTUP", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat tertutup, meja bundar + TV dinding.</li></ul>"}, "meeting2": {"title": "🤝 Meeting 2 — Lounge Timur", "status": "RUANG RAPAT TERBUKA — BERKARPET", "cls": "", "body": "<ul><li><b>Fungsi:</b> rapat santai di lounge timur, meja bundar di atas karpet, TV di dinding timur.</li><li><b>Briefing:</b> Briefing pagi 08:00 oleh Oemar, briefing penutup 17:00 oleh Lux — semua berkumpul di sini, Oemar/Lux di depan, yang lain menghadap ke depan.</li></ul>"}, "tamu": {"title": "🛋️ Ruang Tamu", "status": "RUANG TAMU", "cls": "", "body": "<ul><li><b>Isi:</b> sofa teal + meja + karpet + lukisan + lampu.</li></ul>"}, "pantry": {"title": "☕ Pantry — Diperkecil", "status": "AREA MAKAN & ISTIRAHAT", "cls": "", "body": "<ul><li><b>Isi:</b> counter pendek, kulkas, meja bundar kecil + 3 stool (meja digeser ke barat supaya tidak nabrak toilet).</li></ul>"}, "toilet": {"title": "🚻 Toilet — Timur Pantry", "status": "TERTUTUP KECIL — PRIVASI", "cls": "", "body": "<ul><li><b>Lokasi baru:</b> timur pantry, jalan tembus dari pantry (meja pantry -> pintu barat toilet), tidak lagi di depan dekat Meeting 2.</li><li><b>Isi:</b> kloset + wastafel, pintu di sisi barat menghadap pantry.</li><li><b>Efek:</b> area Meeting 2 di selatan jadi jauh lebih luas, tidak ada lagi yang kerja dekat toilet.</li></ul>"}, "arsip": {"title": "🗄️ Arsip Dokumen", "status": "LEMARI FILING DOKUMEN", "cls": "", "body": "<ul><li><b>Isi:</b> lemari filing dokumen hijau tua di dinding barat &amp; timur, plus filing per segmen.</li></ul>"}, "aquarium": {"title": "🐠 Aquarium", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> 3 ikan berenang di tank dekat pintu masuk.</li></ul>"}, "cat": {"title": "🐱 Kucing Kantor", "status": "AKSESORIS HIDUP", "cls": "", "body": "<ul><li><b>Kucing oranye</b> duduk dekat Meeting 2, ekor goyang. Kadang ada tim yang datang main sama dia.</li></ul>"}, "yard": {"title": "🌳 Pekarangan", "status": "AREA LUAR — RAPI & HIDUP", "cls": "", "body": "<ul><li><b>Isi:</b> rumput, pohon, bunga di rumput selatan parkir, trotoar + jalan aspal, kotak surat di dekat pintu masuk, mobil, motor, sepeda, burung, kupu-kupu. Paving masuk dihapus karena sudah ada trotoar + jalan. Bed bunga tinggal 1 di selatan parkir, sisanya jadi jalan keluar kendaraan parkir -> jalan.</li></ul>"}};
+var SITE_CONFIG = null;
+var ACTIVE_EMPLOYEES = null;
+function hexToInt(h){
+  if (typeof h === 'number') return h;
+  if (typeof h === 'string') {
+    var t = h.trim();
+    if (t.charAt(0) === '#') t = t.slice(1);
+    var v = parseInt(t, 16);
+    if (!isNaN(v)) return v;
+  }
+  return 0x888888;
+}
+var SEGMENT_FILTER_MAP = {'OSCR Works':'management','Bedah Keuangan':'bk','Jejak Kuasa':'jk','Rancang Undangan':'ru','BaruTauAda':'bta','Ludo Berdua':'ludo','Oki | AI Sehari-hari':'oki'};
+function normalizeEmployee(raw){
+  if (!raw || typeof raw.nick !== 'string' || !raw.nick || typeof raw.role !== 'string' || !raw.role || typeof raw.segment !== 'string' || !raw.segment) return null;
+  var key = (typeof raw.key === 'string' && raw.key) ? raw.key : raw.nick.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  if (!key) return null;
+  var pos = raw.pos || raw.desk;
+  if (!Array.isArray(pos) || pos.length < 2) pos = [0, 0];
+  var ry = raw.ry;
+  var ryVal = (ry === 'PI' || ry === 'pi') ? Math.PI : (typeof ry === 'number' ? ry : Math.PI);
+  var floor = (raw.floor === 2) ? 2 : 1;
+  var kpi = raw.kpi;
+  if (!kpi || !Array.isArray(kpi.metrics)) kpi = {tepat:0, metrics:[]};
+  kpi = {tepat: (typeof kpi.tepat === 'number' ? kpi.tepat : 0), metrics: kpi.metrics.map(function(mt){ return {name: mt.name || mt.label || '', target: (typeof mt.target === 'number' ? mt.target : 0), actual: (typeof mt.actual === 'number' ? mt.actual : (typeof mt.value === 'number' ? mt.value : 0))}; })};
+  return {
+    key: key, nick: raw.nick, full: (typeof raw.full === 'string' && raw.full) ? raw.full : raw.nick,
+    role: raw.role, segment: raw.segment,
+    segmentCode: (typeof raw.segmentCode === 'string' && raw.segmentCode) ? raw.segmentCode : '',
+    filter: (typeof raw.filter === 'string' && raw.filter) ? raw.filter : (SEGMENT_FILTER_MAP[raw.segment] || 'all'),
+    gender: raw.gender || '-', age: (raw.age !== undefined && raw.age !== null) ? raw.age : '-',
+    born: raw.born || '-', origin: raw.origin || '-', suku: raw.suku || '-', agama: raw.agama || '-',
+    karakter: raw.karakter || '-',
+    shirt: raw.shirt, hair: raw.hair, skin: raw.skin, hairStyle: raw.hairStyle || 'pendek',
+    floor: floor, pos: [Number(pos[0]) || 0, Number(pos[1]) || 0], ryVal: ryVal,
+    isOemar: raw.isOemar === true,
+    profileBody: (typeof raw.profileBody === 'string' && raw.profileBody) ? raw.profileBody : null,
+    kpi: kpi
+  };
+}
+function initCharacters(list){
+  list.forEach(function(e){
+    chibi(P(e.nick, e.role, e.segment, e.key, hexToInt(e.shirt), hexToInt(e.hair), e.hairStyle, hexToInt(e.skin), e.gender), e.pos[0], e.pos[1], e.ryVal, true, e.isOemar, e.floor === 2 ? 3.6 : 0);
+  });
+}
+function buildPeopleStructures(list){
+  try { characters.slice().forEach(function(c){ scene.remove(c.g); }); } catch(e){}
+  characters.length = 0; charIdx = 0;
+  persons = list.map(function(e){ return {key:e.key, nick:e.nick, role:e.role, segment:e.segment}; });
+  personKeysAll = list.map(function(e){ return e.key; });
+  personSegment = {};
+  kpiData = {};
+  data = {};
+  list.forEach(function(e){
+    personSegment[e.key] = e.filter;
+    kpiData[e.key] = e.kpi;
+    var emo = (e.key === 'direktur') ? '👑 ' : (e.key === 'lux') ? '🧑‍💼 ' : '👤 ';
+    if (e.profileBody) data[e.key] = {title: emo + e.nick + ' — ' + e.role, status: e.segment.toUpperCase(), cls:"", body: e.profileBody};
+    else data[e.key] = personDetail(e.nick, e.full, e.gender, String(e.age), e.born, e.origin, e.suku, e.agama, e.karakter, e.role, e.segment);
+  });
+  Object.keys(STATIC_SEGMENT_DATA).forEach(function(k){
+    var st = STATIC_SEGMENT_DATA[k];
+    data[k] = {title: st.title, status: st.status, cls: st.cls, body: st.body};
+  });
+  initCharacters(list);
+}
+function applyConfigSegmentsToData(){
+  var cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : null;
+  if (!cfg || !cfg.segments || !cfg.segments.length) return;
+  var byKey = {};
+  cfg.segments.forEach(function(sg){ byKey[sg.viewKey] = sg; });
+  ['bk','jk','ru','bta'].forEach(function(k){
+    var sg = byKey[k];
+    if (sg && data[k]) { data[k].title = sg.emoji + ' ' + sg.name; data[k]._configDesc = sg.description || ''; }
+  });
+  if (byKey.ludo) data.ludo = {title: byKey.ludo.emoji + ' ' + byKey.ludo.name, status: 'SEGMEN — ' + byKey.ludo.code, cls:"", body: byKey.ludo.description || ''};
+  if (byKey.okisadma) data.oki = {title: byKey.okisadma.emoji + ' ' + byKey.okisadma.name, status: 'SEGMEN — ' + byKey.okisadma.code, cls:"", body: byKey.okisadma.description || ''};
+}
+function applyConfigToSite(cfg){
+  if (!cfg) return;
+  if (cfg.officeName && cfg.officeName !== 'OSCR Works - Digital Office') {
+    var h1 = document.getElementById('officeTitle');
+    if (h1) h1.textContent = cfg.officeName;
+    document.title = cfg.officeName + ' — Kantor Digital 3D v37';
+    var ft = document.getElementById('siteFooter');
+    if (ft) ft.textContent = cfg.officeName + ' • v37 • Bot kantor tanpa AI • Karakter fiktif simulasi • Musik via SoundCloud';
+  }
+  if (cfg.soundcloudUrl && typeof cfg.soundcloudUrl === 'string' && cfg.soundcloudUrl.indexOf('https://soundcloud.com/') === 0 && cfg.soundcloudUrl !== SOUNDCLOUD_URL) {
+    SOUNDCLOUD_URL = cfg.soundcloudUrl;
+    if (typeof scWidget !== 'undefined' && scWidget) {
+      try { scWidget.pause(); } catch(e){}
+      scWidget = null;
+      var fr = document.getElementById('scFrame');
+      if (fr) fr.src = '';
+      var pl = document.getElementById('scPlayer');
+      if (pl) pl.style.display = 'none';
+      var mn = document.getElementById('musicNote');
+      if (mn) mn.textContent = 'SoundCloud';
+    }
+  }
+  if (cfg.segments && cfg.segments.length) {
+    applyConfigSegmentsToData();
+    var byKey2 = {};
+    cfg.segments.forEach(function(sg){ byKey2[sg.viewKey] = sg; });
+    Array.prototype.forEach.call(document.querySelectorAll('button[onclick]'), function(btn){
+      var oc = btn.getAttribute('onclick') || '';
+      var mm = oc.match(/goView\('([^']+)'\)/);
+      if (!mm) return;
+      var sg = byKey2[mm[1]];
+      if (!sg) return;
+      btn.title = sg.name;
+      btn.setAttribute('aria-label', sg.name);
+      if (btn.classList.contains('short-btn')) btn.textContent = sg.emoji + ' ' + sg.code;
+    });
+    if (typeof viewNames !== 'undefined') {
+      Object.keys(byKey2).forEach(function(k){
+        var sg = byKey2[k];
+        if (k === 'ludo' || k === 'okisadma') viewNames[k] = sg.name + ' (Lantai 2)';
+        else viewNames[k] = sg.name;
+      });
+    }
+    var ds = document.getElementById('dashSegment');
+    if (ds) {
+      Array.prototype.forEach.call(ds.options, function(opt){
+        var sg = byKey2[opt.value];
+        if (sg) opt.text = sg.name;
+      });
+    }
+  }
+  if (cfg.dashboard && cfg.dashboard.segments) {
+    Object.keys(cfg.dashboard.segments).forEach(function(seg){
+      if (!dashboardData[seg]) return;
+      Object.keys(cfg.dashboard.segments[seg]).forEach(function(pl){
+        var v = cfg.dashboard.segments[seg][pl];
+        if (v && typeof v.views === 'number') dashboardData[seg][pl] = v;
+      });
+    });
+  }
+  if (cfg.dashboard && cfg.dashboard.note) {
+    var dn = document.getElementById('dashNote');
+    if (dn) dn.innerHTML = '<b>Dashboard Segmen</b> — ' + cfg.dashboard.note;
+  }
+  window.SITE_CONFIG = cfg;
+}
+function startSite(cfg){
+  SITE_CONFIG = cfg || null;
+  window.SITE_CONFIG = SITE_CONFIG;
+  var list = null;
+  if (cfg && cfg.employees && Array.isArray(cfg.employees)) {
+    list = cfg.employees.map(normalizeEmployee).filter(function(x){ return !!x; });
+    if (!list.length) list = null;
+  }
+  if (!list) list = DEFAULT_EMPLOYEES.map(normalizeEmployee).filter(function(x){ return !!x; });
+  ACTIVE_EMPLOYEES = list;
+  buildPeopleStructures(list);
+  applyConfigToSite(cfg);
+  updateDashboard();
+  updateReport();
+  renderPersonButtons();
+  renderKpiButtons();
+  var sd = document.getElementById('segmentDetail');
+  if (sd && data.bk) sd.innerHTML = '<h2>' + data.bk.title + '</h2><p><span class="pill ' + data.bk.cls + '">' + data.bk.status + '</span></p>' + (data.bk._configDesc ? '<p>' + data.bk._configDesc + '</p>' : '') + data.bk.body;
+  loadStatus(false);
+  animate();
+}
+function loadAndStartSite(){
+  var done = false;
+  function finish(cfg){
+    if (done) return;
+    done = true;
+    try { startSite(cfg); }
+    catch(e){
+      try { startSite(null); } catch(e2){}
+    }
+  }
+  try {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = null;
+    if (ctrl) timer = setTimeout(function(){ try { ctrl.abort(); } catch(e){} }, 2000);
+    var opts = {cache:'no-store'};
+    if (ctrl) opts.signal = ctrl.signal;
+    fetch('config.json', opts).then(function(r){
+      if (timer) clearTimeout(timer);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(j){ finish(j); }).catch(function(){
+      if (timer) clearTimeout(timer);
+      finish(null);
+    });
+    setTimeout(function(){ finish(null); }, 2500);
+  } catch(e){ finish(null); }
+}
+/* ===== v37 CONFIG END ===== */
 
 const stateLabel = { kerja:'Kerja di meja', ngobrol:'Ngobrol di Meeting 2', pantry:'Istirahat di pantry', halaman:'Jalan di halaman (lagi kosong)', kucing:'Main sama kucing', meeting1:'Rapat di Meeting 1', meeting2:'Ngobrol di Meeting 2', toilet:'Ke toilet (timur pantry)', tamu:'Duduk di sofa Ruang Tamu', lantai2:'Di Lantai 2 (ekspansi)', briefing:'Briefing pagi — kumpul di Meeting 2, dengar Oemar', closing:'Briefing penutup — kumpul di Meeting 2, dengar Lux' };
 // Rute tangga v24 — waypoint [x,z,y]; y naik/turun bertahap, bukan teleport. Pendekatan lantai 1 dari koridor timur z=6.5 (x -7..-10), bukan dari selatan lewat meja Made.
@@ -852,7 +1281,9 @@ function pickState(entry){
    else if (s === 'lantai2') { const ep = EXP_PTS[Math.floor(Math.random()*EXP_PTS.length)]; target = [ep[0],ep[1]]; }
   else target = catPts[entry.idx % catPts.length];
    const cur = entry.g.position;
+   if (entry.homeY > 1 && s === 'lantai2') { const pts = [[4.0,7.0],[0,7.0]]; const tp = pts[entry.idx % pts.length]; if (cur.y > 1) { entry.queue = [[cur.x,1.5,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]]; } else { const qu0 = stairUpQueue(); qu0.push([-10,1,3.6],[tp[0],1.5,3.6],[tp[0],tp[1],3.6]); entry.queue = qu0; } return; }
    if (cur.y > 1) {
+     if (s === 'kerja' && entry.homeY > 1) { entry.queue = [[target[0],target[1],3.6]]; return; }
      if (s === 'lantai2') { entry.queue = [[-10,1,3.6],[target[0],target[1],3.6]]; return; }
      const qd = stairDownQueue();
      if (s === 'toilet') qd.push([10,-2.8]);
@@ -867,6 +1298,7 @@ function pickState(entry){
      if (inToiletQ0) qu.push([10,-2.8]); else if (inTamuQ0) qu.push([5,-1.5]);
      qu.push.apply(qu, stairUpQueue()); qu.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu; return;
    }
+   if (entry.homeY > 1 && s === 'kerja' && cur.y <= 1) { const qu1 = stairUpQueue(); qu1.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu1; return; }
    if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
    const q = [];
   const inToiletQ = cur.x >= 10.5 && cur.x <= 13 && cur.z >= -4.5 && cur.z <= -1.5;
@@ -906,7 +1338,7 @@ function faceForState(entry){
 
 // BRIEFING: pagi 08:00 Oemar, penutup 17:00 Lux (17:00 = jam 5 sore, dikonfirmasi Oemar)
 let currentBriefing = null, manualBriefingMode = null, manualBriefingUntil = 0, lastBriefingCheck = 0, briefingSpoken = false;
-const briefingAudience = [[7.5,4],[10.5,4],[9,5.4],[7,2.6],[11,2.6],[6.5,5],[11.5,5],[7,6.5],[11,6.5],[9,7],[6,4],[12,4],[8,6]];
+const briefingAudience = [[7.5,4],[10.5,4],[9,5.4],[7,2.6],[11,2.6],[6.5,5],[11.5,5],[7,6.5],[11,6.5],[9,7],[6,4],[12,4],[8,6],[6,6.5],[12,6.5],[8,7],[10,7],[6.5,3],[12.5,3]];
 function briefingModeNow(){
   if (manualBriefingMode && Date.now() < manualBriefingUntil) return manualBriefingMode;
   const now = new Date(); const mins = now.getHours()*60 + now.getMinutes();
@@ -948,7 +1380,7 @@ function startBriefing(mode){
     if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; faceForState(entry); return; }
     if (entry.isOemar) entry.queue = buildOemarQueue(entry, target, 'meeting2');
     else {
-      const q = [];
+      const q = (cur.y > 1) ? stairDownQueue() : [];
       if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
       else if (target[1] <= 9 && cur.z > 9) q.push([-2.5,9.5],[-2.5,7.5]);
       q.push(target); entry.queue = q;
@@ -964,6 +1396,7 @@ function endBriefing(){
     const target = [entry.home.x, entry.home.z]; const cur = entry.g.position;
     if (Math.hypot(target[0]-cur.x, target[1]-cur.z) < 0.5) { entry.queue = []; return; }
     if (entry.isOemar) entry.queue = buildOemarQueue(entry, target, 'kerja');
+    else if (entry.homeY > 1) { if (cur.y > 1) { entry.queue = [[target[0],target[1],3.6]]; } else { const qu2 = stairUpQueue(); qu2.push([-10,1,3.6],[target[0],target[1],3.6]); entry.queue = qu2; } }
     else {
       const q = [];
       if (target[1] > 9 && cur.z <= 9) q.push([-2.5,7.5],[-2.5,9.5]);
@@ -980,28 +1413,13 @@ function checkBriefing(){
   }
 }
 window.testBriefing = function(mode){ manualBriefingMode = mode; manualBriefingUntil = Date.now() + 60000; checkBriefing(); };
-const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,5,9],[8,0.8,1]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], tangga:[[-5,7,11],[-10,1.8,4]] };
+const views = { all:[[0,24,28],[0,0,2]], direktur:[[-6.5,4.5,1],[-9,0.8,-5.5]], meeting1:[[1.5,4.5,1],[-1,0.8,-5.5]], meeting2:[[12,4.5,11],[9,0.8,4]], tamu:[[7,4.5,1],[5,0.8,-5.5]], pantry:[[12,4.5,1],[9,0.8,-5.5]], toilet:[[7,2.5,-2.8],[11.75,0.8,-3]], bk:[[-9,5,9],[-9,0.8,1]], jk:[[-3,5,9],[-3,0.8,1]], ru:[[2.5,5,9],[2.5,0.8,1]], bta:[[8,5,9],[8,0.8,1]], arsip:[[-8,4,9],[-12.4,0.8,4]], yard:[[0,14,26],[0,0,8]], exp1:[[-8,9,4],[-8,3.6,-4]], exp2:[[0,9,4],[0,3.6,-4]], exp3:[[8,9,4],[8,3.6,-4]], ludo:[[-8,9,4],[-8,3.6,-4]], okisadma:[[0,9,4],[0,3.6,-4]], tangga:[[-5,7,11],[-10,1.8,4]] };
 let camPos = new THREE.Vector3(0,24,28), camLook = new THREE.Vector3(0,0,2);
 let targetPos = camPos.clone(), targetLook = camLook.clone();
 camera.position.copy(camPos); camera.lookAt(camLook);
 let orbitCenter = new THREE.Vector3(0,1.2,2), orbitRadius = 30, orbitTheta = 0, orbitPhi = 0.9, orbitAuto = false, focusPerson = null, focusIdx = -1, suppressClick = false;
-const persons = [
- {key:'direktur',nick:'Oemar',role:'Director',segment:'OSCR Works'},
- {key:'lux',nick:'Lux',role:'Manager & Producer',segment:'OSCR Works'},
- {key:'nadia',nick:'Nadia',role:'Content & Script',segment:'Bedah Keuangan'},
- {key:'rizky',nick:'Rizky',role:'Social Media Admin',segment:'Bedah Keuangan'},
- {key:'jess',nick:'Jess',role:'Finance & Research',segment:'Bedah Keuangan'},
- {key:'fajar',nick:'Fajar',role:'Research & Fact-Check',segment:'Jejak Kuasa'},
- {key:'maria',nick:'Maria',role:'Content & Script',segment:'Jejak Kuasa'},
- {key:'made',nick:'Made',role:'Visual-Motion',segment:'Jejak Kuasa'},
- {key:'ratna',nick:'Ratna',role:'Content & Sosmed',segment:'Rancang Undangan'},
- {key:'yusuf',nick:'Yusuf',role:'Admin & Order',segment:'Rancang Undangan'},
- {key:'kevin',nick:'Kevin',role:'Finance & Vendor',segment:'Rancang Undangan'},
- {key:'intan',nick:'Intan',role:'Research & Fact-Check',segment:'BaruTauAda'},
- {key:'yohan',nick:'Yohan',role:'Product Curation',segment:'BaruTauAda'},
- {key:'lina',nick:'Lina',role:'Distribution & Admin',segment:'BaruTauAda'}
-];
-const viewNames = {all:'Keseluruhan',direktur:'Direktur',meeting1:'Meeting 1',meeting2:'Meeting 2 — Lounge Timur',tamu:'Ruang Tamu',pantry:'Pantry',toilet:'Toilet',bk:'Bedah Keuangan',jk:'Jejak Kuasa',ru:'Rancang Undangan',bta:'BaruTauAda',arsip:'Arsip Dokumen',yard:'Pekarangan',exp1:'Ruang Ekspansi 1 — Kosong',exp2:'Ruang Ekspansi 2 — Kosong',exp3:'Ruang Ekspansi 3 — Kosong',tangga:'Tangga Lantai 2'};
+let persons = [];
+const viewNames = {all:'Keseluruhan',direktur:'Direktur',meeting1:'Meeting 1',meeting2:'Meeting 2 — Lounge Timur',tamu:'Ruang Tamu',pantry:'Pantry',toilet:'Toilet',bk:'Bedah Keuangan',jk:'Jejak Kuasa',ru:'Rancang Undangan',bta:'BaruTauAda',arsip:'Arsip Dokumen',yard:'Pekarangan',exp1:'Ruang Ekspansi 1 — Kosong',exp2:'Ruang Ekspansi 2 — Kosong',exp3:'Ruang Ekspansi 3 — Kosong',ludo:'Ludo Berdua (Lantai 2)',okisadma:'Oki | AI Sehari-hari (Lantai 2)',tangga:'Tangga Lantai 2'};
 function updateOrbitTarget(){
   targetPos.set(orbitCenter.x + orbitRadius * Math.sin(orbitPhi) * Math.sin(orbitTheta), orbitCenter.y + orbitRadius * Math.cos(orbitPhi), orbitCenter.z + orbitRadius * Math.sin(orbitPhi) * Math.cos(orbitTheta));
   targetLook.copy(orbitCenter);
@@ -1012,76 +1430,53 @@ function ensureOrbit(){
   orbitTheta = Math.atan2(dx, dz); orbitPhi = Math.min(1.4, Math.max(0.3, Math.acos(Math.min(1, Math.max(-1, dy / orbitRadius)))));
 }
 let activeFloor = 1;
-function setFloorVisibility(f){ activeFloor = f; if (typeof floor2Group !== 'undefined') floor2Group.visible = (f === 2); }
-function setInterior(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = true; frontWallR.visible = true; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = true; frontDoorR.visible = true; } if (typeof floor2Group !== 'undefined') floor2Group.visible = (activeFloor === 2); }
-window.setFloor = function(f){ setFloorVisibility(f); setInterior(); focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄 360° Otomatis'; if (f === 2) { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 2 — Ruang Ekspansi (kosong)'; syncHud(); targetPos.set(0,12,14); targetLook.set(0,3.6,0); } else { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 1 — Keseluruhan'; syncHud(); targetPos.set(0,24,28); targetLook.set(0,0,2); } };
-window.viewExterior = function(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = true; if (typeof floor2Group !== 'undefined') floor2Group.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = false; frontWallR.visible = false; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = false; frontDoorR.visible = false; } focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄 360° Otomatis'; document.getElementById('focusLabel').textContent = 'Fokus: Gedung Utuh (Luar) — seperti gedung tetangga'; syncHud(); targetPos.set(0,36,46); targetLook.set(0,3.6,0); };
-window.goView = function(k){ setFloorVisibility((k === 'exp1' || k === 'exp2' || k === 'exp3' || k === 'tangga') ? 2 : 1); setInterior(); const v = views[k]; if(!v) return; focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄 360° Otomatis'; document.getElementById('focusLabel').textContent = 'Fokus: ' + (viewNames[k] || k); syncHud(); targetPos.set(v[0][0],v[0][1],v[0][2]); targetLook.set(v[1][0],v[1][1],v[1][2]); };
+/* ===== v35: VISIBILITAS KARAKTER PER LANTAI (berdasarkan y SAAT INI) ===== */
+/* Lantai 2 dipilih tapi platnya disembunyikan tidak boleh lagi menyisakan */
+/* karakter lantai 2 melayang di y=3.6: karakter adalah anak scene, bukan */
+/* floor2Group, jadi visibilitasnya diatur di sini, bukan dipindah grup. */
+function updateCharacterFloorVisibility(){ if (typeof characters === 'undefined') return; const isExterior = (typeof exteriorGroup !== 'undefined') && exteriorGroup.visible; characters.forEach(function(c){ if (focusPerson && c === focusPerson) { c.g.visible = true; return; } if (isExterior) { c.g.visible = true; return; } c.g.visible = (activeFloor === 2) ? (c.g.position.y > 1.8) : (c.g.position.y <= 1.8); }); }
+function setFloorVisibility(f){ activeFloor = f; if (typeof floor2Group !== 'undefined') floor2Group.visible = (f === 2);  updateCharacterFloorVisibility(); }
+function setInterior(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = true; frontWallR.visible = true; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = true; frontDoorR.visible = true; } if (typeof floor2Group !== 'undefined') floor2Group.visible = (activeFloor === 2);  updateCharacterFloorVisibility(); }
+window.setFloor = function(f){ setFloorVisibility(f); setInterior(); focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); if (f === 2) { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 2 — Ludo Berdua, Oki, dan Ekspansi 3'; syncHud(); targetPos.set(0,12,14); targetLook.set(0,3.6,0); } else { document.getElementById('focusLabel').textContent = 'Fokus: Lantai 1 — Keseluruhan'; syncHud(); targetPos.set(0,24,28); targetLook.set(0,0,2); } };
+window.viewExterior = function(){ if (typeof exteriorGroup !== 'undefined') exteriorGroup.visible = true; if (typeof floor2Group !== 'undefined') floor2Group.visible = false; if (typeof frontWallL !== 'undefined') { frontWallL.visible = false; frontWallR.visible = false; } if (typeof frontDoorL !== 'undefined') { frontDoorL.visible = false; frontDoorR.visible = false; } focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); updateCharacterFloorVisibility(); document.getElementById('focusLabel').textContent = 'Fokus: Gedung Utuh (Luar) — seperti gedung tetangga'; syncHud(); targetPos.set(0,36,46); targetLook.set(0,3.6,0); };
+window.goView = function(k){ setFloorVisibility((k === 'exp1' || k === 'exp2' || k === 'exp3' || k === 'tangga' || k === 'ludo' || k === 'okisadma') ? 2 : 1); setInterior(); const v = views[k]; if(!v) return; focusPerson = null; orbitAuto = false; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = '🔄'; ob.title = '360° Otomatis'; ob.setAttribute('aria-label','360° Otomatis'); document.getElementById('focusLabel').textContent = 'Fokus: ' + (viewNames[k] || k); syncHud(); targetPos.set(v[0][0],v[0][1],v[0][2]); targetLook.set(v[1][0],v[1][1],v[1][2]); };
 window.nextPerson = function(){
-  setFloorVisibility(1); setInterior();
   focusIdx = (focusIdx + 1) % persons.length; const person = persons[focusIdx];
   const entry = characters.find(function(c){ return c.key === person.key; }); if (!entry) return;
+  setFloorVisibility(entry.homeY > 1 ? 2 : 1); setInterior();
   focusPerson = entry; orbitCenter.set(entry.g.position.x, entry.g.position.y + 1.2, entry.g.position.z); orbitRadius = 5.5; orbitTheta = 0.6; orbitPhi = 1.0; updateOrbitTarget();
-  document.getElementById('focusLabel').textContent = 'Fokus: ' + person.nick + ' — ' + person.role + ', ' + person.segment + ' (' + (focusIdx+1) + '/14)';
+  document.getElementById('focusLabel').textContent = 'Fokus: ' + person.nick + ' — ' + person.role + ', ' + person.segment + ' (' + (focusIdx+1) + '/' + persons.length + ')';
   showDetail(person.key, stateLabel[entry.state] || ''); syncHud();
 };
 window.rotateView = function(deg){ ensureOrbit(); orbitTheta += deg * Math.PI / 180; updateOrbitTarget(); };
 window.tiltView = function(deg){ ensureOrbit(); orbitPhi = Math.min(1.4, Math.max(0.3, orbitPhi + deg * Math.PI / 180)); updateOrbitTarget(); };
-window.toggleOrbit = function(){ ensureOrbit(); orbitAuto = !orbitAuto; const ob = document.getElementById('orbitBtn'); if (ob) ob.textContent = orbitAuto ? '⏸ Hentikan 360°' : '🔄 360° Otomatis'; };
+window.toggleOrbit = function(){ ensureOrbit(); orbitAuto = !orbitAuto; const ob = document.getElementById('orbitBtn'); if (ob) { ob.textContent = orbitAuto ? '⏸' : '🔄'; ob.title = orbitAuto ? 'Hentikan 360°' : '360° Otomatis'; ob.setAttribute('aria-label', orbitAuto ? 'Hentikan 360°' : '360° Otomatis'); } };
 window.zoom = function(f){ const dir = targetPos.clone().sub(targetLook).multiplyScalar(f); targetPos.copy(targetLook).add(dir); };
 
 function personDetail(nick, full, gender, age, born, origin, suku, agama, karakter, role, segment){
   return { title:"👤 " + nick + " — " + role, status: segment.toUpperCase(), cls:"", body:"<ul><li><b>Nama:</b> " + full + " (" + nick + ")</li><li><b>Gender:</b> " + gender + "</li><li><b>Umur:</b> " + age + " th</li><li><b>Lahir:</b> " + born + "</li><li><b>Asal / Suku:</b> " + origin + " / " + suku + "</li><li><b>Agama:</b> " + agama + "</li><li><b>Karakter:</b> " + karakter + "</li><li><b>Role:</b> " + role + ", " + segment + "</li></ul>" };
 }
-const data = {
-direktur:{title:"👑 Oemar — Director",status:"OSCR WORKS",cls:"",body:"<ul><li><b>Peran:</b> Director OSCR Works, meja direktur + laptop, sesekali keliling lewat pintu direktur ke Meeting 1 / open space / pantry / halaman.</li></ul>"},
-lux:{title:"🧑‍💼 Lux — Manager & Producer",status:"OSCR WORKS",cls:"",body:"<ul><li><b>Peran:</b> Manager &amp; Producer OSCR Works, meja di open space dekat Meeting 2, aktivitas bergantian seperti tim lain.</li></ul>"},
-nadia: personDetail('Nadia','Nadia Ayu Lestari','Cewe','27','Yogyakarta, 14 Feb 1999','Yogyakarta','Jawa','Islam','Teliti, suka analogi sehari-hari, perfeksionis ringan','Content & Script','Bedah Keuangan'),
-rizky: personDetail('Rizky','Rizky Aditya Pratama','Cowo','29','Bandung, 3 Jul 1997','Bandung','Sunda','Islam','Santai, cepat tanggap komen, humor','Social Media Admin','Bedah Keuangan'),
-jess: personDetail('Jess','Jessica Tan','Cewe','26','Medan, 22 Nov 1999','Medan','Tionghoa','Kristen Protestan','Analitis, tenang, suka angka','Finance & Research','Bedah Keuangan'),
-fajar: personDetail('Fajar','Fajar Ramadhan','Cowo','31','Makassar, 10 Jan 1995','Makassar','Bugis','Islam','Penasaran sejarah, suka peta','Research & Fact-Check','Jejak Kuasa'),
-maria: personDetail('Maria','Maria Simanjuntak','Cewe','28','Medan, 8 Mei 1998','Medan','Batak Toba','Katolik','Storytelling kuat, suka riset arsip','Content & Script','Jejak Kuasa'),
-made: personDetail('Made','I Made Wirawan','Cowo','30','Denpasar, 19 Sep 1996','Denpasar','Bali','Hindu','Visual, detail warna, tenang','Visual-Motion','Jejak Kuasa'),
-ratna: personDetail('Ratna','Ratna Sari Dewi','Cewe','25','Solo, 27 Apr 2001','Solo','Jawa','Islam','Ramah, komunikatif, suka desain','Content & Sosmed','Rancang Undangan'),
-yusuf: personDetail('Yusuf','Yusuf Hamdani','Cowo','32','Padang, 15 Des 1993','Padang','Minangkabau','Islam','Tertib, cepat balas chat klien','Admin & Order','Rancang Undangan'),
-kevin: personDetail('Kevin','Kevin Wijaya','Cowo','28','Pontianak, 6 Jun 1998','Pontianak','Tionghoa','Buddha','Negosiator, teliti harga','Finance & Vendor','Rancang Undangan'),
-intan: personDetail('Intan','Intan Permata','Cewe','24','Palembang, 11 Mar 2002','Palembang','Melayu','Islam','Detail, suka coba barang sampai paham','Research & Fact-Check','BaruTauAda'),
-yohan: personDetail('Yohan','Yohanis Wenda','Cowo','27','Jayapura, 2 Feb 1999','Jayapura','Papua','Kristen Protestan','Praktis, suka barang berguna, jujur soal produk','Product Curation','BaruTauAda'),
-lina: personDetail('Lina','Lina Marlina','Cewe','26','Banjarmasin, 30 Aug 2000','Banjarmasin','Banjar','Islam','Gesit, rapi jadwal posting 5 platform','Distribution & Admin','BaruTauAda'),
-bk:{title:"💰 Bedah Keuangan",status:"SEGMEN — NADIA, RIZKY, JESS — #1 TAYANG",cls:"",body:"<ul><li><b>Tim:</b> Nadia (Content &amp; Script), Rizky (Social Media Admin), Jess (Finance &amp; Research).</li><li><b>Terbaru 27 Okt sekitar 14:51:</b> Slate #1 v2 Rp5.000 1996 vs 2026 SUDAH TAYANG di luar slot 18:00 atas perintah Oemar untuk menaikkan v2 sekarang — https://www.instagram.com/reel/De_XGXqD0E-/ — beras 2026 sekitar Rp14.700/kg dipertahankan.</li><li><b>Berikutnya:</b> #2 emas, slot 28 Okt 12:00, produksi jalan menyusul. Ritme 2 reels/hari 12:00 &amp; 18:00, story 15:00, carousel HOLD.</li></ul>"},
-jk:{title:"🌍 Jejak Kuasa",status:"SEGMEN — FAJAR, MARIA, MADE — GARIS WALLACE JALAN",cls:"wait",body:"<ul><li><b>Tim:</b> Fajar (Research), Maria (Content &amp; Script), Made (Visual-Motion).</li><li><b>Terbaru 27 Okt 14:48:</b> Next content = GARIS WALLACE — riset + naskah jalan dulu, render full 3D setelah naskah di-ACC, vibes cerah daylight.</li><li><b>Sebelumnya:</b> Puncak Jaya + Cincin Api di-ACC semua 13:31; Keluar dari PBB v2 tayang manual 26 Okt. Menunggu verdict WW sebelum link share WW1 kedaluwarsa awal 29 Okt.</li></ul>"},
-ru:{title:"💌 Rancang Undangan",status:"SEGMEN — RATNA, YUSUF, KEVIN",cls:"wait",body:"<ul><li><b>Tim:</b> Ratna (Content &amp; Sosmed), Yusuf (Admin &amp; Order), Kevin (Finance &amp; Vendor).</li><li><b>Terakhir:</b> Template digital v2 live di Vercel. Menunggu alamat Batu Aji untuk pin Maps.</li></ul>"},
-bta:{title:"🛒 BaruTauAda",status:"SEGMEN — INTAN, YOHAN, LINA",cls:"hold",body:"<ul><li><b>Tim:</b> Intan (Research), Yohan (Product Curation), Lina (Distribution &amp; Admin).</li><li><b>Terakhir:</b> Handle @barutauada dikunci 23 Okt, segmen Rumah &amp; Kos dipagar. Menunggu registrasi + link produk pertama.</li></ul>"},
-meeting1:{title:"🤝 Meeting 1 — Bersekat + Pintu",status:"RUANG RAPAT TERTUTUP",cls:"",body:"<ul><li><b>Fungsi:</b> rapat tertutup, meja bundar + TV dinding.</li></ul>"},
-meeting2:{title:"🤝 Meeting 2 — Lounge Timur",status:"RUANG RAPAT TERBUKA — BERKARPET",cls:"",body:"<ul><li><b>Fungsi:</b> rapat santai di lounge timur, meja bundar di atas karpet, TV di dinding timur.</li><li><b>Briefing:</b> Briefing pagi 08:00 oleh Oemar, briefing penutup 17:00 oleh Lux — semua berkumpul di sini, Oemar/Lux di depan, yang lain menghadap ke depan.</li></ul>"},
-tamu:{title:"🛋️ Ruang Tamu",status:"RUANG TAMU",cls:"",body:"<ul><li><b>Isi:</b> sofa teal + meja + karpet + lukisan + lampu.</li></ul>"},
-pantry:{title:"☕ Pantry — Diperkecil",status:"AREA MAKAN & ISTIRAHAT",cls:"",body:"<ul><li><b>Isi:</b> counter pendek, kulkas, meja bundar kecil + 3 stool (meja digeser ke barat supaya tidak nabrak toilet).</li></ul>"},
-toilet:{title:"🚻 Toilet — Timur Pantry",status:"TERTUTUP KECIL — PRIVASI",cls:"",body:"<ul><li><b>Lokasi baru:</b> timur pantry, jalan tembus dari pantry (meja pantry -> pintu barat toilet), tidak lagi di depan dekat Meeting 2.</li><li><b>Isi:</b> kloset + wastafel, pintu di sisi barat menghadap pantry.</li><li><b>Efek:</b> area Meeting 2 di selatan jadi jauh lebih luas, tidak ada lagi yang kerja dekat toilet.</li></ul>"},
-arsip:{title:"🗄️ Arsip Dokumen",status:"LEMARI FILING DOKUMEN",cls:"",body:"<ul><li><b>Isi:</b> lemari filing dokumen hijau tua di dinding barat &amp; timur, plus filing per segmen.</li></ul>"},
-aquarium:{title:"🐠 Aquarium",status:"AKSESORIS HIDUP",cls:"",body:"<ul><li><b>Isi:</b> 3 ikan berenang di tank dekat pintu masuk.</li></ul>"},
-cat:{title:"🐱 Kucing Kantor",status:"AKSESORIS HIDUP",cls:"",body:"<ul><li><b>Kucing oranye</b> duduk dekat Meeting 2, ekor goyang. Kadang ada tim yang datang main sama dia.</li></ul>"},
-yard:{title:"🌳 Pekarangan",status:"AREA LUAR — RAPI & HIDUP",cls:"",body:"<ul><li><b>Isi:</b> rumput, pohon, bunga di rumput selatan parkir, trotoar + jalan aspal, kotak surat di dekat pintu masuk, mobil, motor, sepeda, burung, kupu-kupu. Paving masuk dihapus karena sudah ada trotoar + jalan. Bed bunga tinggal 1 di selatan parkir, sisanya jadi jalan keluar kendaraan parkir -> jalan.</li></ul>"}
-};
+let data = {}; /* v37: data diisi buildPeopleStructures() */
 function showDetail(key, activity){
   const d = data[key]; if(!d) return; window.lastDetailKey = key;
   let extra = activity ? "<p><b>Aktivitas saat ini:</b> " + activity + "</p>" : "";
-  const personKeys = ["direktur","lux","nadia","rizky","jess","fajar","maria","made","ratna","yusuf","kevin","intan","yohan","lina"];
+  const personKeys = ["direktur","lux","nadia","rizky","jess","fajar","maria","made","ratna","yusuf","kevin","intan","yohan","lina","bima","alya","tari","raka","nisa"];
   if (personKeys.indexOf(key) >= 0) {
     showTab('personel');
     document.getElementById('personDetail').innerHTML = '<h2>'+d.title+'</h2><p><span class="pill '+d.cls+'">'+d.status+'</span></p>' + d.body + extra;
   } else if (["bk","jk","ru","bta"].indexOf(key) >= 0) {
     showTab('dashboard');
     const sel = document.getElementById('dashSegment'); if (sel) sel.value = key; updateDashboard();
-    document.getElementById('segmentDetail').innerHTML = '<h2>'+d.title+'</h2><p><span class="pill '+d.cls+'">'+d.status+'</span></p>' + d.body;
+    document.getElementById('segmentDetail').innerHTML = '<h2>'+d.title+'</h2><p><span class="pill '+d.cls+'">'+d.status+'</span></p>' + (d._configDesc ? '<p>'+d._configDesc+'</p>' : '') + d.body;
   } else {
     showTab('dashboard');
-    document.getElementById('segmentDetail').innerHTML = '<h2>'+d.title+'</h2><p><span class="pill '+d.cls+'">'+d.status+'</span></p>' + d.body;
+    document.getElementById('segmentDetail').innerHTML = '<h2>'+d.title+'</h2><p><span class="pill '+d.cls+'">'+d.status+'</span></p>' + (d._configDesc ? '<p>'+d._configDesc+'</p>' : '') + d.body;
   }
 }
 let lastFetchText = "";
 function loadStatus(manual){
   fetch("status.json?_=" + Date.now(), {cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(function(d){
-    ["bk","jk","ru","bta"].forEach(function(k){ if(d[k]) data[k] = d[k]; });
+    ["bk","jk","ru","bta"].forEach(function(k){ if(d[k]) data[k] = d[k]; }); if (window.SITE_CONFIG) applyConfigSegmentsToData();
     const now = new Date(); const hh = String(now.getHours()).padStart(2,"0"); const mm = String(now.getMinutes()).padStart(2,"0");
     const note = document.getElementById("statusNote"); if(note) note.textContent = "Status: di-fetch " + hh + ":" + mm + " - data per " + (d.updatedAt || "-") + (manual ? " - manual" : "");
     if(window.lastDetailKey && ["bk","jk","ru","bta"].indexOf(window.lastDetailKey) >= 0) showDetail(window.lastDetailKey, null);
@@ -1186,8 +1581,8 @@ function setReportPeriod(period){
   document.getElementById('reportContent').innerHTML = reportData[period] || reportData.harian;
 }
 function updateReport(){ setReportPeriod('harian'); }
-const personKeysAll = ["direktur","lux","nadia","rizky","jess","fajar","maria","made","ratna","yusuf","kevin","intan","yohan","lina"];
-const personSegment = {direktur:"management", lux:"management", nadia:"bk", rizky:"bk", jess:"bk", fajar:"jk", maria:"jk", made:"jk", ratna:"ru", yusuf:"ru", kevin:"ru", intan:"bta", yohan:"bta", lina:"bta"};
+let personKeysAll = []; 
+let personSegment = {}; 
 function renderPersonButtons(){
   const wrap = document.getElementById('personButtons'); if (!wrap) return;
   const filterEl = document.getElementById('personFilter'); const filter = filterEl ? filterEl.value : 'all';
@@ -1208,22 +1603,7 @@ function showPersonDetail(k){
   const act = entry ? stateLabel[entry.state] : null;
   showDetail(k, act);
 }
-const kpiData = {
-  direktur: {tepat:90, metrics:[{name:"Keputusan tepat waktu", target:10, actual:8}, {name:"Rapat dipimpin", target:8, actual:7}]},
-  lux: {tepat:92, metrics:[{name:"Produksi selesai", target:12, actual:10}, {name:"Update status tepat waktu", target:12, actual:11}]},
-  nadia: {tepat:85, metrics:[{name:"Naskah selesai", target:10, actual:7}, {name:"Hook lolos QC", target:10, actual:8}]},
-  rizky: {tepat:88, metrics:[{name:"Posting tepat waktu", target:12, actual:9}, {name:"Komen dibalas", target:200, actual:165}]},
-  jess: {tepat:90, metrics:[{name:"Laporan keuangan akurat", target:8, actual:6}, {name:"Riset terverifikasi", target:10, actual:8}]},
-  fajar: {tepat:82, metrics:[{name:"Fakta terverifikasi", target:8, actual:6}, {name:"Peta akurat", target:6, actual:5}]},
-  maria: {tepat:86, metrics:[{name:"Naskah storytelling selesai", target:10, actual:7}, {name:"Arsip terverifikasi", target:8, actual:6}]},
-  made: {tepat:80, metrics:[{name:"Visual selesai", target:8, actual:5}, {name:"Render tepat waktu", target:8, actual:6}]},
-  ratna: {tepat:84, metrics:[{name:"Konten sosmed selesai", target:10, actual:6}, {name:"Desain disetujui", target:8, actual:6}]},
-  yusuf: {tepat:91, metrics:[{name:"Order diproses", target:12, actual:9}, {name:"Chat dibalas cepat", target:50, actual:44}]},
-  kevin: {tepat:89, metrics:[{name:"Vendor dinegosiasi", target:8, actual:6}, {name:"Harga terverifikasi", target:10, actual:8}]},
-  intan: {tepat:83, metrics:[{name:"Produk terverifikasi", target:8, actual:5}, {name:"Fakta produk dicek", target:10, actual:7}]},
-  yohan: {tepat:87, metrics:[{name:"Produk terkurasi", target:8, actual:5}, {name:"Rekomendasi konversi", target:6, actual:4}]},
-  lina: {tepat:90, metrics:[{name:"Posting 5 platform tepat waktu", target:12, actual:8}, {name:"Jadwal rapi", target:12, actual:10}]}
-};
+let kpiData = {};
 function renderKpiButtons(){
   const wrap = document.getElementById('kpiButtons'); if (!wrap) return;
   const filterEl = document.getElementById('kpiFilter'); const filter = filterEl ? filterEl.value : 'all';
@@ -1247,11 +1627,7 @@ function showKpi(k){
   html += '<p><i>Angka contoh per role, bukan KPI resmi.</i></p>';
   document.getElementById('kpiDetail').innerHTML = html;
 }
-updateDashboard();
-updateReport();
-renderPersonButtons();
-renderKpiButtons();
-document.getElementById('segmentDetail').innerHTML = '<h2>' + data.bk.title + '</h2><p><span class="pill ' + data.bk.cls + '">' + data.bk.status + '</span></p>' + data.bk.body;
+/* v37: render awal dipindah ke startSite() setelah config dimuat (atau fallback default) — lihat loadAndStartSite(). */
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 renderer.domElement.addEventListener('click', function(e){
@@ -1269,8 +1645,9 @@ const clock = new THREE.Clock(); let prevT = 0;
 function animate(){
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime(); clockTime = t; const dt = Math.min(t - prevT, 0.1); prevT = t;
+  updateCharacterFloorVisibility();
   if (t > weatherTimer && weatherTimer < 900000) {
-    const opts = ['cerah','mendung','hujan'].filter(function(w){ return w !== weather; });
+    const opts = ['cerah','mendung','hujan','salju','petir','badai','panasterik'].filter(function(w){ return w !== weather; });
     weather = opts[Math.floor(Math.random() * opts.length)]; applyTimeWeather(); weatherTimer = t + 45 + Math.random()*20;
   }
   if (t - lastBriefingCheck > 1) { lastBriefingCheck = t; checkBriefing(); }
@@ -1283,7 +1660,7 @@ function animate(){
       else { const sp = 1.8 * dt; if (dist >= 0.25) { c.g.position.x += dx / dist * sp; c.g.position.z += dz / dist * sp; c.g.rotation.y = Math.atan2(dx, dz); } if (Math.abs(wantY - c.g.position.y) > sp) c.g.position.y += Math.sign(wantY - c.g.position.y) * sp; else c.g.position.y = wantY + Math.abs(Math.sin(t*6)) * 0.05; }
     } else if (t > c.stateUntil) { if (!c.briefing) pickState(c); }
     else if (c.briefing) { faceForState(c); c.g.position.y = Math.sin(t*2 + c.phase) * 0.03; }
-    else { const by = (c.state === 'lantai2' ? 3.6 : 0); c.g.position.y = by + Math.sin(t*2 + c.phase) * 0.03; }
+    else { const by = (c.state === 'lantai2' ? 3.6 : (c.g.position.y > 1 ? 3.6 : 0)); c.g.position.y = by + Math.sin(t*2 + c.phase) * 0.03; }
   });
   strangers.forEach(function(st){
     st.x += st.dir * st.speed * dt;
@@ -1299,20 +1676,42 @@ function animate(){
       if (st.dog.userData.tail) st.dog.userData.tail.rotation.y = Math.sin(t*8 + st.phase) * 0.5;
     }
   });
+  traffic.forEach(function(v){
+    v.x += v.dir * v.speed * dt;
+    if (v.dir === 1 && v.x > 40) v.x = -40;
+    if (v.dir === -1 && v.x < -40) v.x = 40;
+    v.g.position.x = v.x;
+  });
   fishes.forEach(function(f){ const u = f.userData; f.position.x = u.cx + Math.sin(t * u.speed + u.phase) * 0.7; f.position.y = 1.15 + Math.sin(t*2 + u.phase) * 0.08; f.rotation.y = Math.cos(t * u.speed + u.phase) >= 0 ? 0 : Math.PI; });
   if (catTail) catTail.rotation.z = -0.6 + Math.sin(t*2.5) * 0.25;
+  if (typeof globalThis !== 'undefined' && globalThis.__fishes2) globalThis.__fishes2.forEach(function(f){ const u = f.userData; f.position.x = u.cx; f.position.z = u.cz + Math.sin(t * u.speed + u.phase) * 0.7; f.position.y = u.baseY + Math.sin(t*2 + u.phase) * 0.08; f.rotation.y = Math.cos(t * u.speed + u.phase) >= 0 ? -Math.PI/2 : Math.PI/2; });
+  if (typeof globalThis !== 'undefined' && globalThis.__catTails2) globalThis.__catTails2.forEach(function(tl, ci){ tl.rotation.z = -0.6 + Math.sin(t*2.5 + ci) * 0.25; });
   trees.forEach(function(fol, i){ fol.rotation.z = Math.sin(t*1.2 + i) * 0.03; });
   birds.forEach(function(b){ const u = b.userData; const a = t * 0.25 + u.phase; b.position.set(Math.cos(a) * u.r, u.h + Math.sin(t) * 0.5, 5 + Math.sin(a) * u.r); b.rotation.y = -a; const flap = Math.sin(t*10 + u.phase) * 0.6; u.wl.rotation.z = flap; u.wr.rotation.z = -flap; });
   butterflies.forEach(function(b){ const u = b.userData; b.position.set(u.bx + Math.sin(t*1.5 + u.phase) * 1.2, 0.6 + Math.sin(t*3 + u.phase) * 0.2, u.bz + Math.cos(t*1.2 + u.phase) * 0.8); const flap = Math.sin(t*14 + u.phase) * 0.9; u.wl.rotation.y = flap; u.wr.rotation.y = -flap; });
-  cloudGroups.forEach(function(g){ g.position.x += dt * 0.4; if (g.position.x > 35) g.position.x = -35; });
-  if (rainPoints.visible) { const pos = rainGeo.attributes.position.array; for (let i=0;i<rainCount;i++){ pos[i*3+1] -= dt * 14; if (pos[i*3+1] < 0) rainReset(i, true); } rainGeo.attributes.position.needsUpdate = true; }
+  cloudGroups.forEach(function(g){ g.position.x += dt * (weather === 'badai' ? 1.2 : 0.4); if (g.position.x > 35) g.position.x = -35; });
+  if (rainPoints.visible) { const pos = rainGeo.attributes.position.array; const rs = weather === 'badai' ? 22 : weather === 'petir' ? 16 : 14; for (let i=0;i<rainCount;i++){ pos[i*3+1] -= dt * rs; if (weather === 'badai') { pos[i*3] -= dt * 2; if (pos[i*3] < -35) pos[i*3] = 35; } if (pos[i*3+1] < 0) rainReset(i, true); } rainGeo.attributes.position.needsUpdate = true; }
+  if (snowPoints.visible) { const spos = snowGeo.attributes.position.array; for (let i=0;i<snowCount;i++){ spos[i*3+1] -= dt * 2.5; spos[i*3] += Math.sin(t*1.5 + i) * dt * 0.5; if (spos[i*3+1] < 0) snowReset(i, true); } snowGeo.attributes.position.needsUpdate = true; }
+  if (weather === 'petir') { lightningNext -= dt; if (lightningNext <= 0) { lightningFlash = 0.2; if (typeof playThunderBoom === 'function') playThunderBoom(); lightningNext = 2 + Math.random()*4; lightningBolt.position.set(-15 + Math.random()*30, 12, -5 + Math.random()*15); } if (lightningFlash > 0) { lightningFlash -= dt; sun.intensity = baseSunInt + 3; lightningBolt.visible = true; } else { sun.intensity = baseSunInt; lightningBolt.visible = false; } } else { lightningBolt.visible = false; }
   if (focusPerson) { orbitCenter.set(focusPerson.g.position.x, focusPerson.g.position.y + 1.2, focusPerson.g.position.z); updateOrbitTarget(); }
   if (orbitAuto) { orbitTheta += dt * (Math.PI * 2 / 30); updateOrbitTarget(); }
   camPos.lerp(targetPos, 0.06); camLook.lerp(targetLook, 0.06);
   camera.position.copy(camPos); camera.lookAt(camLook);
   renderer.render(scene, camera);
 }
-animate();
+// ===== v33: KAMERA AWAL HP — dinaikkan ke atas, layar sempit saja =====
+// Desktop tidak berubah (tetap view Keseluruhan (0,24,28)->(0,0,2)).
+// Tombol Tour tetap memakai posisi kameranya masing-masing.
+if (window.innerWidth <= 768) {
+  orbitCenter.set(0,1.2,2); orbitRadius = 42; orbitTheta = 0; orbitPhi = 0.65;
+  focusPerson = null; orbitAuto = false;
+  updateOrbitTarget();
+  camPos.copy(targetPos); camLook.copy(targetLook);
+  var _fl33 = document.getElementById('focusLabel');
+  if (_fl33) _fl33.textContent = 'Fokus: Keseluruhan';
+  syncHud();
+}
+loadAndStartSite();
 window.addEventListener('resize', function(){ camera.aspect = container.clientWidth / container.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(container.clientWidth, container.clientHeight); });
 }
 </script>
@@ -1355,19 +1754,41 @@ function sendChat(){
 function botReply(q){
   const t = q.toLowerCase();
   const has = function(){ for (let i=0;i<arguments.length;i++){ if (t.indexOf(arguments[i]) >= 0) return true; } return false; };
+  var _cfg = (typeof window !== 'undefined' && window.SITE_CONFIG) ? window.SITE_CONFIG : null;
+  if (_cfg && _cfg.chatbotBusiness) {
+    var _cb = _cfg.chatbotBusiness;
+    if (has('oscr','kantor ini','apa itu','tentang') && _cb.oscr) return _cb.oscr;
+    if ((t === 'bk' || has('bedah keuangan','bedah',' bk ')) && _cb.bk) return _cb.bk;
+    if ((t === 'jk' || has('jejak kuasa','jejak',' jk ')) && _cb.jk) return _cb.jk;
+    if ((t === 'ru' || has('rancang undangan','undangan',' ru ')) && _cb.ru) return _cb.ru;
+    if (has('barutauada','baru tau','bta') && _cb.bta) return _cb.bta;
+    if (has('ludo') && _cb.ludo) return _cb.ludo;
+    if (has('okisadma','oki','ai sehari-hari') && _cb.oki) return _cb.oki;
+    if (has('bisnis','usaha','jualan','produk','layanan') && _cb.bisnis) return _cb.bisnis;
+  }
+  if (_cfg && _cfg.employees && _cfg.employees.length) {
+    var _defNicks = ['Oemar','Lux','Nadia','Rizky','Jess','Fajar','Maria','Made','Ratna','Yusuf','Kevin','Intan','Yohan','Lina','Bima','Alya','Tari','Raka','Nisa'];
+    var _cfgNicks = _cfg.employees.map(function(e){ return e.nick; });
+    if (JSON.stringify(_cfgNicks) !== JSON.stringify(_defNicks)) {
+      if (has('tim','karyawan','pegawai','siapa saja','siapa aja')) return 'Tim di kantor ini ' + _cfg.employees.length + ' orang: ' + _cfg.employees.map(function(e){ return e.nick + ' (' + e.role + ')'; }).join(', ') + '.';
+    }
+  }
   if (has('kamu siapa', 'siapa kamu', 'kamu lux', 'kamu muse', 'bot apa', 'resepsionis')) return 'Gue Bot Kantor OSCR Works, resepsionis di sini. Gue tanpa AI, jawaban gue sudah disiapin, bukan Lux dan bukan Muse. Lux di kantor ini adalah karakter Manager & Producer, beda sama gue.';
   if (has('halo', 'hai', 'selamat', 'hello', 'hi ')) return 'Halo! Selamat datang di Kantor Digital OSCR Works. Tanya soal segmen, tim, briefing, atau cara pakai kantor ini, ya. Atau pencet tombol cepat di bawah.';
   if (has('terima kasih', 'makasih', 'thanks')) return 'Sama-sama! Kalau ada yang mau ditanyain lagi soal kantor ini, silakan.';
-  if (has('oscr', 'kantor ini', 'apa itu', 'tentang')) return 'OSCR Works adalah grup yang menaungi 4 segmen: Bedah Keuangan, Jejak Kuasa, Rancang Undangan, dan BaruTauAda. Kantor digital ini adalah simulasi dua lantai buat memantau segmen-segmen itu, bukan kantor fisik yang bisa dikunjungi. Lantai 1 untuk 4 segmen yang sudah jalan, lantai 2 masih kosong untuk ekspansi. Direktur: Oemar, Manager & Producer: Lux (karakter di kantor ini).';
-  if (t === 'bk') return 'Bedah Keuangan: segmen literasi keuangan. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Formatnya reel karakter, plus slate perbandingan yang sudah tayang di Instagram.';
-  if (t === 'jk') return 'Jejak Kuasa: segmen sejarah dan geopolitik, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render.';
-  if (t === 'ru') return 'Rancang Undangan: jasa pembuatan undangan cetak dan digital di Batam. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web.';
+  if (has('oscr', 'kantor ini', 'apa itu', 'tentang')) return 'OSCR Works adalah grup yang menaungi 6 segmen: Bedah Keuangan, Jejak Kuasa, Rancang Undangan, BaruTauAda, Ludo Berdua, dan Oki | AI Sehari-hari. Kantor digital ini adalah simulasi dua lantai buat memantau segmen-segmen itu, bukan kantor fisik yang bisa dikunjungi. Lantai 1 untuk 4 segmen yang sudah jalan; lantai 2: barat = Ludo Berdua (sudah ada meja, PC, dan kursi), tengah = Oki | AI Sehari-hari (sudah ada meja, PC, dan kursi), timur = Ekspansi 3 yang masih kosong, plus meja meeting, arsip, lounge sofa + TV + konsol game, aquarium, dan 2 kucing di open space lantai 2. Direktur: Oemar, Manager & Producer: Lux (karakter di kantor ini). Gue ini resepsionis, bukan Lux dan bukan Muse.';
+  if (t === 'bk') return 'Bedah Keuangan: konten edukasi keuangan berbahasa Indonesia — reels karakter dan carousel — yang membantu orang mengatur uang (gaji, utang, tabungan) dengan bahasa sehari-hari. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Produknya template/anggaran, dan kontennya mengarah ke produk digital itu. Harga dan angka penjualan tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
+  if (t === 'jk') return 'Jejak Kuasa: konten geopolitik dan sejarah — reels/cerita sejarah dan kekuasaan dengan gaya storytelling visual, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render. Angka follower/views tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
+  if (t === 'ru') return 'Rancang Undangan: jasa undangan cetak dan digital di Batam (fokus Batu Aji). Oemar pegang marketing, produksi dikerjakan vendor lain, dan Oemar ambil selisih margin tanpa biaya operasional. Diferensiasinya: undangan yang ada maket dan komunikasi visual yang gampang. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web. Harga, nomor WA, alamat lengkap, dan vendor spesifik belum dikunci di info kantor ini, jadi gue tidak mengarangnya.';
   if (t === 'wc') return 'Toilet pindah ke timur pantry, pintunya di sisi barat menghadap pantry, jadi dari meja pantry ada jalan tembus ke toilet. Toilet lama di depan Meeting 2 sudah dihapus, jadi area Meeting 2 sekarang lebih luas.';
-  if (has('bedah keuangan', 'bedah', ' bk ')) return 'Bedah Keuangan: segmen literasi keuangan. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Formatnya reel karakter, plus slate perbandingan yang sudah tayang di Instagram.';
-  if (has('jejak kuasa', 'jejak', ' jk ')) return 'Jejak Kuasa: segmen sejarah dan geopolitik, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render.';
-  if (has('rancang undangan', 'undangan', ' ru ')) return 'Rancang Undangan: jasa pembuatan undangan cetak dan digital di Batam. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web.';
-  if (has('barutauada', 'baru tau', 'bta')) return 'BaruTauAda: segmen baru untuk reels pengetahuan umum, fokusnya Rumah & Kos — benda kecil pemecah masalah di rumah. Timnya Intan (Research), Yohan (Product Curation), Lina (Distribution & Admin). Segmen ini masih tahap persiapan.';
-  if (has('tim', 'karyawan', 'pegawai', 'siapa saja', 'siapa aja')) return 'Tim kantor ini 14 orang: Oemar (Director), Lux (Manager & Producer), plus 12 karyawan per segmen — BK: Nadia, Rizky, Jess; JK: Fajar, Maria, Made; RU: Ratna, Yusuf, Kevin; BTA: Intan, Yohan, Lina. Penting: 12 karyawan itu karakter fiktif simulasi, bukan karyawan beneran.';
+  if (has('bedah keuangan', 'bedah', ' bk ')) return 'Bedah Keuangan: konten edukasi keuangan berbahasa Indonesia — reels karakter dan carousel — yang membantu orang mengatur uang (gaji, utang, tabungan) dengan bahasa sehari-hari. Timnya Nadia (Content & Script), Rizky (Social Media Admin), Jess (Finance & Research). Produknya template/anggaran, dan kontennya mengarah ke produk digital itu. Harga dan angka penjualan tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
+  if (has('jejak kuasa', 'jejak', ' jk ')) return 'Jejak Kuasa: konten geopolitik dan sejarah — reels/cerita sejarah dan kekuasaan dengan gaya storytelling visual, format andalannya reel peta. Timnya Fajar (Research & Fact-Check), Maria (Content & Script), Made (Visual-Motion). Konten berikutnya: Garis Wallace, riset dan naskah dulu sebelum render. Angka follower/views tidak tersedia di info kantor ini, jadi gue tidak mengarangnya.';
+  if (has('rancang undangan', 'undangan', ' ru ')) return 'Rancang Undangan: jasa undangan cetak dan digital di Batam (fokus Batu Aji). Oemar pegang marketing, produksi dikerjakan vendor lain, dan Oemar ambil selisih margin tanpa biaya operasional. Diferensiasinya: undangan yang ada maket dan komunikasi visual yang gampang. Timnya Ratna (Content & Sosmed), Yusuf (Admin & Order), Kevin (Finance & Vendor). Template digitalnya sudah live di web. Harga, nomor WA, alamat lengkap, dan vendor spesifik belum dikunci di info kantor ini, jadi gue tidak mengarangnya.';
+  if (has('barutauada', 'baru tau', 'bta')) return 'BaruTauAda (@barutauada): reels pengetahuan umum segmen Rumah & Kos — benda kecil pemecah masalah di rumah — yang disisipi keranjang affiliate secara soft selling. Timnya Intan (Research), Yohan (Product Curation), Lina (Distribution & Admin). Produk dan link affiliate spesifik belum ada di info kantor ini, jadi gue tidak mengarangnya.';
+if (has('ludo')) return 'Ludo Berdua: game web ludo pasutri (truth or dare), produk digital berbayar, yang kantornya di lantai 2 (ruang barat, sudah ada meja, PC, keyboard, dan kursi kerja). Timnya: Bima (Produk), Alya (Marketing), Tari (Admin) — ketiganya karakter fiktif simulasi, bukan orang nyata. Tombol Segmen 🎲 LB mengarah ke ruang itu. Harga dan status pembayaran tidak tersedia di info kantor ini, jadi gue tidak mengarangnya (gue juga tidak mengklaim pembayaran lewat Lynk sudah aktif).';
+if (has('okisadma', 'oki', 'ai sehari-hari')) return 'Oki | AI Sehari-hari: personal branding okisadma yang sharing utilitas AI dalam kehidupan sehari-hari untuk orang yang baru tahu AI, sesekali pop culture, ekonomi, dan keuangan, dengan persona abang-abang yang mau sharing (bukan influencer kaku). Kantornya di lantai 2 (ruang tengah, sudah ada meja, PC, keyboard, dan kursi kerja). Timnya: Raka (Riset & Konten), Nisa (Socmed) — keduanya karakter fiktif simulasi, bukan orang nyata. Tombol Segmen 🤖 Oki mengarah ke ruang itu. Jumlah follower, jadwal posting, dan link akun spesifik tidak tersedia di info kantor ini di luar nama segmen itu, jadi gue tidak mengarangnya.';
+  if (has('bisnis', 'usaha', 'jualan', 'produk', 'layanan')) return 'Bisnis OSCR Works itu payung 6 segmen: Bedah Keuangan (edukasi keuangan + template/anggaran), Jejak Kuasa (konten sejarah dan geopolitik), Rancang Undangan (jasa undangan cetak dan digital di Batam), BaruTauAda (reels pengetahuan umum Rumah & Kos + affiliate soft selling), Ludo Berdua (game web ludo pasutri, produk digital berbayar), dan Oki | AI Sehari-hari (personal branding sharing AI sehari-hari). Direktur: Oemar, Manager & Producer: Lux (karakter di simulasi kantor ini). Tanya nama segmennya langsung kalau mau detail per segmen. Harga, kontak, dan link yang belum dikunci tidak tersedia di info kantor ini, jadi gue tidak mengarangnya. Gue ini resepsionis, bukan Lux dan bukan Muse.';
+  if (has('tim', 'karyawan', 'pegawai', 'siapa saja', 'siapa aja')) return 'Tim kantor ini 19 orang: Oemar (Director), Lux (Manager & Producer), plus 17 karakter fiktif simulasi — BK: Nadia, Rizky, Jess; JK: Fajar, Maria, Made; RU: Ratna, Yusuf, Kevin; BTA: Intan, Yohan, Lina; Ludo Berdua: Bima (Produk), Alya (Marketing), Tari (Admin); Oki | AI Sehari-hari: Raka (Riset & Konten), Nisa (Socmed). Penting: 17 anggota tim itu karakter fiktif simulasi, bukan karyawan beneran; Oemar adalah Director yang asli, Lux adalah karakter Manager & Producer.';
   if (has('oemar', 'direktur', 'bos')) return 'Oemar adalah Director OSCR Works. Di kantor ini dia punya meja direktur + laptop, dan sesekali keliling ke Meeting 1, Meeting 2, pantry, halaman, atau main sama kucing.';
   if (has('lux', 'manager', 'producer')) return 'Lux di kantor ini adalah karakter Manager & Producer, mejanya di open space tengah. Bedakan ya: Lux karakter kantor ini beda sama gue, Bot Kantor, dan beda sama Muse di aplikasi.';
   if (has('briefing', 'rapat pagi', 'rapat sore', 'jam 8', 'jam 17', 'jam 5')) return 'Briefing ada 2: pagi jam 08:00 oleh Oemar, penutup jam 17:00 (jam 5 sore) oleh Lux. Keduanya di Meeting 2 lounge timur, semua berkumpul, pemimpin di depan. Kalau mau tes, pencet tombol Briefing Pagi / Briefing Penutup di Setting.';
@@ -1381,13 +1802,13 @@ function botReply(q){
   if (has('tetangga', 'gedung sebelah', 'bangunan')) return 'Tetangga kantor ada di kiri (krem, atap merah) dan kanan (biru muda, atap abu, di timur parkir). Keduanya bangunan utuh: dinding, jendela 2 lantai, pintu, sampai atap piramida.';
   if (has('stranger', 'orang lewat', 'anjing', 'hewan', 'pesepeda')) return 'Di trotoar dan jalan ada stranger: pejalan kaki bolak-balik di trotoar, 1 orang naik sepeda di jalan, dan 1 orang jalan sama anjing (ekor anjingnya goyang). Mereka tanpa label, bukan karyawan.';
   if (has('musik', 'lagu', 'soundcloud', 'hindia', 'next', 'prev')) return 'Musik di kantor ini dari SoundCloud: playlist Hindia Full Album. Tekan tombol Musik dulu, baru tombol Prev / Next jalan, judul lagu yang lagi main tampil di status musik. Suara Kantor juga ada: ketik, murmur, printer, plus obrolan.';
-  if (has('suara', 'ngobrol', 'ketawa', 'cowo', 'cewe')) return 'Suara Kantor bisa dinyalakan di panel musik. Obrolannya bergantian cowo/cewe, ada frasa becanda dan ketawa berkala. Ada tombol Suara Cowo / Cewe buat cek langsung.';
+  if (has('suara', 'ngobrol', 'ketawa', 'cowo', 'cewe')) return 'Suara Kantor bisa dinyalakan di panel musik. Obrolannya bergantian cowo/cewe, ada frasa becanda dan ketawa berkala.';
   if (has('gedung utuh', 'dari luar', 'atap', 'jendela', 'pintu utama')) return 'Tombol Gedung Utuh di Tour bikin kantor kelihatan utuh dari luar: dinding depan penuh, atap piramida presisi, jendela besar sekeliling, pintu utama kayu + kaca + kanopi + papan nama OSCR Works. Klik ruangan lain atau Keseluruhan buat balik ke mode interior transparan.';
   if (has('cara pakai', 'tour', 'kamera', 'ganti orang', 'klik', 'putar', 'zoom')) return 'Cara pakai: pencet tombol Tour Ruangan buat pindah ruangan, Ganti Orang buat pindah fokus ke semua karyawan satu-satu, kolom Kamera buat kiri/kanan/naik/turun/360/zoom. Klik karakter di 3D buat lihat profil + aktivitasnya. Di HP, drag di area 3D buat putar kamera.';
   if (has('dashboard', 'report', 'personel', 'kpi', 'tab')) return 'Di bawah tombol ada 4 tab: Dashboard (pilih segmen + filter socmed, plus Ongoing Task), Report (Harian/Mingguan/Bulanan), Personel & Aktivitas (filter per segmen + Management), KPI Personel (per role). Jujur ya: angka Dashboard dan KPI di sini masih contoh, target resmi belum ditetapkan.';
   if (has('jam', 'waktu', 'cuaca')) { const now = new Date(); const hh = String(now.getHours()).padStart(2, '0'); const mm = String(now.getMinutes()).padStart(2, '0'); return 'Jam di kantor ini ngikut jam perangkat yang buka halaman, sekarang sekitar ' + hh + ':' + mm + '. Cuaca di kantor berubah-ubah kira-kira tiap 45 detik, cek di HUD atas scene.'; }
-  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini masih kosong, buat ekspansi nanti. Ada tangga di sayap kiri dekat Arsip (barat), di antara lemari Arsip dan meja selatan, tidak lagi di tengah pintu masuk, naik dari lantai 1 ke atas, dan 3 ruang kosong: Ekspansi 1 (barat), Ekspansi 2 (tengah), Ekspansi 3 (timur). Belum ada tim atau segmen permanen di lantai 2, dan belum ada meja kerja di atas. Pencet tombol Lantai 2 atau Ekspansi 1/2/3 buat lihat.';
-  return 'Maaf, bot ini tanpa AI, jadi gue cuma bisa jawab topik kantor yang sudah disiapin: OSCR Works, 4 segmen, tim, briefing, toilet, pantry, parkir, musik, cara pakai kantor, dan tab Dashboard/Report/Personel/KPI. Coba pencet tombol cepat di bawah, atau tanya salah satu topik itu.';
+  if (has('lantai 2', 'lantai dua', 'tangga', 'ekspansi')) return 'Lantai 2 kantor ini sudah terisi 2 dari 3 ruang. Ada tangga di sayap kiri dekat Arsip (barat), di antara lemari Arsip dan meja selatan, tidak lagi di tengah pintu masuk, naik dari lantai 1 ke atas. Barat = Ludo Berdua (meja, PC, keyboard, kursi kerja), tengah = Oki | AI Sehari-hari (meja, PC, keyboard, kursi kerja), timur = Ekspansi 3 yang masih kosong. Di open space selatan lantai 2 ada meja meeting, arsip, lounge sofa + karpet + TV + konsol game generik, aquarium, dan 2 kucing (abu-abu dan putih). Pencet tombol Lantai 2, Ludo Berdua, Oki, atau Ekspansi 3 buat lihat.';
+  return 'Maaf, bot ini tanpa AI, jadi gue cuma bisa jawab topik kantor yang sudah disiapin: OSCR Works, bisnis dan 6 segmen, tim, briefing, toilet, pantry, parkir, musik, cara pakai kantor, dan tab Dashboard/Report/Personel/KPI. Coba pencet tombol cepat di bawah, atau tanya salah satu topik itu.';
 }
 </script>
 </body>
